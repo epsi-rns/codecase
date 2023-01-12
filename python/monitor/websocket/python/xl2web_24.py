@@ -1,14 +1,20 @@
-import asyncio, websockets, json, os
+import asyncio, websockets, json, os, tomli
 from watchfiles import awatch
 
 # Excel to Web, Base Class
 class Xl2WebBase:
-  def __init__(self, filepath, filename, site, port):
-    # save initial parameter
-    self.filepath = filepath
-    self.filename = filename
-    self.site = site
-    self.port = port
+  def __init__(self, sheet_ident):
+    with open('config.toml', 'rb') as file_obj:
+      config_root  = tomli.load(file_obj)
+      env          = config_root['environment']
+      config_env   = config_root[env]
+      config_sheet = config_env[sheet_ident]
+
+      # save initial parameter
+      self.filepath = config_sheet['path']
+      self.filename = config_sheet['file']
+      self.site = config_sheet['site']
+      self.port = config_sheet['port']
 
   # websocket related
   async def __send_data(self, fullname):

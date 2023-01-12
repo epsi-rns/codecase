@@ -1,0 +1,16 @@
+{% extends "layout.jinja" %}
+{% block body %}
+<div class="columns box m-1 is-multiline">
+    <div class="column is-full has-text-centered">
+      {% include 'page-title.jinja' %}
+    </div>
+
+    <div class="column is-full">
+      {% include 'tab-names.jinja' %}
+    </div>
+
+    <div class="column is-full">
+      {% include 'tab-contents.jinja' %}
+    </div>
+</div>
+{% endblock %}
