@@ -30,7 +30,7 @@ class Xl2WebBase:
     while True:
       message = await self.websocket.recv()
       self.xlsx = os.path.join(self.filepath, self.filename)
-      await self.__send_data(None)
+      await self.__send_data(self.xlsx )
 
   # websocket handler
   async def __handler(self, websocket, path):
