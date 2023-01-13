@@ -97,8 +97,11 @@ class WS2Panel_d extends WS2PanelBase {
 
 document.addEventListener(
   "DOMContentLoaded", function(event) {
-    ws_url_c = "ws://localhost:8765"
-    ws_url_d = "ws://localhost:8767"
+    host = window.location.hostname
+    console.log(host)
+
+    ws_url_c = "ws://" + host + ":8765"
+    ws_url_d = "ws://" + host + ":8767"
 
     let myPanel_c = new WS2Panel_c(ws_url_c, "c-status")
     let myPanel_d = new WS2Panel_d(ws_url_d, "d-status")

@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', function(event) {
   const tabHeaders  = document.getElementsByClassName('tab-headers')[0];
 
   const tabdelays = [
-    { name: "progress", delay: 9000 },
-    { name: "review",   delay: 7000 },
-    { name: "report",   delay: 5000 }
+    { name: "progress", delay: 90000 },
+    { name: "review",   delay: 70000 },
+    { name: "report",   delay: 50000 }
   ]
 
   const tabNames = tabdelays.flatMap(item => item.name)

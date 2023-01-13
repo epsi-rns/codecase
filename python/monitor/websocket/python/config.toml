@@ -5,12 +5,12 @@ environment  = "development"
 
 [development]
   [development.sheetGlobal]
-    site = "localhost"
+    site = "0.0.0.0"
     port = "8765"
     path = "/home/epsi/awatch/code-02-enh"
     file = "test-c.xlsx"
   [development.sheetDaily]
-    site = "localhost"
+    site = "0.0.0.0"
     port = "8767"
     path = "/home/epsi/awatch/code-02-enh"
     file = "test-d.xlsx"
