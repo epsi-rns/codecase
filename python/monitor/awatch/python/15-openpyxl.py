@@ -14,7 +14,7 @@ class Xl2WebExample:
   # miscellanous helper
   def __pack_data(self, fullname):
     # reopen the worksheet all over again
-    wb = load_workbook(self.filename)
+    wb = load_workbook(fullname)
     ws = wb["Example"]
 
     return {
@@ -55,6 +55,6 @@ class Xl2WebExample:
 
 # Program Entry Point
 example = Xl2WebExample(
-  '/home/epsi/awatch/code', 'test-a.xlsx',
+  '/home/epsi/awatch/code-01-base', 'test-a.xlsx',
   'localhost', 8765)
 asyncio.run(example.main())

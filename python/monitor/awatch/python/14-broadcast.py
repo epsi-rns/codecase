@@ -16,11 +16,13 @@ class Xl2WebExample:
   # websocket handler
   async def __broadcast_changes(self):
     async for changes in awatch(self.filepath):
+      xlsx = self.filepath + '/' + self.filename
+
       for change in changes:
-        print(change[0])
-        print(change[1])
-        websockets.broadcast(
-          self.connections, change[1])
+        if change[1] == xlsx:
+          print(change[1])
+          websockets.broadcast(
+            self.connections, change[1])
 
   async def __handler(self, websocket):
     self.connections.add(websocket)
@@ -40,4 +42,3 @@ example = Xl2WebExample(
   '/home/epsi/awatch/code-01-base', 'test-a.xlsx',
   'localhost', 8765)
 asyncio.run(example.main())
-    fd_event_list = self._selector.poll(timeout, max_ev)

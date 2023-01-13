@@ -30,14 +30,14 @@ class Xl2WebBase:
           websockets.broadcast(
             self.connections, json.dumps(event_data))
 
-  async def __monitor_webclient(self):
+  async def __monitor_webclient(self, websocket):
     while True:
-      message = await self.websocket.recv()
+      message = await websocket.recv()
       self.xlsx = os.path.join(self.filepath, self.filename)
 
       event_data = self._pack_data(self.xlsx)
       self._dump_data(event_data)
-      await self.websocket.send(
+      await websocket.send(
         json.dumps(event_data))
 
       await self.__send_data(self.xlsx)
@@ -51,13 +51,11 @@ class Xl2WebBase:
       self.connections.remove(websocket)
 
   async def __handler(self, websocket, path):
-    self.websocket = websocket
-
     task_localfile = asyncio.create_task(
       self.__monitor_localfileconn(websocket))
 
     task_webclient = asyncio.create_task(
-      self.__monitor_webclient())
+      self.__monitor_webclient(websocket))
 
     # run these two coroutines concurrently
     await(task_localfile)
