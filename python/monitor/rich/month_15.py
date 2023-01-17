@@ -30,13 +30,18 @@ class MonthData:
 
   def __update_month_rnd(self):
     while True:
+      [start, end] = [self.start, self.end]
+
       if randint(0, 1):
-        self.start = self.start + randint(-1, 1)
-        if self.start < 1: self.start = 1
+        start = start + randint(-1, 1)
+        if start < 1: start = 1
       else:
-        self.end   = self.end   + randint(-1, 1)
-        if self.end > 12: self.end = 12
-      if self.end - self.start > 3: break
+        end = end + randint(-1, 1)
+        if end > 12: end = 12
+      if end - start > 3:
+        break
+
+    [self.start, self.end] = [start, end]
 
   def __get_months_dict(self):
     m_all   = list(self.MONTHS.items())
