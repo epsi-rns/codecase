@@ -29,7 +29,7 @@ class MonthData:
       if end - start > 3: break
     return [start, end]
 
-  def get_months_dict(self):
+  def __get_months_dict(self):
     m_all   = list(self.MONTHS.items())
     m_slice = m_all[self.start-1:self.end]
     return dict(m_slice)
@@ -47,7 +47,7 @@ class MonthData:
       self.fakes[key] = self.__init_random()
 
   def main(self):
-    print(self.get_months_dict())
+    print(self.__get_months_dict())
     print(self.fakes)
 
 # Program Entry Point
