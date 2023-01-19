@@ -5,7 +5,7 @@ from rich.layout import Layout
 from rich.panel  import Panel
 from rich.table  import Table
 
-# Excel to Web, Asbtract Base Class
+# Excel to Web, Abstract Base Class
 class Xl2Web:
   def __init__(self, sheet_ident, 
       ref_live, ref_layout, layout_name):
