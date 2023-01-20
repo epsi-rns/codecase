@@ -1,9 +1,8 @@
-import logging
-import sys
+import logging, sys
+import jinja2, aiohttp_jinja2
 
-import jinja2
-import aiohttp_jinja2
 from aiohttp import web
+from rich.logging import RichHandler
 
 @aiohttp_jinja2.template("index.jinja")
 class HomeHandler(web.View):
@@ -12,7 +11,10 @@ class HomeHandler(web.View):
     return {}
 
 def main():
-  logging.basicConfig(level=logging.DEBUG)
+  FORMAT = "%(message)s"
+  logging.basicConfig(
+    level=logging.DEBUG, format=FORMAT,
+    datefmt="[%X]", handlers=[RichHandler()])
 
   app = web.Application()
 
@@ -26,4 +28,3 @@ def main():
   web.run_app(app)
 
 main()
-
