@@ -15,7 +15,7 @@ from scipy    import interpolate
 # This is the Subscriber
 class mqSubscriber:
   # Maximum Buffered Data in Second
-  MAX_DURATION = 20
+  MAX_DURATION = 40
 
   def __init__(self):
     # save initial parameter
@@ -45,10 +45,25 @@ class mqSubscriber:
     plt.xlabel('Time')
     plt.ylabel('Value')
 
+    self.axes.grid(
+      which='major',
+      color = '#004d40',
+      linestyle = '--',
+      linewidth = 0.8)
+
+    self.axes.grid(
+      which='minor',
+      color = '#009688',
+      linestyle = ':',
+      linewidth = 0.4)
+
+    self.axes.minorticks_on()
+
     self.line, = self.axes.plot(
-      [], [], 'c+')
+      [], [], linestyle="None",
+      marker='+', markerfacecolor='#00796b')
     self.smooth, = self.axes.plot(
-      [], [], 'b')
+      [], [], color='#1976d2')
 
     self.fig.canvas.mpl_connect(
       'close_event', exit)
