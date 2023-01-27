@@ -3,14 +3,14 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as md
 
 import pandas as pd
-import numpy as np
+import numpy  as np
 import random
 
 from datetime import datetime
 from time     import sleep
 from scipy    import interpolate
 
-class rndGenerator:
+class rndPlotter:
   def __init__(self):
     # save initial parameter
     self.index = 0
@@ -25,6 +25,24 @@ class rndGenerator:
 
     xfmt = md.DateFormatter('%H:%M:%S')
     self.axes.xaxis.set_major_formatter(xfmt)
+
+    plt.title('Value by Time')
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+
+    self.axes.grid(
+      which='major',
+      color = '#004d40',
+      linestyle = '--',
+      linewidth = 0.8)
+
+    self.axes.grid(
+      which='minor',
+      color = '#009688',
+      linestyle = ':',
+      linewidth = 0.4)
+
+    self.axes.minorticks_on()
 
   def number_setup(self):
     # save initial parameter
@@ -81,29 +99,35 @@ class rndGenerator:
       "temp": yfit
     })
 
-  def __call__(self):
-    for i in range(0, 10):
+  def generateSeries(self):
+    for i in range(0, 40):
       self.update_num()
       self.update_data()
       sleep(0.25)
-    print()
-    
+
     self.timeframe.info()
+
+  def plotSeries(self):
     df_smooth = self.get_df_smooth()
 
     self.axes.plot(
       self.timeframe.time,
-      self.timeframe.temp, 'ro')
+      self.timeframe.temp,
+      linestyle="None",
+      marker='+', markerfacecolor='#00796b')
 
     self.axes.plot(
       df_smooth.time,
-      df_smooth.temp, '-b.')
+      df_smooth.temp, color='#1976d2')
 
     for tick in self.axes.get_xticklabels():
       tick.set_rotation(90)
 
     plt.show()
 
-rndGen = rndGenerator()
-rndGen()
+  def __call__(self):
+    self.generateSeries()
+    self.plotSeries()
 
+rndPlo = rndPlotter()
+rndPlo()

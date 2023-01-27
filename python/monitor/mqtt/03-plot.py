@@ -8,7 +8,7 @@ import random
 
 from time import sleep
 
-class rndGenerator:
+class rndPlotter:
   def __init__(self):
     # save initial parameter
     self.index = 0
@@ -63,8 +63,8 @@ class rndGenerator:
     self.index += 1
     self.timeframe = pd.concat(
       [self.timeframe, new_pair])
-    
-  def __call__(self):
+
+  def generateSeries(self):
     for i in range(0, 40):
       self.update_num()
       self.update_data()
@@ -72,6 +72,7 @@ class rndGenerator:
 
     self.timeframe.info()
 
+  def plotSeries(self):
     plt.plot(
       self.timeframe.time,
       self.timeframe.temp)
@@ -84,6 +85,10 @@ class rndGenerator:
 
     plt.show()
 
-rndGen = rndGenerator()
-rndGen()
+  def __call__(self):
+    self.generateSeries()
+    self.plotSeries()
+
+rndPlo = rndPlotter()
+rndPlo()
 
