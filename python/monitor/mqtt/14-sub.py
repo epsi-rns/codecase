@@ -10,22 +10,24 @@ class mqSubscriber:
     self.timeframe = pd.DataFrame({
       "time": [], "temp": []  })
 
-  def update(self, msg):
-    new_pair =  pd.DataFrame({
-      "time": pd.Timestamp.now(),
-      "temp": float(msg.payload)
-    }, index=[self.index])
-
+  def print_new_pair(self, new_pair):
     if self.index == 0:
       new_str = new_pair.to_string(
         index=False)
     else:
       new_str = new_pair.to_string(
         index=False, header=False)
+    print(new_str, end="\r", flush=True)
 
-    print(new_str)
+  def update(self, msg):
+    new_pair =  pd.DataFrame({
+      "time": pd.Timestamp.now(),
+      "temp": float(msg.payload)
+    }, index=[self.index])
+
+    self.print_new_pair(new_pair)
+
     self.index += 1
-
     self.timeframe = pd.concat(
       [self.timeframe, new_pair])
 
@@ -40,4 +42,8 @@ class mqSubscriber:
           self.update(message)
 
 mqSub = mqSubscriber()
-asyncio.run(mqSub.main())
+
+try:
+  asyncio.run(mqSub.main())
+except KeyboardInterrupt:
+  print('Goodbye!')
