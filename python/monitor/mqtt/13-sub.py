@@ -13,7 +13,7 @@ class mqSubscriber:
 
     async with client:
       async with client.messages() as messages:
-        await client.subscribe("topic/test")
+        await client.subscribe("topic/signal")
         async for message in messages:
           self.update(message)
 

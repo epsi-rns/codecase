@@ -30,7 +30,7 @@ class mqPublisher:
       while True:
         self.update_num()
         await client.publish(
-          "topic/test",
+          "topic/signal",
           payload=str(self.current))
         await asyncio.sleep(1)
 

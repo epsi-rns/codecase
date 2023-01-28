@@ -45,7 +45,7 @@ class mqSubscriber:
   def on_connect(self,
       client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe("topic/test")
+    client.subscribe("topic/signal")
 
   def on_message(self,
       client, userdata, msg):
