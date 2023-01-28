@@ -49,8 +49,6 @@ class rndGenerator:
 
     return self.timeframe
 
-rndGen = rndGenerator()
-df = rndGen()
-
 np.set_printoptions(precision=2)
-print(df)
+rndGen = rndGenerator()
+print(rndGen())
