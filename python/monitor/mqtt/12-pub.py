@@ -48,9 +48,9 @@ class mqPublisher:
       print("Adjust to: %.2f" % float_num) 
 
       while abs(self.current - float_num) >  1:
-        self.current = (self.current + float_num)/2
-        await asyncio.sleep(1)
-
+        fourth = (float_num - self.current)/4
+        self.current = self.current + fourth
+        await asyncio.sleep(0.7)
 
   async def main(self):
     task_produce = asyncio.create_task(
