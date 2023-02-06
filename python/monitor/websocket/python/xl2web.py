@@ -32,15 +32,17 @@ class Xl2WebBase:
 
   async def __monitor_webclient(self, websocket):
     while True:
-      message = await websocket.recv()
+      try:
+        message = await websocket.recv()
+      except websockets.exceptions.ConnectionClosed:
+         break
+
       self.xlsx = os.path.join(self.filepath, self.filename)
 
       event_data = self._pack_data(self.xlsx)
       self._dump_data(event_data)
       await websocket.send(
         json.dumps(event_data))
-
-      await self.__send_data(self.xlsx)
 
   # websocket handler
   async def __monitor_localfileconn(self, websocket):
