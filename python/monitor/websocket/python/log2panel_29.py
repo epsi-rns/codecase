@@ -1,7 +1,4 @@
 import logging, asyncio
-import jinja2, aiohttp_jinja2
-
-from aiohttp import web
 from io import StringIO
 
 from rich.console import Console
@@ -10,12 +7,6 @@ from rich.table   import Table
 from rich.panel   import Panel
 from rich.layout  import Layout
 from rich.live    import Live
-
-@aiohttp_jinja2.template("index.jinja")
-class HomeHandler(web.View):
-
-  async def get(self):
-    return {}
 
 class Log2Panel:
   MAXLINE = 40
@@ -33,7 +24,11 @@ class Log2Panel:
     self.last_msg = None
     self.lines    = None
 
-  def get_lines(self):
+    logging.basicConfig(
+      stream=self.log_stream,
+      level=logging.INFO)
+
+  def __get_lines(self):
     log_str = self.log_stream.getvalue()
     lines   = log_str.splitlines()
 
@@ -48,7 +43,7 @@ class Log2Panel:
     return lines
 
   # https://stackoverflow.com/questions/73512663/
-  def capture(self, message):
+  def __capture(self, message):
     with self.console.capture() as capture:
       self.console.print(message)
     str_text = capture.get()
@@ -56,64 +51,42 @@ class Log2Panel:
 
     return str_text
 
-  def split(self, line):
+  def __split(self, line):
     pos1 = line.find(':', 0)
     pos2 = line.find(':', pos1+1)
     col1 = line[:pos1]
     col2 = line[pos1+1:pos2]
-    col3 = self.capture(line[pos2+1:])
+    col3 = self.__capture(line[pos2+1:])
 
     return [col1, col3]
 
-  def get_panel(self) -> Panel:
+  def __get_panel(self) -> Panel:
     table = Table.grid(padding=0, expand=True)
     table.add_column(no_wrap=True,
       min_width=8, overflow="fold", style="blue")
     table.add_column()
     
     for i, line in enumerate(self.lines[::-1]):
-      table.add_row(*self.split(line))
+      table.add_row(*self.__split(line))
 
     panel = Panel(table,
       title="[b]Web [yellow]Logs")
     return panel
 
-  def get_layout(self) -> Layout:
+  def __get_layout(self) -> Layout:
     self.layout[self.layout_name].update(
-      self.get_panel())
+      self.__get_panel())
     return self.layout
-
-  async def task_web(self):
-    logging.basicConfig(
-      stream=self.log_stream,
-      level=logging.INFO)
-  
-    app = web.Application()
-
-    # setup jinja2 
-    aiohttp_jinja2.setup(app,
-      loader=jinja2.FileSystemLoader(
-        '../templates'))
-
-    app.router.add_get(
-        '/', HomeHandler, name="index")
-    app.router.add_static('/', '../site')
-
-    runner = web.AppRunner(app)
-    await runner.setup()
-
-    site = web.TCPSite(runner, '0.0.0.0', 8080)
-    await site.start()
 
   async def do_log(self):
     with self.live:
       while True:
-        self.lines = self.get_lines()
+        self.lines = self.__get_lines()
 
         last_msg = self.lines[-1:]
         if last_msg != self.last_msg:
           self.live.update(
-            self.get_layout())
+            self.__get_layout())
           self.last_msg = last_msg
 
         await asyncio.sleep(1)
