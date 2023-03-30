@@ -20,12 +20,12 @@ mA = np.array([
          for x in mx])
 
 mAt   = np.transpose(mA)
-mAt_A = np.matmul(mAt, mA)
-mAt_B = np.matmul(mAt, mB)
+mAt_A = mAt @ mA
+mAt_B = mAt @ mB
 
 # First Method
 mAt_A_i = np.linalg.inv(mAt_A)
-mC      = np.matmul(mAt_A_i, mAt_B)
+mC      = mAt_A_i @ mAt_B
 print("Coefficients (a, b, c, d):", mC)
 
 # Second Method
