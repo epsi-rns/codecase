@@ -1,0 +1,100 @@
+@startuml
+
+!define TABLE_BORDER_THICKNESS 2
+!define MAX_TABLE_WIDTH 200
+!define HEADER_FONT_SIZE 14
+!define DEFAULT_FONT_SIZE 12
+
+!define ROLE_BG_COLOR LightBlue
+!define RESPONSIBILITY_BG_COLOR LightGreen
+!define SEAT_BG_COLOR LightPink
+
+hide empty members
+
+title Team Allstars ERD
+
+skinparam Table {
+    BackgroundColor White
+    BorderThickness TABLE_BORDER_THICKNESS
+    BorderColor Black
+    BackgroundColorHeader Grey
+    BackgroundColorTitle Grey
+    MaxWidth MAX_TABLE_WIDTH
+    HeaderFontSize HEADER_FONT_SIZE
+    DefaultFontSize DEFAULT_FONT_SIZE
+}
+
+entity People {
+    * id : int <<generated>>
+    name : varchar(255)
+    email : varchar(100)
+    age : int
+    gender : varchar(50)
+}
+
+entity Roles {
+    * id : int <<generated>>
+    name : varchar(50)
+}
+
+entity Responsibilities {
+    * id : int <<generated>>
+    name : varchar(50)
+}
+
+entity Seats {
+    * id : int <<generated>>
+    name : varchar(50)
+}
+
+entity PeopleRoles {
+    * person_id : int
+    * role_id : int
+    --
+    * People.id : PeopleRoles.person_id
+    * Roles.id : PeopleRoles.role_id
+}
+
+entity PlayersSeats {
+    * person_id : int
+    * role_id : int
+    * seat_id : int
+    is_bench : boolean = false
+    --
+    * People.id : PlayersSeats.person_id
+    * Roles.id : PlayersSeats.role_id
+    * Seats.id : PlayersSeats.seat_id
+}
+
+entity StaffResps {
+    * person_id : int
+    * role_id : int
+    * resp_id : int
+    --
+    * People.id : StaffResps.person_id
+    * Roles.id : StaffResps.role_id
+    * Responsibilities.id : StaffResps.resp_id
+}
+
+PeopleRoles }|..|| People
+PeopleRoles }|..|| Roles
+PlayersSeats }|..|| PeopleRoles
+StaffResps }|..|| PeopleRoles
+PlayersSeats }--|| Seats : occupies
+PlayersSeats }--|| Roles : has
+StaffResps }--|| Responsibilities : has
+StaffResps }--|| Roles : is
+
+skinparam Roles {
+    BackgroundColor LightBlue
+}
+
+skinparam Responsibilities {
+    BackgroundColor LightGreen
+}
+
+skinparam Seats {
+    BackgroundColor LightPink
+}
+
+@enduml
