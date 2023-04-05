@@ -28,6 +28,7 @@ session = Session()
 keys = People.metadata\
   .tables['People'].columns.keys()
 
+# Running Query
 result = session.query(People).all()
 rows = [
   (p.id, p.name, p.email, p.age, p.gender)

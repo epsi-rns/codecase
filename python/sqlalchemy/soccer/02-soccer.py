@@ -9,8 +9,6 @@ with engine.connect() as conn:
   result = conn.execute(text(stmt))
 
   ra = result.all()
-  print(ra)
-
   for row in ra:
     print(f"id: {row.id}  "\
           f"name: {row.name}  "\
