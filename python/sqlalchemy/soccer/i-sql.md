@@ -27,7 +27,7 @@ sqlite> SELECT * FROM People;
 | 5  | Jian Chen            | jian.chen@example.com            | 15  | Male   |
 | 6  | Yan Liu              | yan.liu@example.com              | 17  | Female |
 | 7  | Vladimir Ivanov      | vladimir.ivanov@example.com      | 15  | Male   |
-| 8  | Ekaterina Kuznetsova | ekaterina.kuznetsova@example.com | 26  | Female |
+| 8  | Ekaterina Petrova    | ekaterina.petrova@example.com    | 26  | Female |
 | 9  | Yusuf Abdullah       | yusuf.abdullah@example.com       | 17  | Male   |
 | 10 | Fatima Al-Khalifa    | fatima.alkhalifa@example.com     | 18  | Female |
 | 11 | Andi Suharto         | andi.suharto@example.com         | 15  | Male   |
@@ -60,7 +60,7 @@ ORDER by age;
 |         name         | age | gender |
 +----------------------+-----+--------+
 | Komal Sharma         | 26  | Female |
-| Ekaterina Kuznetsova | 26  | Female |
+| Ekaterina Petrova    | 26  | Female |
 | Kim Kwan             | 35  | Male   |
 | Wilson Weasley       | 37  | Male   |
 | Smith Sonian         | 40  | Male   |
@@ -119,7 +119,7 @@ sqlite> SELECT
 | Jian Chen            | Players |
 | Yan Liu              | Support |
 | Vladimir Ivanov      | Players |
-| Ekaterina Kuznetsova | Support |
+| Ekaterina Petrova    | Support |
 | Yusuf Abdullah       | Players |
 | Fatima Al-Khalifa    | Support |
 | Andi Suharto         | Players |
@@ -195,7 +195,7 @@ sqlite> SELECT
 | Smith Sonian         | Coach   | Head Coach      |
 | Komal Sharma         | Support | Doctor          |
 | Yan Liu              | Support | Equipment       |
-| Ekaterina Kuznetsova | Support | Bus Driver      |
+| Ekaterina Petrova    | Support | Bus Driver      |
 | Fatima Al-Khalifa    | Support | Cooking Chef    |
 | Alessia Bianchi      | Support | Equipment       |
 | Maria Svensson       | Support | Cooking Chef    |
@@ -383,7 +383,7 @@ ORDER BY People.name;
 | Akira Kato           | 16  | Players | Back            |
 | Alessia Bianchi      | 16  | Support | Equipment       |
 | Andi Suharto         | 15  | Players | Midfielder      |
-| Ekaterina Kuznetsova | 26  | Support | Bus Driver      |
+| Ekaterina Petrova    | 26  | Support | Bus Driver      |
 | Fatima Al-Khalifa    | 18  | Support | Cooking Chef    |
 | Gustav Andersen      | 15  | Players | Defender        |
 | Huda Al-Farsi        | 15  | Players | Goalkeeper      |

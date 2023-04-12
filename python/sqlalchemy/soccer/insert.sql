@@ -8,7 +8,7 @@ VALUES
     (5, 'Jian Chen', 'jian.chen@example.com', 15, 'Male'),
     (6, 'Yan Liu', 'yan.liu@example.com', 17, 'Female'),
     (7, 'Vladimir Ivanov', 'vladimir.ivanov@example.com', 15, 'Male'),
-    (8, 'Ekaterina Kuznetsova', 'ekaterina.kuznetsova@example.com', 26, 'Female'),
+    (8, 'Ekaterina Petrova', 'ekaterina.petrova@example.com', 26, 'Female'),
     (9, 'Yusuf Abdullah', 'yusuf.abdullah@example.com', 17, 'Male'),
     (10, 'Fatima Al-Khalifa', 'fatima.alkhalifa@example.com', 18, 'Female'),
     (11, 'Andi Suharto', 'andi.suharto@example.com', 15, 'Male'),
