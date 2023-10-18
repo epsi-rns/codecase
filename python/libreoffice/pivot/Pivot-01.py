@@ -24,7 +24,6 @@ class DogSample:
       print(f'Prediction  : {pred}')
       print(f'Probability : {prob:.2f}')
 
-
 def main():
   sample = DogSample()
   sample.display()

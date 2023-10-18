@@ -98,7 +98,7 @@ class PivotSample:
 
     self.ensure_occurrences = ensure_occurrences
 
-  def run(self):
+  def process(self):
     self.build_records()
     self.prepare_sheet()
 
@@ -140,5 +140,5 @@ class PivotSample:
 
 def main():
   sample = PivotSample('Example', 'B', 'C')
-  sample.run()
+  sample.process()
 

@@ -24,6 +24,7 @@ class PivotReader:
 
     self.categories = categories
 
+    # initialize dataframe
     self.df_source = pd.DataFrame({
       "Number": [], "Date": [], "Category": [] })
 
@@ -173,7 +174,7 @@ class PivotWriter:
           getCellByPosition(col_pos, row_pos)
         cell.Value = int(row[('Number', cat)])
 
-  def run(self) -> None:
+  def process(self) -> None:
     self.prepare_sheet()
     self.write()
 
@@ -200,4 +201,4 @@ def main() -> None:
 
   writer = PivotWriter(
     'Pivot', pivot_table, categories, 'B2')
-  writer.run()
+  writer.process()

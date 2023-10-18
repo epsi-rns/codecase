@@ -38,6 +38,7 @@ class PivotReader:
 
     self.categories = categories
 
+    # initialize dataframe
     self.df_source = pd.DataFrame({
       "Number": [], "Date": [], "Category": [] })
 
@@ -324,7 +325,7 @@ class PivotWriter:
     self.write_column_total_content()
     self.write_column_total_grand()
 
-  def run(self) -> None:
+  def process(self) -> None:
     self.prepare_sheet()
 
     self.write_column_headers()
@@ -354,4 +355,4 @@ def main() -> None:
 
   writer = PivotWriter(
     'Pivot', pivot_table, categories, 'B2')
-  writer.run()
+  writer.process()

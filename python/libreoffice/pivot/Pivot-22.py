@@ -20,6 +20,7 @@ class PivotSample:
 
     self.categories = categories
 
+    # initialize dataframe
     self.df_source = pd.DataFrame({
       "Number": [], "Date": [], "Category": [] })
 
@@ -93,7 +94,7 @@ class PivotSample:
     self.pivot_table = pd.concat(
       [self.pivot_table, total_row])
 
-  def run(self) -> None:
+  def process(self) -> None:
     self.load_data()
     self.build_pivot()
     self.add_total_column()
@@ -116,5 +117,5 @@ def main() -> None:
     "Orange", "Strawberry"]
 
   sample = PivotSample('Example', columns, categories)
-  sample.run()
+  sample.process()
 

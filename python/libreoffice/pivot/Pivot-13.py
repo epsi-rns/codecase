@@ -202,7 +202,7 @@ class PivotSample:
       self.write_row_a_header(row_index, date)
       self.write_row_content(row_index, row, lookup_cats)
 
-  def run(self):
+  def process(self):
     self.build_records()
     self.prepare_sheet()
 
@@ -211,5 +211,5 @@ class PivotSample:
 
 def main():
   sample = PivotSample('Example', 'B', 'C' ,'B2')
-  sample.run()
+  sample.process()
 

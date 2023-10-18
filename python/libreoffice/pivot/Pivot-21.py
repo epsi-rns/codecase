@@ -17,6 +17,7 @@ class PivotSample:
     for key, value in columns.items():
       setattr(self, f"col_{key}", value)
 
+    # initialize dataframe
     self.df_source = pd.DataFrame({
       "Number": [], "Date": [], "Category": [] })
 
@@ -54,8 +55,7 @@ class PivotSample:
     # Set the "Number" column as the index
     self.df_source.set_index("Number", inplace=True)
 
-
-  def run(self) -> None:
+  def process(self) -> None:
     self.load_data()
 
     # Print the updated DataFrame
@@ -70,4 +70,4 @@ def main() -> None:
   }
 
   sample = PivotSample('Example', columns)
-  sample.run()
+  sample.process()

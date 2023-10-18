@@ -30,7 +30,7 @@ class PivotSample:
     # Format the datetime object as 'dd/mm/yyyy'
     return date_obj.strftime('%d/%m/%Y')
 
-  def run(self):
+  def process(self):
     # range to be proceed
     # omit header and plus one for the last
     max_row = self.get_last_used_row()
@@ -90,7 +90,7 @@ class PivotSample:
 
 def main():
   sample = PivotSample('B', 'C')
-  sample.run()
+  sample.process()
 
 """
   Date : 05/04/2017

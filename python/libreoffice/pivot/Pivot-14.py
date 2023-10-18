@@ -288,7 +288,7 @@ class PivotSample:
     cell.TopBorder = self.lineFormat
     cell.CellBackColor = tealScale[1]
 
-  def run(self):
+  def process(self):
     self.build_records()
     self.prepare_sheet()
 
@@ -300,5 +300,5 @@ class PivotSample:
 
 def main():
   sample = PivotSample('Example', 'B', 'C',  'B2')
-  sample.run()
+  sample.process()
 
