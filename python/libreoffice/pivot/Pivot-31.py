@@ -173,7 +173,8 @@ class TableWriter:
     self.decorate_border()
 
 def main() -> None:
-  source_path = '/home/epsi/Coding/pivot-cats/'
+  source_path = '/home/epsi/.config/libreoffice/' \
+              + '4/user/Scripts/python/Pivot/'
   source_csv  = source_path + 'sample_data.csv'
 
   csv_reader = CSVReader(source_csv)

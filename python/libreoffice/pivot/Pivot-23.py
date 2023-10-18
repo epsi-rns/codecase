@@ -2,6 +2,7 @@ import pandas as pd
 
 from datetime import datetime, timedelta
 from typing import Dict, List
+from pandas import DataFrame
 
 # Debugging purpose, just in case
 from pprint import pprint

@@ -99,10 +99,10 @@ class PivotSample:
     self.add_total_column()
     self.add_total_row()
 
-  def get_dataframe(self) -> None:
+  def get_dataframe(self) -> DataFrame:
     return self.dataframe
 
-  def get_pivot(self) -> None:
+  def get_pivot(self) -> DataFrame:
     return self.pivot_table
 
 class TableWriter:
@@ -284,7 +284,7 @@ class PivotWriter:
     return date_obj.strftime('%d/%m/%Y')
 
   def write_column_headers(self):
-    # Get the list of catssify values
+    # Get the list of category values
     lookup_cats = ['Date'] + self.categories + ['Total']
 
     # Fill the cells horizontally
@@ -431,7 +431,8 @@ class PivotWriter:
     self.write_column_total()
 
 def main() -> None:
-  source_path = '/home/epsi/Coding/pivot-cats/'
+  source_path = '/home/epsi/.config/libreoffice/' \
+              + '4/user/Scripts/python/Pivot/'
   source_csv  = source_path + 'sample_data.csv'
 
   categories = [
