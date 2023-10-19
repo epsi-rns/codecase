@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from pprint import pprint
+from collections import Counter
 
 from com.sun.star.\
   awt.FontWeight import BOLD
@@ -27,6 +28,9 @@ class PivotSample:
 
     self.col_date = col_date
     self.col_cats = col_cats
+
+    # Get the list of catssify values
+    self.lookup_cats = self.get_lookup_cats()
 
   def get_lookup_cats(self):
     return ["Apple", "Banana", "Orange", "Grape",
@@ -123,7 +127,7 @@ class PivotSample:
     }
 
     # Get the list of catss values
-    lookup_cats = self.get_lookup_cats()
+    lookup_cats = self.lookup_cats
 
     # Create a new dictionary with all catss values
     # and their counts (zero if not found)
@@ -136,19 +140,30 @@ class PivotSample:
 
     self.ensure_occurrences = ensure_occurrences
 
+  def get_sum_occurrences(self):
+    # Initialize an empty dictionary to store the sums
+    sum_dict = {}
+
+    for cats_dict in self.ensure_occurrences.values():
+      for key, value in cats_dict.items():
+        sum_dict[key] = sum_dict.get(key, 0) + value
+    
+    return sum_dict
+
   def write_column_headers(self):
     # Get the list of catssify values
-    lookup_cats = ['Date'] + self.get_lookup_cats()
+    column_header = ['Date'] \
+      + self.lookup_cats + ['Total']
 
     # Fill the cells horizontally
-    for col, cats in enumerate(lookup_cats, start=0):
+    for col, header in enumerate(column_header, start=0):
       col_pos = self.addr.Column + col
       col_row = self.addr.Row
 
       cell = self.sheet_dst. \
         getCellByPosition(col_pos, col_row)
+      cell.String = header
 
-      cell.String = cats
       cell.CharWeight = BOLD
       cell.BottomBorder = self.lineFormat
 
@@ -160,6 +175,13 @@ class PivotSample:
       column = self.sheet_dst. \
         getColumns().getByIndex(col_pos)
       column.Width = 3000
+
+    column = self.sheet_dst. \
+      getColumns().getByIndex(0). \
+      Width = 500
+    column = self.sheet_dst. \
+      getColumns().getByIndex(len(column_header) + 1). \
+      Width = 500
 
   def write_row_a_header(self, row_index: int, date: int):
     col_pos = self.addr.Column
@@ -178,11 +200,11 @@ class PivotSample:
     cell.CellBackColor = tealScale[0]
 
   def write_row_content(self,
-      row_index: int, row, lookup_cats):
+      row_index: int, row):
 
     # Fill the each row
     row_pos = self.addr.Row + row_index
-    for col, cats in enumerate(lookup_cats, start=1):
+    for col, cats in enumerate(self.lookup_cats, start=1):
       col_pos = self.addr.Column + col
 
       cell = self.sheet_dst. \
@@ -191,16 +213,80 @@ class PivotSample:
         cell.Value = row[cats]
         cell.HoriJustify = CENTER # or just 2
 
-  def write_rows(self):
-    # Get the list of catssify values
-    lookup_cats = self.get_lookup_cats()
+  def write_row_a_total(self,
+      row_index: int, row):
 
+    col_pos = self.addr.Column \
+            + len(self.lookup_cats) + 1
+    row_pos = self.addr.Row + row_index
+
+    cell = self.sheet_dst. \
+      getCellByPosition(col_pos, row_pos)
+    cell.Value = sum(row.values())
+
+    cell.HoriJustify = CENTER # or just 2
+    cell.LeftBorder = self.lineFormat
+    cell.CellBackColor = tealScale[0]
+
+  def write_rows(self):
     # Fill the rows
     row_index = 0
     for date, row in self.ensure_occurrences.items():
       row_index += 1
       self.write_row_a_header(row_index, date)
-      self.write_row_content(row_index, row, lookup_cats)
+      self.write_row_content(row_index, row)
+      self.write_row_a_total(row_index, row)
+
+  def write_column_total_header(self):
+    col_pos = self.addr.Column
+    row_pos = self.addr.Row \
+            + len(self.ensure_occurrences) + 1
+
+    cell = self.sheet_dst. \
+      getCellByPosition(col_pos, row_pos)
+    cell.String = 'Total'
+
+    cell.CharWeight = BOLD
+    cell.TopBorder = self.lineFormat
+    cell.CellBackColor = tealScale[1]
+
+  def write_column_total_content(self):
+    # Get the sum of catssify values
+    sum_dict = self.get_sum_occurrences()
+
+    row_pos = self.addr.Row \
+            + len(self.ensure_occurrences) + 1
+
+    # Fill the cells horizontally
+    for col, cats in enumerate(self.lookup_cats, start=1):
+      col_pos = self.addr.Column + col
+
+      cell = self.sheet_dst. \
+        getCellByPosition(col_pos, row_pos)
+      cell.Value = sum_dict[cats]
+
+      cell.CharWeight = BOLD
+      cell.HoriJustify = CENTER # or just 2
+      cell.TopBorder = self.lineFormat
+      cell.CellBackColor = tealScale[0]
+
+  def write_column_total_grand(self):
+    col_pos = self.addr.Column \
+            + len(self.lookup_cats) + 1
+    row_pos = self.addr.Row \
+            + len(self.ensure_occurrences) + 1
+
+    # Get the sum of catssify values
+    sum_dict = self.get_sum_occurrences()
+
+    cell = self.sheet_dst. \
+      getCellByPosition(col_pos, row_pos)
+    cell.Value = sum(sum_dict.values())
+
+    cell.CharWeight = BOLD
+    cell.HoriJustify = CENTER # or just 2
+    cell.TopBorder = self.lineFormat
+    cell.CellBackColor = tealScale[1]
 
   def process(self):
     self.build_records()
@@ -208,8 +294,11 @@ class PivotSample:
 
     self.write_column_headers()
     self.write_rows()
+    self.write_column_total_header()
+    self.write_column_total_content()
+    self.write_column_total_grand()
 
 def main():
-  sample = PivotSample('Example', 'B', 'C' ,'B2')
+  sample = PivotSample('Example', 'B', 'C',  'B2')
   sample.process()
 
