@@ -43,16 +43,15 @@ class PivotSample:
           for row in self.all_values
       }
 
-      pprint(self.all_dates)
+      # pprint(self.all_dates)
 
       # Count occurrences by break into an array
       self.occurrences = {
-        date: {cat: value.count(cat) for cat in set(value)}
+        date: {cat: row.count(cat) for cat in set(row)}
         for date, row in self.all_dates.items()
-        for value in [row]
       }
 
-      pprint(self.occurrences)
+      # pprint(self.occurrences)
 
       # Create a new dictionary with all class values
       # and their counts (zero if not found)

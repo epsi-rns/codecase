@@ -45,9 +45,8 @@ class PivotSample:
 
       # Count occurrences by break into an array
       self.occurrences = {
-        date: {cat: value.count(cat) for cat in set(value)}
+        date: {cat: row.count(cat) for cat in set(row)}
         for date, row in self.all_dates.items()
-        for value in [row]
       }
 
       # Create a new dictionary with all class values
