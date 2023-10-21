@@ -31,38 +31,6 @@ class PivotSample:
     except Exception as e:
       print(f"An error occurred: {e}")
 
-  def build_pivot(self) -> None:
-    # Perform pivot operations
-    try:
-      # Grouping using list comprehension
-      # keep the dictionary for further use
-      self.all_dates = {
-        row[1]: [item[2]
-        for item in self.all_values
-        if item[1] == row[1]]
-          for row in self.all_values
-      }
-
-      # Count occurrences by break into an array
-      self.occurrences = {
-        date: {cat: value.count(cat) for cat in set(value)}
-        for date, row in self.all_dates.items()
-        for value in [row]
-      }
-
-      # Create a new dictionary with all class values
-      # and their counts (zero if not found)
-      self.ensure_occurrences = {
-        date: {
-          cat: pairs.get(cat, 0)
-          for cat in self.categories
-        }
-        for date, pairs in self.occurrences.items()}
-
-    except Exception as e:
-      print("An error occurred " \
-        + f"while processing data: {e}")
-
   def display(self) -> None:
     if self.header is None:
       print("No data to display.")
@@ -79,7 +47,6 @@ class PivotSample:
   def process(self):
     self.header = None
     self.load_data()
-    self.build_pivot()
 
 def main() -> None:
   source_csv = 'sample-data.csv'

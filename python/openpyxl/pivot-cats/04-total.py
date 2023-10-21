@@ -43,16 +43,12 @@ class PivotSample:
           for row in self.all_values
       }
 
-      pprint(self.all_dates)
-
       # Count occurrences by break into an array
       self.occurrences = {
         date: {cat: value.count(cat) for cat in set(value)}
         for date, row in self.all_dates.items()
         for value in [row]
       }
-
-      pprint(self.occurrences)
 
       # Create a new dictionary with all class values
       # and their counts (zero if not found)
@@ -63,11 +59,38 @@ class PivotSample:
         }
         for date, pairs in self.occurrences.items()}
 
-      pprint(self.ensure_occurrences)
-
     except Exception as e:
       print("An error occurred " \
         + f"while processing data: {e}")
+
+  def display_basic(self) -> None:
+    # Display the header
+    # ['Number', 'Date', 'Fruit']
+    print(self.header)
+
+    # Display the data
+    # ['1', '19/02/2017', 'Orange']
+    for row in self.all_values:
+      print(row)
+
+    print()
+
+  def display_process(self) -> None:
+      # '19/02/2017': ['Orange', 'Grape', 'Strawberry', 'Orange',
+      #   'Apple', 'Banana', 'Strawberry', 'Banana', 'Strawberry']
+      print(self.all_dates)
+      print()
+
+      # '19/02/2017': {'Mango': 2, 'Banana': 3, 'Apple': 1,
+      #   'Strawberry': 4, 'Grape': 2, 'Orange': 3}
+      print(self.occurrences)
+      print()
+
+      # {'19/02/2017': {'Apple': 1, 'Banana': 3, 'Dragon Fruit': 0,
+      #   'Durian': 0, 'Grape': 2, 'Mango': 2,
+      #  'Orange': 3, 'Strawberry': 4}
+      print(self.ensure_occurrences)
+      print()
 
   def display_pivot_header(self) -> None:
     # Create a header row
@@ -87,10 +110,40 @@ class PivotSample:
       for cat, count in pairs.items():
         line_row += f"\t{count}"
 
+      # Calculate the total for each column
+      total = sum(pairs.values())
+      line_row += f"\t{total}"
+
       print(line_row)
 
+  def display_pivot_total(self) -> None:
+    # Create a total row: sum of the column
+    line_total = "Grand Total"
+    total = {}
+
+    for cat in self.categories:
+      total[cat] = 0
+
+      for date, pairs in \
+          self.ensure_occurrences.items():
+        total[cat] += pairs[cat]
+
+      line_total += f"\t{total[cat]}"
+
+    line_total += f"\t{sum(total.values())}"
+    print(line_total)
+
+
   def display(self) -> None:
-    pass
+    if self.header is None:
+      print("No data to display.")
+    else:
+      # self.display_basic()
+      # self.display_process()
+
+      self.display_pivot_header()
+      self.display_pivot_rows()
+      self.display_pivot_total()
 
   def process(self):
     self.header = None
