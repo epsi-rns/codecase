@@ -116,6 +116,6 @@ def main() -> None:
     "Durian", "Grape", "Mango",
     "Orange", "Strawberry"]
 
-  sample = PivotSample('Example', columns, categories)
+  sample = PivotSample('Table', columns, categories)
   sample.process()
 

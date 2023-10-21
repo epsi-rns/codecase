@@ -299,6 +299,6 @@ class PivotSample:
     self.write_column_total_grand()
 
 def main():
-  sample = PivotSample('Example', 'B', 'C',  'B2')
+  sample = PivotSample('Table', 'B', 'C',  'B2')
   sample.process()
 

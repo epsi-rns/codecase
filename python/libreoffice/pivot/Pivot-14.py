@@ -210,6 +210,6 @@ class PivotSample:
     self.write_rows()
 
 def main():
-  sample = PivotSample('Example', 'B', 'C' ,'B2')
+  sample = PivotSample('Table', 'B', 'C' ,'B2')
   sample.process()
 

@@ -345,7 +345,7 @@ def main() -> None:
     "Orange", "Strawberry"]
 
   reader = PivotReader(
-    'Example', columns, categories)
+    'Table', columns, categories)
   pivot_table = reader.get_pivot()
 
   # Print the newly created pivot table

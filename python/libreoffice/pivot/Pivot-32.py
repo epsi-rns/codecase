@@ -433,7 +433,7 @@ class PivotWriter:
 def main() -> None:
   source_path = '/home/epsi/.config/libreoffice/' \
               + '4/user/Scripts/python/Pivot/'
-  source_csv  = source_path + 'sample_data.csv'
+  source_csv  = source_path + 'sample-data.csv'
 
   categories = [
     "Apple", "Banana", "Dragon Fruit",
@@ -445,7 +445,7 @@ def main() -> None:
   dataframe   = pivot_sample.get_dataframe()
   pivot_table = pivot_sample.get_pivot()
 
-  table_writer = TableWriter(dataframe, 'Example')
+  table_writer = TableWriter(dataframe, 'Table')
   table_writer.process()
 
   # Print the newly created pivot table on console 

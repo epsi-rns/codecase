@@ -82,7 +82,7 @@ class PivotSample:
     self.build_pivot()
 
 def main() -> None:
-  source_csv = 'sample_data.csv'
+  source_csv = 'sample-data.csv'
   categories = [
     "Apple", "Banana", "Dragon Fruit",
     "Durian", "Grape", "Mango",

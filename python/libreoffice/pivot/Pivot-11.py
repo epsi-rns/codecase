@@ -1,7 +1,7 @@
 class PivotSample:
   def __init__(self) -> None:
     document = XSCRIPTCONTEXT.getDocument()
-    self.sheet_src = document.Sheets["Example"]
+    self.sheet_src = document.Sheets['Table']
 
   def get_last_used_row(self):
     cursor = self.sheet_src.createCursor()

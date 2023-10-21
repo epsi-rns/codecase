@@ -139,6 +139,6 @@ class PivotSample:
         cell.Value = row[cats]
 
 def main():
-  sample = PivotSample('Example', 'B', 'C')
+  sample = PivotSample('Table', 'B', 'C')
   sample.process()
 

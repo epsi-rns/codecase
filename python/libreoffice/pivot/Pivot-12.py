@@ -4,7 +4,7 @@ from pprint import pprint
 class PivotSample:
   def __init__(self, col_date: str, col_cats: str) -> None:
     document = XSCRIPTCONTEXT.getDocument()
-    self.sheet_src = document.Sheets["Example"]
+    self.sheet_src = document.Sheets['Table']
 
     self.col_date = col_date
     self.col_cats = col_cats

@@ -5,7 +5,7 @@ from lib.TableSample12 import TableSample
 from lib.PivotSample12 import PivotSample
 
 def main() -> None:
-  source_csv = 'sample_data.csv'
+  source_csv = 'sample-data.csv'
 
   table_sample = TableSample(source_csv)
   table_sample.process()

@@ -16,7 +16,7 @@ def main() -> None:
   }
 
   wb = load_workbook(file_source)
-  ws = wb['Example']
+  ws = wb['Table']
 
   table_reader = TableReader(ws, columns)
   table_reader.process()

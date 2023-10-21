@@ -10,7 +10,7 @@ from lib.TableWriter import TableWriter
 from lib.PivotWriter import PivotWriter
 
 def main() -> None:
-  file_source = 'sample_data.csv'
+  file_source = 'sample-data.csv'
   file_target = 'Example.xlsx'
 
   categories = [
@@ -30,7 +30,7 @@ def main() -> None:
 
   wb = Workbook()
   ws = wb.active
-  ws.title = 'Example'
+  ws.title = 'Table'
 
   table_writer = TableWriter(df_table, ws)
   table_writer.process()

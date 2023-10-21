@@ -175,11 +175,11 @@ class TableWriter:
 def main() -> None:
   source_path = '/home/epsi/.config/libreoffice/' \
               + '4/user/Scripts/python/Pivot/'
-  source_csv  = source_path + 'sample_data.csv'
+  source_csv  = source_path + 'sample-data.csv'
 
   csv_reader = CSVReader(source_csv)
   csv_reader.process()
   dataframe = csv_reader.dataframe
 
-  table_writer = TableWriter(dataframe, 'Example')
+  table_writer = TableWriter(dataframe, 'Table')
   table_writer.process()

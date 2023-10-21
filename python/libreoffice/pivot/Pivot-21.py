@@ -69,5 +69,5 @@ def main() -> None:
     'cat'   : 'C'
   }
 
-  sample = PivotSample('Example', columns)
+  sample = PivotSample('Table', columns)
   sample.process()

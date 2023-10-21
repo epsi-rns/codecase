@@ -8,7 +8,7 @@ from lib.TableSample   import TableSample
 from lib.TableWriter14 import TableWriter
 
 def main() -> None:
-  file_source = 'sample_data.csv'
+  file_source = 'sample-data.csv'
   file_target = 'Example.xlsx'
 
   table_sample = TableSample(file_source)
@@ -18,7 +18,7 @@ def main() -> None:
 
   wb = Workbook()
   ws = wb.active
-  ws.title = 'Example'
+  ws.title = 'Table'
 
   table_writer = TableWriter(df_table, ws)
   table_writer.process()
