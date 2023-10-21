@@ -69,26 +69,6 @@ class PivotSample:
       print("An error occurred " \
         + f"while processing data: {e}")
 
-  def display_pivot_header(self) -> None:
-    # Create a header row
-    line_title = "Date/Fruit"
-    for cat in self.categories:
-       line_title += f"\t{cat}"
-
-    line_title += f"\tSub Total"
-    print(line_title)
-
-  def display_pivot_rows(self) -> None:
-    # Create rows for each category
-    for date, pairs in \
-        self.ensure_occurrences.items():
-      line_row = f"{date}"
-
-      for cat, count in pairs.items():
-        line_row += f"\t{count}"
-
-      print(line_row)
-
   def display(self) -> None:
     pass
 
