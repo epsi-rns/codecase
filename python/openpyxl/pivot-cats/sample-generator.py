@@ -1,6 +1,6 @@
-import csv
-import random
+import csv, random
 from datetime import datetime, timedelta
+from pprint import pprint
 
 # Define the date range for one and a half months
 start_date = datetime(2017, 2, 19)
