@@ -41,7 +41,7 @@ class PivotSample:
   def add_total_column(self):
     # Calculate the row sums and add a total column
     row_sums = self.df_pivot.sum(axis=1)
-    self.df_pivot[('Total', 'Total')] = row_sums
+    self.df_pivot[('Category', 'Total')] = row_sums
 
   def add_total_row(self):
     # Calculate the sum for each column
@@ -74,3 +74,4 @@ class PivotSample:
     # Display the pivot table
     print("Pivot Table:")
     print(self.df_pivot)
+
