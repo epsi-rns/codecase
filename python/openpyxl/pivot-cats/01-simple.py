@@ -34,12 +34,10 @@ class PivotSample:
       print(f"An error occurred: {e}")
 
 def main() -> None:
-  source_csv = 'sample-data.csv'
+  source_csv = 'sample_data.csv'
 
   pv = PivotSample(source_csv)
   pv.run()
 
 if __name__ == "__main__":
   main()
-
-

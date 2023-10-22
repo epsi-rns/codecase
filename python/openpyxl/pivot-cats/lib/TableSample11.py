@@ -16,3 +16,4 @@ class TableSample:
     # Display the data
     print("Data:")
     print(self.df_table)
+

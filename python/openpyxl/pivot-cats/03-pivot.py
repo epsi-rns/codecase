@@ -32,41 +32,35 @@ class PivotSample:
       print(f"An error occurred: {e}")
 
   def build_pivot(self) -> None:
-    # Perform pivot operations
-    try:
-      # Grouping using list comprehension
-      # keep the dictionary for further use
-      self.all_dates = {
-        row[1]: [item[2]
-        for item in self.all_values
-        if item[1] == row[1]]
-          for row in self.all_values
+    # Grouping using list comprehension
+    # keep the dictionary for further use
+    self.all_dates = {
+      row[1]: [item[2]
+      for item in self.all_values
+      if item[1] == row[1]]
+        for row in self.all_values
+    }
+
+    # pprint(self.all_dates)
+
+    # Count occurrences by break into an array
+    self.occurrences = {
+      date: {cat: row.count(cat) for cat in set(row)}
+      for date, row in self.all_dates.items()
+    }
+
+    # pprint(self.occurrences)
+
+    # Create a new dictionary with all class values
+    # and their counts (zero if not found)
+    self.ensure_occurrences = {
+      date: {
+        cat: pairs.get(cat, 0)
+        for cat in self.categories
       }
+      for date, pairs in self.occurrences.items()}
 
-      # pprint(self.all_dates)
-
-      # Count occurrences by break into an array
-      self.occurrences = {
-        date: {cat: row.count(cat) for cat in set(row)}
-        for date, row in self.all_dates.items()
-      }
-
-      # pprint(self.occurrences)
-
-      # Create a new dictionary with all class values
-      # and their counts (zero if not found)
-      self.ensure_occurrences = {
-        date: {
-          cat: pairs.get(cat, 0)
-          for cat in self.categories
-        }
-        for date, pairs in self.occurrences.items()}
-
-      pprint(self.ensure_occurrences)
-
-    except Exception as e:
-      print("An error occurred " \
-        + f"while processing data: {e}")
+    pprint(self.ensure_occurrences)
 
   def display(self) -> None:
     pass

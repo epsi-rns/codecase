@@ -13,7 +13,7 @@ class TableSample:
 
     except FileNotFoundError:
       print("Error: The file "\
-        + f"'{self.filename}' was not found.")
+         + f"'{self.filename}' was not found.")
     except Exception as e:
       print("An error occurred "
          + f"while loading data: {e}")
@@ -31,3 +31,4 @@ class TableSample:
     # Display the data
     print("Data:")
     print(self.df_table)
+
