@@ -45,7 +45,7 @@ class PivotWriter(BaseWriter):
     self.row1 = int(row_number)
 
   def write_column_headers(self) -> None:
-    # Get the list of catssify values
+    # Get the list of header values
     lookup_cats = ['Date'] + self.categories + ['Total']
 
     # column width shortcut
@@ -129,7 +129,7 @@ class PivotWriter(BaseWriter):
     col_pos = self.col1 + len_col + 1
 
     cell = self.sheet.cell(row_pos, col_pos)
-    cell.value     = int(row['Category'])
+    cell.value     = int(row['Total Date'])
 
     cell.alignment = self.centerText
     cell.border    = self.left_border
@@ -172,7 +172,7 @@ class PivotWriter(BaseWriter):
     row_pos = self.row1 + len_row + 1
 
     cell = self.sheet.cell(row_pos, col_pos)
-    cell.value = int(self.total_row['Category'])
+    cell.value = int(self.total_row['Total Date'])
 
     cell.font      = self.headerFont
     cell.alignment = self.centerText
