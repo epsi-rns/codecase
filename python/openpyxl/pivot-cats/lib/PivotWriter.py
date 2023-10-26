@@ -129,7 +129,7 @@ class PivotWriter(BaseWriter):
     col_pos = self.col1 + len_col + 1
 
     cell = self.sheet.cell(row_pos, col_pos)
-    cell.value     = int(row['Total'])
+    cell.value     = int(row['Category'])
 
     cell.alignment = self.centerText
     cell.border    = self.left_border
@@ -172,7 +172,7 @@ class PivotWriter(BaseWriter):
     row_pos = self.row1 + len_row + 1
 
     cell = self.sheet.cell(row_pos, col_pos)
-    cell.value = int(self.total_row['Total'])
+    cell.value = int(self.total_row['Category'])
 
     cell.font      = self.headerFont
     cell.alignment = self.centerText
@@ -199,3 +199,4 @@ class PivotWriter(BaseWriter):
     self.write_column_headers()
     self.write_rows()
     self.write_column_total()
+
