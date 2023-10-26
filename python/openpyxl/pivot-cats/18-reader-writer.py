@@ -4,9 +4,9 @@
 from openpyxl import Workbook, load_workbook
 
 # Local Library
-from lib.TableReader import TableReader
+from lib.TableReader   import TableReader
 from lib.PivotSampleTS import PivotSampleTS
-from lib.PivotWriter import PivotWriter
+from lib.PivotWriter   import PivotWriter
 
 def main() -> None:
   file_source = 'Example2.xlsx'
