@@ -73,9 +73,6 @@ class PivotReader:
       self.df_source = pd.concat(
         [self.df_source, new_row], ignore_index=True)
 
-    # Set the "Number" column as the index
-    self.df_source.set_index("Date", inplace=True)
-
   def build_pivot(self) -> None:
     try:
       # Perform pivot operations
@@ -98,7 +95,7 @@ class PivotReader:
   def add_total_column(self):
     # Calculate the row sums and add a total column
     row_sums = self.pivot_table.sum(axis=1)
-    self.pivot_table[('Total', 'Total')] = row_sums
+    self.pivot_table[('Total Date', 'Total')] = row_sums
 
   def add_total_row(self):
     # Calculate the sum for each column
@@ -175,6 +172,11 @@ class PivotWriter:
     lineFormat.LineWidth = 20
     lineFormat.Color = tealScale[9]
     self.lineFormat = lineFormat
+
+    # sheet wide
+    controller.ShowGrid = False
+    controller.freezeAtPosition(
+      self.addr.Column + 1, self.addr.Row + 1)
 
   def get_formatted_date(self, excel_date) -> None:
     # Convert the number to a datetime object
@@ -260,7 +262,7 @@ class PivotWriter:
 
     cell = self.sheet_dst. \
       getCellByPosition(col_pos, row_pos)
-    cell.Value = int(row['Total'])
+    cell.Value = int(row['Total Date'])
 
     cell.HoriJustify = CENTER # or just 2
     cell.LeftBorder = self.lineFormat
@@ -304,7 +306,7 @@ class PivotWriter:
 
     cell = self.sheet_dst. \
       getCellByPosition(col_pos, row_pos)
-    cell.Value = int(self.total_row['Total'])
+    cell.Value = int(self.total_row['Total Date'])
 
     cell.CharWeight = BOLD
     cell.HoriJustify = CENTER # or just 2

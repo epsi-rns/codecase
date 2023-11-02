@@ -9,7 +9,7 @@ class PivotSample:
       columns: Dict[str, str],
       categories: List[str]) -> None:
 
-    # Getting tthe source sheet
+    # Getting the source sheet
     document = XSCRIPTCONTEXT.getDocument()
     self.sheet_src = document.Sheets[sheetSourceName]
 
@@ -23,10 +23,6 @@ class PivotSample:
     # initialize dataframe
     self.df_source = pd.DataFrame({
       "Number": [], "Date": [], "Category": [] })
-
-  def get_lookup_cats(self) -> None:
-    return ["Apple", "Banana", "Orange", "Grape",
-      "Strawberry", "Durian", "Mango", "Dragon Fruit"]
 
   def get_last_used_row(self) -> None:
     cursor = self.sheet_src.createCursor()
@@ -59,9 +55,6 @@ class PivotSample:
       self.df_source = pd.concat(
         [self.df_source, new_row], ignore_index=True)
 
-    # Set the "Number" column as the index
-    self.df_source.set_index("Date", inplace=True)
-
   def build_pivot(self) -> None:
     try:
       # Perform pivot operations
@@ -84,7 +77,7 @@ class PivotSample:
   def add_total_column(self):
     # Calculate the row sums and add a total column
     row_sums = self.pivot_table.sum(axis=1)
-    self.pivot_table[('Total', 'Total')] = row_sums
+    self.pivot_table[('Total Date', 'Total')] = row_sums
 
   def add_total_row(self):
     # Calculate the sum for each column
@@ -115,6 +108,8 @@ def main() -> None:
     "Apple", "Banana", "Dragon Fruit",
     "Durian", "Grape", "Mango",
     "Orange", "Strawberry"]
+
+  pd.set_option('display.max_rows', 10)
 
   sample = PivotSample('Table', columns, categories)
   sample.process()

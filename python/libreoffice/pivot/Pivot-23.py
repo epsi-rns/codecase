@@ -13,7 +13,7 @@ class PivotReader:
       columns: Dict[str, str],
       categories: List[str]) -> None:
 
-    # Getting tthe source sheet
+    # Getting the source sheet
     document = XSCRIPTCONTEXT.getDocument()
     self.sheet_src = document.Sheets[sheetSourceName]
 
@@ -59,9 +59,6 @@ class PivotReader:
       self.df_source = pd.concat(
         [self.df_source, new_row], ignore_index=True)
 
-    # Set the "Number" column as the index
-    self.df_source.set_index("Date", inplace=True)
-
   def build_pivot(self) -> None:
     try:
       # Perform pivot operations
@@ -84,7 +81,7 @@ class PivotReader:
   def add_total_column(self):
     # Calculate the row sums and add a total column
     row_sums = self.pivot_table.sum(axis=1)
-    self.pivot_table[('Total', 'Total')] = row_sums
+    self.pivot_table[('Total Date', 'Total')] = row_sums
 
   def add_total_row(self):
     # Calculate the sum for each column
@@ -190,6 +187,8 @@ def main() -> None:
     "Durian", "Grape", "Mango",
     "Orange", "Strawberry"]
 
+  pd.set_option('display.max_rows', 10)
+
   reader = PivotReader(
     'Table', columns, categories)
   pivot_table = reader.get_pivot()
@@ -202,3 +201,4 @@ def main() -> None:
   writer = PivotWriter(
     'Pivot', pivot_table, categories, 'B2')
   writer.process()
+

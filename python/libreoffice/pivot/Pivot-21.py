@@ -52,9 +52,6 @@ class PivotSample:
       self.df_source = pd.concat(
         [self.df_source, new_row], ignore_index=True)
 
-    # Set the "Number" column as the index
-    self.df_source.set_index("Number", inplace=True)
-
   def process(self) -> None:
     self.load_data()
 
@@ -71,3 +68,4 @@ def main() -> None:
 
   sample = PivotSample('Table', columns)
   sample.process()
+

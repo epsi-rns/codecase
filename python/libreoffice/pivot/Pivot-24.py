@@ -73,9 +73,6 @@ class PivotReader:
       self.df_source = pd.concat(
         [self.df_source, new_row], ignore_index=True)
 
-    # Set the "Number" column as the index
-    self.df_source.set_index("Date", inplace=True)
-
   def build_pivot(self) -> None:
     try:
       # Perform pivot operations
@@ -98,7 +95,7 @@ class PivotReader:
   def add_total_column(self):
     # Calculate the row sums and add a total column
     row_sums = self.pivot_table.sum(axis=1)
-    self.pivot_table[('Total', 'Total')] = row_sums
+    self.pivot_table[('Total Date', 'Total')] = row_sums
 
   def add_total_row(self):
     # Calculate the sum for each column
@@ -282,3 +279,4 @@ def main() -> None:
   writer = PivotWriter(
     'Pivot', pivot_table, categories, 'B2')
   writer.process()
+
