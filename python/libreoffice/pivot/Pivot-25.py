@@ -269,6 +269,7 @@ class PivotWriter:
     cell.CellBackColor = tealScale[0]
 
   def write_column_total_header(self):
+    # calculate position, respect start cell
     col_pos = self.addr.Column
     row_pos = self.addr.Row \
             + len(self.pivot_table) + 1
@@ -282,6 +283,7 @@ class PivotWriter:
     cell.CellBackColor = tealScale[1]
 
   def write_column_total_content(self):
+    # calculate position, respect start cell
     row_pos = self.addr.Row \
             + len(self.pivot_table) + 1
 
@@ -299,6 +301,7 @@ class PivotWriter:
       cell.CellBackColor = tealScale[0]
 
   def write_column_total_grand(self):
+    # calculate position, respect start cell
     col_pos = self.addr.Column \
             + len(self.categories) + 1
     row_pos = self.addr.Row \
