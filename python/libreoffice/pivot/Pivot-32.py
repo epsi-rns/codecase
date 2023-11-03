@@ -83,7 +83,7 @@ class PivotSample:
   def add_total_column(self):
     # Calculate the row sums and add a total column
     row_sums = self.pivot_table.sum(axis=1)
-    self.pivot_table[('Total', 'Total')] = row_sums
+    self.pivot_table[('Total Date', 'Total')] = row_sums
 
   def add_total_row(self):
     # Calculate the sum for each column
@@ -274,6 +274,11 @@ class PivotWriter:
     lineFormat.Color = tealScale[9]
     self.lineFormat = lineFormat
 
+    # sheet wide
+    controller.ShowGrid = False
+    controller.freezeAtPosition(
+      self.addr.Column + 1, self.addr.Row + 1)
+
   def get_formatted_date(self, excel_date) -> None:
     # Convert the number to a datetime object
     # Excel's epoch is two days off from the standard epoch
@@ -284,7 +289,7 @@ class PivotWriter:
     return date_obj.strftime('%d/%m/%Y')
 
   def write_column_headers(self):
-    # Get the list of category values
+    # Get the list of catssify values
     lookup_cats = ['Date'] + self.categories + ['Total']
 
     # Fill the cells horizontally
@@ -358,13 +363,14 @@ class PivotWriter:
 
     cell = self.sheet_dst. \
       getCellByPosition(col_pos, row_pos)
-    cell.Value = int(row['Total'])
+    cell.Value = int(row['Total Date'])
 
     cell.HoriJustify = CENTER # or just 2
     cell.LeftBorder = self.lineFormat
     cell.CellBackColor = tealScale[0]
 
   def write_column_total_header(self):
+    # calculate position, respect start cell
     col_pos = self.addr.Column
     row_pos = self.addr.Row \
             + len(self.pivot_table) + 1
@@ -378,6 +384,7 @@ class PivotWriter:
     cell.CellBackColor = tealScale[1]
 
   def write_column_total_content(self):
+    # calculate position, respect start cell
     row_pos = self.addr.Row \
             + len(self.pivot_table) + 1
 
@@ -395,6 +402,7 @@ class PivotWriter:
       cell.CellBackColor = tealScale[0]
 
   def write_column_total_grand(self):
+    # calculate position, respect start cell
     col_pos = self.addr.Column \
             + len(self.categories) + 1
     row_pos = self.addr.Row \
@@ -402,7 +410,7 @@ class PivotWriter:
 
     cell = self.sheet_dst. \
       getCellByPosition(col_pos, row_pos)
-    cell.Value = int(self.total_row['Total'])
+    cell.Value = int(self.total_row['Total Date'])
 
     cell.CharWeight = BOLD
     cell.HoriJustify = CENTER # or just 2
@@ -423,7 +431,7 @@ class PivotWriter:
     self.write_column_total_content()
     self.write_column_total_grand()
 
-  def run(self) -> None:
+  def process(self) -> None:
     self.prepare_sheet()
 
     self.write_column_headers()
@@ -454,4 +462,5 @@ def main() -> None:
 
   writer = PivotWriter(
     'Pivot', pivot_table, categories, 'B2')
-  writer.run()
+  writer.process()
+
