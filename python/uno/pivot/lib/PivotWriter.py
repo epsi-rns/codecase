@@ -57,6 +57,7 @@ class PivotWriter:
       sheets.insertNewByName(self.sheetName, 1)
     self.sheet = sheets[self.sheetName]
 
+    # activate sheet
     model      = self.desktop.getCurrentComponent()
     controller = model.getCurrentController()
     controller.setActiveSheet(self.sheet)
