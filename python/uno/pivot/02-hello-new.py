@@ -1,5 +1,6 @@
 # Local Library
-from lib.helper import create_calc_instance
+from lib.helper import (
+  get_desktop, create_calc_instance, get_file_path)
 
 def write_to_cell(
       document: 'com.sun.star.frame.XModel',
@@ -11,7 +12,9 @@ def write_to_cell(
     cell.setString(text)
 
 def main() -> None:
-    document = create_calc_instance()
+    # Getting the source sheet
+    desktop   = get_desktop()
+    document  = create_calc_instance(desktop)
 
     if document:
       write_to_cell(document, 'Hello World')
@@ -19,3 +22,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

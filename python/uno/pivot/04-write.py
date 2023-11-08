@@ -1,6 +1,6 @@
 # Local Library
 from lib.helper import (
-  create_calc_instance, get_file_path)
+  get_desktop, create_calc_instance, get_file_path)
 
 class CellWriter:
   def __init__(self,
@@ -10,7 +10,8 @@ class CellWriter:
     self.url = f"file://{file_path}"
 
     # Getting the source sheet
-    self.document = create_calc_instance()
+    desktop = get_desktop()
+    self.document = create_calc_instance(desktop)
 
     if self.document:
       # Assuming the first sheet
@@ -42,3 +43,4 @@ def main() -> int:
 
 if __name__ == "__main__":
   raise SystemExit(main())
+

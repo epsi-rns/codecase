@@ -1,6 +1,6 @@
 # Local Library
 from lib.helper import (
-  open_document, get_file_path)
+  get_desktop, open_document, get_file_path)
 
 class CellReader:
   def __init__(self,
@@ -10,7 +10,8 @@ class CellReader:
     self.url = f"{file_path}"
 
     # Getting the source sheet
-    self.document = open_document(self.url)
+    desktop = get_desktop()
+    self.document = open_document(desktop, self.url)
 
     if self.document:
       # Assuming the first sheet
@@ -35,3 +36,4 @@ def main() -> int:
 
 if __name__ == "__main__":
   raise SystemExit(main())
+

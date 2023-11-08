@@ -1,7 +1,8 @@
 import os
 
 # Local Library
-from lib.helper import open_document
+from lib.helper import (
+  get_desktop, open_document, get_file_path)
 
 def write_to_cell(
       document: 'com.sun.star.frame.XModel',
@@ -18,12 +19,16 @@ def main() -> None:
     # Now you can use file_path to open your test.ods file
     script_directory = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(script_directory, "test.ods")
-    document = open_document(file_path)
+
+    # Getting the source sheet
+    desktop   = get_desktop()
+    document  = open_document(desktop, file_path)
 
     if document:
-      write_to_cell(document)
+      write_to_cell(document, 'Hello World')
       print("Hello World written to cell A1"
           + " in the specified document.")
 
 if __name__ == "__main__":
     main()
+

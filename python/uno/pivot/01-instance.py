@@ -34,5 +34,6 @@ def create_calc_instance(
     return document
 
 if __name__ == "__main__":
-    desktop   = get_desktop()
+    desktop  = get_desktop()
     document = create_calc_instance(desktop)
+
