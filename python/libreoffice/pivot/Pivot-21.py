@@ -8,7 +8,7 @@ class PivotSample:
       sheetSourceName: str,
       columns: Dict[str, str]) -> None:
 
-    # Getting tthe source sheet
+    # Getting the source sheet
     document = XSCRIPTCONTEXT.getDocument()
     self.sheet_src = document.Sheets[sheetSourceName]
 

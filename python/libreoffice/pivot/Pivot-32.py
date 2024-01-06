@@ -123,23 +123,21 @@ class TableWriter:
     return nf
 
   def prepare_sheet(self):
-    document   = XSCRIPTCONTEXT.getDocument()
-    sheets_dst = document.Sheets
+    document = XSCRIPTCONTEXT.getDocument()
+    sheets   = document.Sheets
 
     sheetName = self.sheetPlainName
-    if not sheets_dst.hasByName(sheetName):
-      sheets_dst.insertNewByName(sheetName, 1)
-    self.sheet_dst = sheets_dst[sheetName]
+    if not sheets.hasByName(sheetName):
+      sheets.insertNewByName(sheetName, 1)
+    self.sheet_dst = sheets[sheetName]
 
     # activate sheet
-    desktop    = XSCRIPTCONTEXT.getDesktop()
-    model      = desktop.getCurrentComponent()
-    controller = model.getCurrentController()
-    controller.setActiveSheet(self.sheet_dst)
+    spreadsheetView = document.getCurrentController()
+    spreadsheetView.setActiveSheet(self.sheet_dst)
 
     # number and date format
-    self.numberfmt = model.NumberFormats
-    self.locale    = model.CharLocale
+    self.numberfmt = document.NumberFormats
+    self.locale    = document.CharLocale
 
     date_format = 'DD-MMM-YY;@'
     self.dateFormat = \
@@ -153,8 +151,8 @@ class TableWriter:
     self.lineFormat = lineFormat
 
     # sheet wide
-    controller.ShowGrid = False
-    controller.freezeAtPosition(1,1)
+    spreadsheetView.ShowGrid = False
+    spreadsheetView.freezeAtPosition(1,1)
 
   def write_column_headers(self) -> None:
     cell = self.sheet_dst['A1']
@@ -242,26 +240,24 @@ class PivotWriter:
     return nf
 
   def prepare_sheet(self):
-    document   = XSCRIPTCONTEXT.getDocument()
-    sheets_dst = document.Sheets
+    document = XSCRIPTCONTEXT.getDocument()
+    sheets   = document.Sheets
 
     sheetName = self.sheetDestName
-    if not sheets_dst.hasByName(sheetName):
-      sheets_dst.insertNewByName(sheetName, 1)
-    self.sheet_dst = sheets_dst[sheetName]
+    if not sheets.hasByName(sheetName):
+      sheets.insertNewByName(sheetName, 1)
+    self.sheet_dst = sheets[sheetName]
 
-    # activate sheet
-    desktop    = XSCRIPTCONTEXT.getDesktop()
-    model      = desktop.getCurrentComponent()
-    controller = model.getCurrentController()
-    controller.setActiveSheet(self.sheet_dst)
+      # activate sheet
+    spreadsheetView = document.getCurrentController()
+    spreadsheetView.setActiveSheet(self.sheet_dst)
 
     # Initial Position
     self.addr = self.sheet_dst[self.start_cell].CellAddress
 
     # number and date format
-    self.numberfmt = model.NumberFormats
-    self.locale    = model.CharLocale
+    self.numberfmt = document.NumberFormats
+    self.locale    = document.CharLocale
 
     date_format = 'DD-MMM-YY;@'
     self.dateFormat = \
@@ -275,8 +271,8 @@ class PivotWriter:
     self.lineFormat = lineFormat
 
     # sheet wide
-    controller.ShowGrid = False
-    controller.freezeAtPosition(
+    spreadsheetView.ShowGrid = False
+    spreadsheetView.freezeAtPosition(
       self.addr.Column + 1, self.addr.Row + 1)
 
   def get_formatted_date(self, excel_date) -> None:
@@ -460,7 +456,7 @@ def main() -> None:
   print(pivot_table)
   print()
 
-  writer = PivotWriter(
+  pivot_writer = PivotWriter(
     'Pivot', pivot_table, categories, 'B2')
-  writer.process()
+  pivot_writer.process()
 
