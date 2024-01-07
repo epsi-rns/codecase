@@ -21,7 +21,6 @@ tealScale = {
 
 class PivotWriter:
   def __init__(self,
-      desktop     : 'com.sun.star.frame.XDesktop',
       document    : 'com.sun.star.frame.XModel',
       sheetName   : str,
       pivot_table : pd.DataFrame,
@@ -29,7 +28,6 @@ class PivotWriter:
       start_cell  : str) -> None:
 
     # save initial parameter
-    self.desktop  = desktop
     self.document = document
     self.sheetName   = sheetName
     self.pivot_table = pivot_table
@@ -58,16 +56,15 @@ class PivotWriter:
     self.sheet = sheets[self.sheetName]
 
     # activate sheet
-    model      = self.desktop.getCurrentComponent()
-    controller = model.getCurrentController()
-    controller.setActiveSheet(self.sheet)
+    spreadsheetView = self.document.getCurrentController()
+    spreadsheetView.setActiveSheet(self.sheet)
 
     # Initial Position
     self.addr = self.sheet[self.start_cell].CellAddress
 
     # number and date format
-    self.numberfmt = model.NumberFormats
-    self.locale    = model.CharLocale
+    self.numberfmt = self.document.NumberFormats
+    self.locale    = self.document.CharLocale
 
     date_format = 'DD-MMM-YY;@'
     self.dateFormat = \
@@ -81,8 +78,8 @@ class PivotWriter:
     self.lineFormat = lineFormat
 
     # sheet wide
-    controller.ShowGrid = False
-    controller.freezeAtPosition(
+    spreadsheetView.ShowGrid = False
+    spreadsheetView.freezeAtPosition(
       self.addr.Column + 1, self.addr.Row + 1)
 
   def get_formatted_date(self, excel_date) -> None:
@@ -93,7 +90,6 @@ class PivotWriter:
 
     # Format the datetime object as 'dd/mm/yyyy'
     return date_obj.strftime('%d/%m/%Y')
-
 
   def write_column_headers(self):
     # Get the list of catssify values

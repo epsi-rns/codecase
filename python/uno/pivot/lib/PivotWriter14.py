@@ -21,7 +21,6 @@ tealScale = {
 
 class PivotWriter:
   def __init__(self,
-      desktop     : 'com.sun.star.frame.XDesktop',
       document    : 'com.sun.star.frame.XModel',
       sheetName   : str,
       pivot_table : pd.DataFrame,
@@ -29,7 +28,6 @@ class PivotWriter:
       start_cell  : str) -> None:
 
     # save initial parameter
-    self.desktop  = desktop
     self.document = document
     self.sheetName   = sheetName
     self.pivot_table = pivot_table
@@ -57,16 +55,16 @@ class PivotWriter:
       sheets.insertNewByName(self.sheetName, 1)
     self.sheet = sheets[self.sheetName]
 
-    model      = self.desktop.getCurrentComponent()
-    controller = model.getCurrentController()
-    controller.setActiveSheet(self.sheet)
+    # activate sheet
+    spreadsheetView = self.document.getCurrentController()
+    spreadsheetView.setActiveSheet(self.sheet)
 
     # Initial Position
     self.addr = self.sheet[self.start_cell].CellAddress
 
     # number and date format
-    self.numberfmt = model.NumberFormats
-    self.locale    = model.CharLocale
+    self.numberfmt = self.document.NumberFormats
+    self.locale    = self.document.CharLocale
 
     date_format = 'DD-MMM-YY;@'
     self.dateFormat = \

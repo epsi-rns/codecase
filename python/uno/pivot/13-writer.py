@@ -36,7 +36,7 @@ def main() -> int:
     print(pivot_table)
     print()
   
-    writer = PivotWriter(desktop, document,
+    writer = PivotWriter(document,
       'Pivot', pivot_table, categories, 'B2')
     writer.process()
 
@@ -44,3 +44,4 @@ def main() -> int:
 
 if __name__ == "__main__":
   raise SystemExit(main())
+

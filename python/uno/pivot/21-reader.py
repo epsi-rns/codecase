@@ -17,10 +17,11 @@ def main() -> int:
 
   if document:
     table_writer = TableWriter(
-      desktop, document, 'Table', dataframe)
+      document, 'Table', dataframe)
     table_writer.process()
 
   return 0
 
 if __name__ == "__main__":
   raise SystemExit(main())
+

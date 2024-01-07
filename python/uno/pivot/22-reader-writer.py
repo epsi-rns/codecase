@@ -27,11 +27,11 @@ def main() -> int:
   document  = create_calc_instance(desktop)
 
   if document:
-    table_writer = TableWriter(desktop, document, 
+    table_writer = TableWriter(document, 
       'Table', dataframe)
     table_writer.process()
 
-    writer = PivotWriter(desktop, document, 
+    writer = PivotWriter(document, 
       'Pivot', pivot_table, categories, 'B2')
     writer.process()
 
@@ -39,3 +39,4 @@ def main() -> int:
 
 if __name__ == "__main__":
   raise SystemExit(main())
+
