@@ -26,7 +26,7 @@ def get_desktop() \
 
 def create_calc_instance(
       desktop: 'com.sun.star.frame.XDesktop') \
-      -> 'com.sun.star.frame.XModel':
+      -> 'com.sun.star.sheet.SpreadsheetDocument':
 
     document = desktop.loadComponentFromURL(
       "private:factory/scalc", "_blank", 0, ())
@@ -35,7 +35,7 @@ def create_calc_instance(
 
 def open_document(
       desktop: 'com.sun.star.frame.XDesktop',
-      file_path: str) -> 'com.sun.star.frame.XModel':
+      file_path: str) -> 'com.sun.star.sheet.SpreadsheetDocument':
 
     document = desktop.loadComponentFromURL(
       f"file://{file_path}", "_blank", 0, ())
@@ -49,4 +49,5 @@ def get_file_path(filename: str) -> str:
     os.path.abspath(__file__))
   return os.path.join(
     script_directory, '..', filename)
+
 

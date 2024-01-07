@@ -5,7 +5,7 @@ from typing import Dict
 
 class PivotReader:
   def __init__(self,
-      document  : 'com.sun.star.frame.XModel',
+      document  : 'com.sun.star.sheet.SpreadsheetDocument',
       sheetName : str,
       columns   : Dict[str, str]) -> None:
 

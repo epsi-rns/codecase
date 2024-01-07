@@ -24,7 +24,7 @@ tealScale = {
 
 class TableWriter:
   def __init__(self,
-      document    : 'com.sun.star.frame.XModel',
+      document    : 'com.sun.star.sheet.SpreadsheetDocument',
       sheetName: str,
       dataframe: DataFrame) -> None:
 

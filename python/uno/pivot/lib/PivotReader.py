@@ -8,7 +8,7 @@ from lib.helper import open_document
 
 class PivotReader:
   def __init__(self,
-      document: 'com.sun.star.frame.XModel',
+      document: 'com.sun.star.sheet.SpreadsheetDocument',
       sheetName: str,
       columns: Dict[str, str],
       categories: List[str]) -> None:

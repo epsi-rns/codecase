@@ -7,7 +7,7 @@ from pandas import DataFrame
 
 class PivotWriter:
   def __init__(self,
-      document    : 'com.sun.star.frame.XModel',
+      document    : 'com.sun.star.sheet.SpreadsheetDocument',
       sheetName   : str,
       pivot_table : pd.DataFrame,
       categories  : List[str],
@@ -33,6 +33,7 @@ class PivotWriter:
       sheets.insertNewByName(self.sheetName, 1)
     self.sheet = sheets[self.sheetName]
 
+    # activate sheet
     spreadsheetView = self.document.getCurrentController()
     spreadsheetView.setActiveSheet(self.sheet)
 

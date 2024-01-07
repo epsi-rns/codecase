@@ -5,7 +5,7 @@ from lib.helper import (
   get_desktop, open_document, get_file_path)
 
 def write_to_cell(
-      document: 'com.sun.star.frame.XModel',
+      document: 'com.sun.star.sheet.SpreadsheetDocument',
       text: str) -> None:
 
     # Assuming you want to write to the first sheet

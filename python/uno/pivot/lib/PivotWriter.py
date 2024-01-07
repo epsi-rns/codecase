@@ -21,7 +21,7 @@ tealScale = {
 
 class PivotWriter:
   def __init__(self,
-      document    : 'com.sun.star.frame.XModel',
+      document    : 'com.sun.star.sheet.SpreadsheetDocument',
       sheetName   : str,
       pivot_table : pd.DataFrame,
       categories  : List[str],
