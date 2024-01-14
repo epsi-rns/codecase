@@ -6,18 +6,18 @@ def get_desktop() \
     'com.sun.star.uno.XComponentContext'
     local_context = uno.getComponentContext()
 
-    'com.sun.star.uno.XInterface'
+    'com.sun.star.bridge.UnoUrlResolver'
     resolver = local_context.ServiceManager. \
       createInstanceWithContext(
         "com.sun.star.bridge.UnoUrlResolver",
         local_context)
 
-    # 'com.sun.star.uno.XInterface'
+    'com.sun.star.uno.XComponentContext'
     context = resolver.resolve(
       "uno:socket,host=localhost,port=2002;"
       + "urp;StarOffice.ComponentContext")
 
-    # 'com.sun.star.frame.XDesktop'
+    'com.sun.star.frame.XDesktop'
     desktop = context.ServiceManager. \
       createInstanceWithContext(
         "com.sun.star.frame.Desktop", context)
