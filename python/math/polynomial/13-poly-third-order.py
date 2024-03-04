@@ -15,7 +15,7 @@ np.set_printoptions(
   suppress=True)
 
 # Getting Matrix Values
-mCSV = np.genfromtxt("poly.csv",
+mCSV = np.genfromtxt("13-data-third-order.csv",
   skip_header=1, delimiter=",", dtype=float)
 
 mCSVt   = np.transpose(mCSV)
@@ -38,10 +38,6 @@ mC    = np.linalg.solve(mAt_A, mAt_B)
 print('Calculate manually')
 print(f'Coefficients (a, b, c, d):\n\t{mC}\n')
 
-for x in mx:
-  y = a + b*x + c*x**2 + d*x**3
-  print(f'x = {x:5}  =>  y = {y:10,.2f} ')
-
 # Draw Plot
 x_plot = np.linspace(min(mx), max(mx), 100)
 y_plot = a + b * x_plot + \
@@ -57,7 +53,7 @@ plt.ylabel('y')
 plt.suptitle(
   'Third-order polynomial curve fitting')
 
-subfmt = "a = %.2f, b = %.2f c = %.2f, d = %.2f"
+subfmt = "a = %.2f, b = %.2f, c = %.2f, d = %.2f"
 plt.title(subfmt % (a, b, c, d), y=-0.01)
 
 plt.show()
