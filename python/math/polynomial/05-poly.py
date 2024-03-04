@@ -10,21 +10,28 @@ mCSV = np.genfromtxt("poly.csv",
   skip_header=1, delimiter=",", dtype=float)
 
 mCSVt   = np.transpose(mCSV)
-mx = mCSVt[0]
-mB = mCSVt[1]
+x_values = mx = mCSVt[0]
+y_values = mB = mCSVt[1]
+
+# Perform cubic regression using polyfit
+mC = np.polyfit(x_values, y_values, deg=order)
+print('Using polyfit')
+print(f'Coefficients (a, b, c, d):\n\t{np.flip(mC)}\n')
 
 # Calculated Matrix Variable
-mA    = np.flip(np.vander(mx, 4), axis=1)
+mA    = np.flip(np.vander(mx, order+1), axis=1)
 mAt   = np.transpose(mA)
 mAt_A = mAt @ mA
 mAt_B = mAt @ mB
 mC    = np.linalg.solve(mAt_A, mAt_B)
+
 [a, b, c, d] = mC
-print("Coefficients (a, b, c, d):", mC)
+print('Calculate manually')
+print(f'Coefficients (a, b, c, d):\n\t{mC}\n')
 
 for x in mx:
   y = a + b*x + c*x**2 + d*x**3
-  print(f'Freq {x:10} = {y:10,.2f} ')
+  print(f'x = {x:5}  =>  y = {y:10,.2f} ')
 
 # Draw Plot
 x_plot = np.linspace(min(mx), max(mx), 100)
