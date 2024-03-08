@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Initial Matrix Value
-order = 1
+order = 3
 
 # Setup numpy
 np.set_printoptions(
@@ -15,17 +15,17 @@ np.set_printoptions(
   suppress=True)
 
 # Getting Matrix Values
-mCSV = np.genfromtxt("11-linear-equation.csv",
+mCSV = np.genfromtxt("33-data-third-order.csv",
   skip_header=1, delimiter=",", dtype=float)
 
 mCSVt   = np.transpose(mCSV)
 x_values = mx = mCSVt[0]
 y_values = mB = mCSVt[1]
 
-# Perform linear regression using polyfit
+# Perform cubic regression using polyfit
 mC = np.polyfit(x_values, y_values, deg=order)
 print('Using polyfit')
-print(f'Coefficients (a, b):\n\t{np.flip(mC)}\n')
+print(f'Coefficients (a, b, c, d):\n\t{np.flip(mC)}\n')
 
 # Calculated Matrix Variable
 mA    = np.flip(np.vander(mx, order+1), axis=1)
@@ -34,27 +34,27 @@ mAt_A = mAt @ mA
 mAt_B = mAt @ mB
 mC    = np.linalg.solve(mAt_A, mAt_B)
 
-[a, b] = mC
+[a, b, c, d] = mC
 print('Calculate manually')
-print(f'Coefficients (a, b):\n\t{mC}\n')
-
+print(f'Coefficients (a, b, c, d):\n\t{mC}\n')
 
 # Draw Plot
 x_plot = np.linspace(min(mx), max(mx), 100)
-y_plot = a + b * x_plot
+y_plot = a + b * x_plot + \
+         c * x_plot**2 + d * x_plot**3
 
 plt.scatter(mx, mB, label='Data points')
 plt.plot(x_plot, y_plot, color='red',
-  label='Linear Equation')
+  label='Fitted third-order polynomial')
 
 plt.legend()
 plt.xlabel('x')
 plt.ylabel('y')
 plt.suptitle(
-  'Straight line fitting')
+  'Third-order polynomial curve fitting')
 
-subfmt = "a = %.2f, b = %.2f"
-plt.title(subfmt % (a, b), y=-0.01)
+subfmt = "a = %.2f, b = %.2f, c = %.2f, d = %.2f"
+plt.title(subfmt % (a, b, c, d), y=-0.01)
 
 plt.show()
 
