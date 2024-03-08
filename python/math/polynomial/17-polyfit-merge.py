@@ -39,12 +39,8 @@ class CurveFitting:
     self.y3_plot = a3 + b3 * xp + c3 * xp**2 + d3 * xp**3
 
   def draw_plot(self) -> None:
-    label = {
-      1: 'Linear Equation',
-      2: 'Fitted second-order polynomial',
-      3: 'Fitted third-order polynomial' }
-
-    plt.scatter(self.xs, self.ys, label='Data points', color='teal')
+    plt.scatter(self.xs, self.ys, color='teal',
+      label='Data points', )
     plt.plot(self.x_plot, self.y1_plot, color='red',
       label='Linear Equation')
     plt.plot(self.x_plot, self.y2_plot, color='green',
@@ -55,9 +51,7 @@ class CurveFitting:
     plt.legend()
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.suptitle('suptitle')
-
-    plt.title('equation', y=-0.01)
+    plt.title('Polynomial Curve Fitting')
 
     plt.show()
 
@@ -67,9 +61,6 @@ class CurveFitting:
     self.mCoeff_3rd = self.calc_coeff(3)
 
     self.calc_plot_all()
-
-
-
     self.draw_plot()
 
 def main() -> int:
