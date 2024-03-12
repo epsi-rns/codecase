@@ -1,8 +1,11 @@
 import numpy as np
 
 # Given data
-x_values = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-y_values = np.array([5, 12, 25, 44, 69, 100, 137, 180, 229, 284, 345, 412, 485])
+x_values = np.array(
+  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+y_values = np.array(
+  [5, 12, 25, 44, 69, 100, 137,
+    180, 229, 284, 345, 412, 485])
 
 # Number of data points
 n = len(x_values)
