@@ -107,3 +107,4 @@ print(f'MSE = ∑ϵ²/(n-2)     = {var_residuals:9.2f}')
 print(f'SE(β₁)  = √(MSE/sₓ) = {std_err_slope:9.2f}')
 print(f't-value = β̅₁/SE(β₁) = {t_value:9.2f}')
 print()
+

@@ -18,3 +18,4 @@ plt.xlabel('x')
 plt.ylabel('y')
 plt.grid(True)
 plt.show()
+
