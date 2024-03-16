@@ -16,29 +16,37 @@ tealScale = {
   9: '#004D40'
 }
 
-# Plot the data and regression line
-plt.figure(figsize=(10, 6))
-plt.scatter(x_observed, y_observed,
-  color=tealScale[9], label='Data Points')
-plt.plot(x_observed, y_fit,
-  color=tealScale[5], label='Regression Line')
+def plot() -> None:
+  plt.figure(figsize=(10, 6))
 
-plt.plot(x_observed, y_fit + y_std_dev,
-  c=tealScale[1], linestyle='--')
-plt.plot(x_observed, y_fit - y_std_dev,
-  c=tealScale[1], linestyle='--',
-  label='Regression ± Standard Deviation')
+  # Plot the data and regression line
+  plt.scatter(x_observed, y_observed,
+    color=tealScale[9], label='Data Points')
+  plt.plot(x_observed, y_fit,
+    color=tealScale[5], label='Regression Line')
 
-# Fill between upper and lower bounds
-plt.fill_between(x_observed,
+  plt.plot(x_observed, y_fit + y_std_dev,
+    c=tealScale[1], linestyle='--')
+  plt.plot(x_observed, y_fit - y_std_dev,
+    c=tealScale[1], linestyle='--',
+    label='Regression ± Standard Deviation')
+
+  # Fill between upper and lower bounds
+  plt.fill_between(x_observed,
   y_fit - y_std_dev, y_fit + y_std_dev,
-  color=tealScale[1], alpha=0.3, label='Standard Deviation')
+  color=tealScale[1], alpha=0.3,
+  label='Standard Deviation')
 
-# Chart Decoration
-plt.title('Standard Deviation')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.legend()
-plt.grid(True)
-plt.show()
+  # Chart Decoration
+  plt.title('Standard Deviation')
+  plt.xlabel('x')
+  plt.ylabel('y')
+  plt.legend()
+  plt.grid(True)
 
+  plt.show()
+
+  return 0
+
+if __name__ == "__main__":
+  raise SystemExit(plot())

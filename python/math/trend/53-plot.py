@@ -9,23 +9,30 @@ properties = get_properties("50-samples.csv")
 display(properties)
 locals().update(properties)
 
-# Plot the data series
-plt.figure(figsize=(10, 6))
-plt.scatter(x_observed, y_observed, color='blue',
-  s=100, label='Data Points')
+def plot() -> None:
+  plt.figure(figsize=(10, 6))
 
-# Plot deviation from mean
-plt.axhline(y=y_mean, color='orange',
-  linestyle='--',  label='Mean of y')
-plt.vlines(x_observed, y_observed, y_mean,
-  linestyle='--', color='teal',
-  label='Deviation from Mean (y)')
+  # Plot the data series
+  plt.scatter(x_observed, y_observed, color='blue',
+    s=100, label='Data Points')
 
-# Chart Decoration
-plt.title('Mean and Deviation')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.legend()
-plt.grid(True)
-plt.show()
+  # Plot deviation from mean
+  plt.axhline(y=y_mean, color='orange',
+    linestyle='--',  label='Mean of y')
+  plt.vlines(x_observed, y_observed, y_mean,
+    linestyle='--', color='teal',
+    label='Deviation from Mean (y)')
 
+  # Chart Decoration
+  plt.title('Mean and Deviation')
+  plt.xlabel('x')
+  plt.ylabel('y')
+  plt.legend()
+  plt.grid(True)
+
+  plt.show()
+
+  return 0
+
+if __name__ == "__main__":
+  raise SystemExit(plot())

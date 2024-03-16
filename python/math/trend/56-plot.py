@@ -16,19 +16,25 @@ tealScale = {
   9: '#004D40'
 }
 
-# Plot the data and regression line
-plt.figure(figsize=(10, 6))
+def plot() -> None:
+  plt.figure(figsize=(10, 6))
 
-plt.scatter(x_observed, y_observed,
-  color=tealScale[9], label='Data Points')
-plt.plot(x_observed, y_fit,
-  color=tealScale[5], label='Regression Line')
+  # Plot the data and regression line
+  plt.scatter(x_observed, y_observed,
+    color=tealScale[9], label='Data Points')
+  plt.plot(x_observed, y_fit,
+    color=tealScale[5], label='Regression Line')
 
-# Chart Decoration
-plt.title('Linear Regression')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.legend()
-plt.grid(True)
-plt.show()
+  # Chart Decoration
+  plt.title('Linear Regression')
+  plt.xlabel('x')
+  plt.ylabel('y')
+  plt.legend()
+  plt.grid(True)
 
+  plt.show()
+
+  return 0
+
+if __name__ == "__main__":
+  raise SystemExit(plot())
