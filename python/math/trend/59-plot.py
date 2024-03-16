@@ -27,7 +27,8 @@ def get_CI() -> float:
 
   SE = np.sqrt(var_residuals)
 
-  # Calculate the confidence interval for the predictions
+  # Calculate the confidence interval
+  # for the predictions using 95% confidence
   return 1.96 * SE
 
 def plot() -> int:
