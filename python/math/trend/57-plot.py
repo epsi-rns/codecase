@@ -27,7 +27,8 @@ def plot() -> int:
 
   # Plot residual errors
   plt.vlines(x_observed, y_observed, y_fit,
-  linestyle='--', color=blueScale[3], label='Residual')
+  linestyle='--', color=blueScale[3],
+  label='Residual')
 
   # Chart Decoration
   plt.title('Linear Regression')

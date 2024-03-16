@@ -13,8 +13,8 @@ def plot() -> int:
   plt.figure(figsize=(10, 6))
 
   # Plot the data series
-  plt.scatter(x_observed, y_observed, color='blue',
-    s=100, label='Data Points')
+  plt.scatter(x_observed, y_observed,
+    color='blue', s=100, label='Data Points')
 
   # Plot deviation from mean
   plt.axhline(y=y_mean, color='orange',
@@ -36,3 +36,4 @@ def plot() -> int:
 
 if __name__ == "__main__":
   raise SystemExit(plot())
+

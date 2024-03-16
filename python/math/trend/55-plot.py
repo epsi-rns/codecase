@@ -25,7 +25,8 @@ def plot() -> int:
   # Plot standard deviation as error bars
   plt.errorbar(x_mean, y_mean,
     xerr=x_std_dev, yerr=y_std_dev,
-    fmt='o', color='purple', label='Standard Deviation')
+    fmt='o', color='purple',
+    label='Standard Deviation')
 
   # Chart Decoration
   plt.title('Linear Regression')
