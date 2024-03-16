@@ -9,7 +9,7 @@ properties = get_properties("50-samples.csv")
 display(properties)
 locals().update(properties)
 
-def plot() -> None:
+def plot() -> int:
   plt.figure(figsize=(10, 6))
 
   # Plot the data series

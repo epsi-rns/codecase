@@ -16,7 +16,7 @@ blueScale = {
   9: '#0D47A1'
 }
 
-def plot() -> None:
+def plot() -> int:
   plt.figure(figsize=(10, 6))
 
   # Plot the data series

@@ -16,7 +16,7 @@ tealScale = {
   9: '#004D40'
 }
 
-def plot() -> None:
+def plot() -> int:
   plt.figure(figsize=(10, 6))
 
   # Plot the data and regression line
