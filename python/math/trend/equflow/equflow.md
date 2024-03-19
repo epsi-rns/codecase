@@ -111,8 +111,9 @@ n \text{ (count)}
 4t.
 
 \begin{align*}
-& R^2 _\text{ (linear)}= r_{x,y}^2 \quad ,  \\
-& R^2 _\text{ (adjusted)} = 1 - \frac{{(1 - R^2)(n - 1)}}{{n - k - 1}} \\
+&& R^2 _\text{ (general)}   &= 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2} \quad ,  \\
+&& R^2 _\text{ (linear)}   &= r_{x,y}^2 \quad , \\
+&& R^2 _\text{ (adjusted)} &= 1 - \frac{{(1 - R^2)(n - 1)}}{{n - k - 1}} \\
 \end{align*}
 
 --
