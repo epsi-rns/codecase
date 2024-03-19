@@ -48,8 +48,8 @@ n \text{ (count)}
 3r.
 
 \begin{align*}
-& \hat{\beta}_1 = m \text{ slope} \quad , \\
-& \hat{\beta}_2 = b \text{ intercept} \quad , \\
+& \hat{\beta}_1 = m \text{ (slope)} \quad , \\
+& \hat{\beta}_0 = b \text{ (intercept)} \quad , \\
 & \hat{y}_i  \text{ (predicted)} = m \cdot x_i + b \\
 \end{align*}
 

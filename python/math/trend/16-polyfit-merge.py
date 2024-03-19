@@ -17,11 +17,9 @@ class CurveFitting:
     # Display
     coeff_text = {
       1: '(a, b)', 2: '(a, b, c)', 3: '(a, b, c, d)'}
-    order_text = {
-      1: 'Linear',  2: 'Quadratic ', 3: 'Cubic'}
 
-    print(f'Using polyfit : {order_text[order]}')
-    print(f'Coefficients  : {coeff_text[order]}:'
+    print('Using polyfit')
+    print(f'Coefficients {coeff_text[order]}:'
       + f'\n\t{np.flip(mC)}\n')
 
     # Get coefficient matrix
@@ -66,12 +64,15 @@ class CurveFitting:
     self.draw_plot()
 
 def main() -> int:
-  # Getting Matrix Values
-  mCSV = np.genfromtxt("series.csv",
-    skip_header=1, delimiter=",", dtype=float)
-  mCSVt   = np.transpose(mCSV)
+  xs = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  ys1 = [ 5, 9, 13, 17, 21, 25, 29,
+    33, 37, 41, 45, 49, 53]
+  ys2 = [ 5, 12, 25, 44, 69, 100, 137,
+    180, 229, 284, 345, 412, 485]
+  ys3 = [ 5, 14, 41, 98, 197, 350, 569,
+    866, 1253, 1742, 2345, 3074, 3941]
 
-  example = CurveFitting(mCSVt[0], mCSVt[3])
+  example = CurveFitting(xs, ys3)
   example.process()
   
   return 0
