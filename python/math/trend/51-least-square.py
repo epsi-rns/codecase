@@ -33,7 +33,7 @@ y_deviation = y_observed - y_mean
 
 # Calculate squared deviations
 x_sq_deviation = np.sum(x_deviation ** 2)
-y_sq_deviation = np.sum(x_deviation ** 2)
+y_sq_deviation = np.sum(y_deviation ** 2)
 
 # Calculate cross-deviation
 xy_cross_deviation = np.sum(x_deviation * y_deviation)
@@ -56,11 +56,11 @@ print(f'Equation     y = ' \
 print()
 
 # Calculate variance
-x_variance = x_sq_deviation / n
-y_variance = y_sq_deviation / n
+x_variance = x_sq_deviation / (n-1)
+y_variance = y_sq_deviation / (n-1)
 
 # Calculate covariance
-xy_covariance = xy_cross_deviation / n
+xy_covariance = xy_cross_deviation / (n-1)
 
 # Calculate standard deviations
 x_std_dev = np.sqrt(x_variance)
