@@ -3,8 +3,8 @@ from scipy.stats import linregress
 from typing import Dict
 
 class Dict2Obj:
-    def __init__(self, properties_dict):
-        self.__dict__.update(properties_dict)
+  def __init__(self, properties_dict):
+    self.__dict__.update(properties_dict)
 
 def get_properties(file_path) -> Dict:
   # Getting Matrix Values
@@ -26,16 +26,17 @@ def get_properties(file_path) -> Dict:
   x_mean = np.mean(x_observed)
   y_mean = np.mean(y_observed)
 
-  # Calculate variance
-  x_variance = np.var(x_observed)
-  y_variance = np.var(y_observed)
+  # Calculate variance (for sample)
+  x_variance = np.var(x_observed, ddof=1)
+  y_variance = np.var(y_observed, ddof=1)
 
-  # Calculate covariance
-  xy_covariance = np.cov(x_observed, y_observed)[0, 1]
+  # Calculate covariance (for sample)
+  xy_covariance = np.cov(
+    x_observed, y_observed, ddof=1)[0, 1]
 
   # Calculate standard deviations
-  x_std_dev = np.std(x_observed)
-  y_std_dev = np.std(y_observed)
+  x_std_dev = np.std(x_observed, ddof=1)
+  y_std_dev = np.std(y_observed, ddof=1)
 
   # Calculate slope (m), intercept (b),
   # and other regression parameters
@@ -72,3 +73,4 @@ def display(properties: Dict) -> None:
   print(f'Equation     y = ' \
     + f'{p.b_intercept:5.2f} + {p.m_slope:5.2f}.x')
   print()
+  
