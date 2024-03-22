@@ -3,29 +3,16 @@ import statistics
 
 from scipy.stats import kurtosis, skew
 
-# Local Library
-from Properties import get_properties, display
+# Getting Matrix Values
+pairCSV = np.genfromtxt("50-samples.csv",
+  skip_header=1, delimiter=",", dtype=int)
 
-# Load properties from Properties.py helper
-# and unpack them into local variables
-properties = get_properties("50-samples.csv")
-locals().update(properties)
+# Extract x and y values from CSV data
+x_observed = pairCSV[:, 0]
+y_observed = pairCSV[:, 1]
 
-def calc_median(data: np.array) -> float:
-  # Sort the data
-  sorted_data = np.sort(data)
-
-  # Calculate the median
-  n = len(sorted_data)
-  if n % 2 == 1:
-    # If odd number of data points
-    median = sorted_data[n // 2]
-  else:
-    # If even number of data points
-    median = (sorted_data[n // 2 - 1] \
-           +  sorted_data[n // 2]) / 2
-  
-  return median
+# Number of data points
+n = len(x_observed)
 
 # Calculate maximum, minimum, and range
 x_max = np.max(x_observed)
@@ -42,6 +29,22 @@ print('x (max, min, range) = '
 print('y (max, min, range) = '
  + f'({y_min:7.2f}, {y_max:7.2f}, {y_range:7.2f} )')
 print()
+
+def calc_median(data: np.array) -> float:
+  # Sort the data
+  sorted_data = np.sort(data)
+
+  # Calculate the median
+  n = len(sorted_data)
+  if n % 2 == 1:
+    # If odd number of data points
+    median = sorted_data[n // 2]
+  else:
+    # If even number of data points
+    median = (sorted_data[n // 2 - 1] \
+           +  sorted_data[n // 2]) / 2
+  
+  return median
 
 # Calculate additional propeties
 x_median = calc_median(x_observed)
