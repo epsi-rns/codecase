@@ -22,7 +22,6 @@ g = sns.FacetGrid(df_melted,
   col='y', col_wrap=3, height=4, sharey=False)
 
 # Map regplot to each facet
-# with different color for each ys
 g.map_dataframe(sns.regplot,
   x='xs', y='value', color='b')
 
@@ -30,8 +29,9 @@ g.map_dataframe(sns.regplot,
 for ax, ys_name in zip(g.axes.flat, cols_sel):
   df_subset = df_melted[
     df_melted['y'] == ys_name]
-
-  color  = sns.color_palette("husl", 3)[
+  
+  # with different color for each ys
+  color = sns.color_palette("husl", 3)[
     cols_sel.index(ys_name)]
 
   sns.regplot(x='xs', y='value',

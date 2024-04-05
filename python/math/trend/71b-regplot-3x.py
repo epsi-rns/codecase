@@ -30,3 +30,4 @@ for i, (ys, title) in enumerate(pairs):
 # Plot formatting
 plt.tight_layout()
 plt.show()
+
