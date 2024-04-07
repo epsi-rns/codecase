@@ -76,11 +76,11 @@ def calc_se_kurtosis_gaussian(n):
     / ((n - 3) * (n + 5)))
 
 # Calculate kurtosis and skewness
-x_kurtosis = kurtosis(x_observed)
-y_kurtosis = kurtosis(y_observed)
+x_kurtosis = kurtosis(x_observed, bias=False)
+y_kurtosis = kurtosis(y_observed, bias=False)
 
-x_skewness = skew(x_observed)
-y_skewness = skew(y_observed)
+x_skewness = skew(x_observed, bias=False)
+y_skewness = skew(y_observed, bias=False)
 
 print(f'x kurtosis     = {x_kurtosis:9.2f}')
 print(f'y kurtosis     = {y_kurtosis:9.2f}')
@@ -103,3 +103,4 @@ print(f'y SE kurtosis  = {y_se_kurtosis:9.2f}')
 print(f'x SE skewness  = {x_se_skewness:9.2f}')
 print(f'y SE skewness  = {y_se_skewness:9.2f}')
 print()
+
