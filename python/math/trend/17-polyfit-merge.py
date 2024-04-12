@@ -74,7 +74,7 @@ def main() -> int:
 
   example = CurveFitting(mCSVt[0], mCSVt[3])
   example.process()
-  
+
   return 0
 
 if __name__ == "__main__":
