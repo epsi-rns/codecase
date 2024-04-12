@@ -1,3 +1,4 @@
+# Load required libraries
 library(readr)
 
 # Read data from CSV file
