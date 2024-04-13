@@ -1,6 +1,7 @@
 # Load required libraries
 library(readr)
 library(ggplot2)
+library(ggthemes)
 library(gridExtra)
 
 # Avoid generating Rplots.pdf
@@ -24,14 +25,14 @@ data <- data.frame(
 # Scatter plot with regression line for y1
 plot_y1 <- ggplot(data, aes(x = xs, y = ys1)) +
   geom_point(
-    size = 0.5, color = "red") +  
+    size = 0.5, color = "indianred") +  
   geom_smooth(
     method = "lm", formula = y ~ poly(x, 1),
-    se = TRUE, color = "red", linewidth = 0.2) +  
+    se = TRUE, color = "indianred", linewidth = 0.2) +  
   labs(
     x = "x", y = "y", 
     title = "Regression Line for y1") +
-  theme_minimal() +
+  theme_light() +
   theme(
     text = element_text(size = 2),
     axis.text = element_text(size = 3))
@@ -39,14 +40,14 @@ plot_y1 <- ggplot(data, aes(x = xs, y = ys1)) +
 # Scatter plot with quadratic regression line for y2
 plot_y2 <- ggplot(data, aes(x = xs, y = ys2)) +
   geom_point(
-    size = 0.5, color = "green") +  
+    size = 0.5, color = "limegreen") +  
   geom_smooth(
     method = "lm", formula = y ~ poly(x, 1),
-    se = TRUE, color = "green", linewidth = 0.2) +  
+    se = TRUE, color = "limegreen", linewidth = 0.2) +  
   labs(
     x = "x", y = "y", 
     title = "Quadratic Regression Line for y2") +
-  theme_minimal() +
+  theme_light() +
   theme(
     text = element_text(size = 2),
     axis.text = element_text(size = 3))
@@ -54,14 +55,14 @@ plot_y2 <- ggplot(data, aes(x = xs, y = ys2)) +
 # Scatter plot with cubic regression line for y3
 plot_y3 <- ggplot(data, aes(x = xs, y = ys3)) +
   geom_point(
-    size = 0.5, color = "blue") +  
+    size = 0.5, color = "steelblue") +  
   geom_smooth(
     method = "lm", formula = y ~ poly(x, 1),
-    se = TRUE, color = "blue", linewidth = 0.2) +  
+    se = TRUE, color = "steelblue", linewidth = 0.2) +  
   labs(
     x = "x", y = "y", 
     title = "Cubic Regression Line for y3") +
-  theme_minimal() +
+  theme_light() +
   theme(
     text = element_text(size = 2),
     axis.text = element_text(size = 3))
@@ -71,5 +72,5 @@ grid_plot <- grid.arrange(
   plot_y1, plot_y2, plot_y3, ncol = 3)
 
 # Save the combined grid of plots as PNG
-ggsave("71-grid-extra.png", grid_plot,
+ggsave("72-grid-extra.png", grid_plot,
   width = 800, height = 400, units = "px")
