@@ -29,7 +29,7 @@ df_kurtosis_3 <- data.frame(x = x, y = y_kurtosis_3)
 # Plot the normal distribution and
 # distributions with different levels of kurtosis
 plot <- ggplot() +
-  geom_line(data = df_standard, color = "black"
+  geom_line(data = df_standard, color = "black",
     aes(x = x, y = y), linewidth = 0.2) +
   geom_line(data = df_kurtosis_1,
     aes(x = x, y = y), color = "red",

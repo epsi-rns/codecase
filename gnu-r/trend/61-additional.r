@@ -1,3 +1,4 @@
+# Load required library
 library(e1071)
 
 # Read CSV file
@@ -48,10 +49,6 @@ cat(sprintf('y kurtosis     = %9.2f\n', y_kurtosis))
 cat(sprintf('x skewness     = %9.2f\n', x_skewness))
 cat(sprintf('y skewness     = %9.2f\n\n', y_skewness))
 
-# Number of data points
-x_n <- length(x_observed)
-y_n <- length(y_observed)
-
 # Calculate SE kurtosis and SE skewness
 calc_se_kurtosis_gaussian <- function(n) {
   sqrt(4 * n^2 * calc_se_skewness(n)^2 / ((n - 3) * (n + 5)))
@@ -60,6 +57,10 @@ calc_se_kurtosis_gaussian <- function(n) {
 calc_se_skewness <- function(n) {
   sqrt((6 * n * (n - 1)) / ((n - 2) * (n + 1) * (n + 3)))
 }
+
+# Number of data points
+x_n <- length(x_observed)
+y_n <- length(y_observed)
 
 x_se_kurtosis <- calc_se_kurtosis_gaussian(x_n)
 y_se_kurtosis <- calc_se_kurtosis_gaussian(y_n)

@@ -140,7 +140,7 @@ regress <- generate_regressions(
 show_coeff(1, regress$lm_model_1)
 show_coeff(2, regress$lm_model_2)
 show_coeff(3, regress$lm_model_3)
-plot <- create_plot(regress)
+create_plot(regress)
 
 
 

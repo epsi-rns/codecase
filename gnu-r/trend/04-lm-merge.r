@@ -1,11 +1,3 @@
-# Load required libraries
-library(readr)
-
-# Read data from CSV file
-data <- read_csv(
-  "series.csv",
-  show_col_types = FALSE)
-
 calc_coeff <- function(x_values, y_values, order) {
   # Perform linear regression using lm()
   lm_model <- lm(y_values ~ 
@@ -34,6 +26,14 @@ calc_coeff <- function(x_values, y_values, order) {
     names(coeff_text)[order], ":\n\t",
     coefficients, "\n")
 }
+
+# Load required library
+library(readr)
+
+# Read data from CSV file
+data <- read_csv(
+  "series.csv",
+  show_col_types = FALSE)
 
 calc_coeff(data$xs, data$ys1, 1)
 calc_coeff(data$xs, data$ys2, 2)

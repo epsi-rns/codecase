@@ -24,7 +24,7 @@ p <- ggplot(
   theme(
     text = element_text(size = 4))
 
-# Add marginal histogram plots with different colors
+# Add marginal histogram plots
 p_with_margins <- ggMarginal(
   p, type = "histogram",
   color = "black", fill = alpha("#FFD700", 0.1),

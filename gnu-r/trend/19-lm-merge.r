@@ -131,11 +131,14 @@ CurveFitting <- R6Class("CurveFitting",
 )
 
 # Read data from CSV file
-series <- read_csv("series.csv", show_col_types = FALSE)
+series <- read_csv(
+  "series.csv",
+  show_col_types = FALSE)
 
 # Create CurveFitting object
 # Perform linear regression, display, and plot
-curve_fitting <- CurveFitting$new(series$xs, series$ys3)
+curve_fitting <- CurveFitting$new(
+  series$xs, series$ys3)
 curve_fitting$generate_regressions()
 curve_fitting$show_coeffs()
 curve_fitting$create_plot()

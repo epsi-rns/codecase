@@ -8,16 +8,16 @@ x <- seq(-5, 5, length.out = 1000)
 # for a standard normal distribution
 y <- dnorm(x)
 
-# Calculate the percentiles
-percentiles <- c(25, 50, 75, 100)
-quantiles <- quantile(x, probs = percentiles / 100)
-
 # Create data frame for plotting
 df <- data.frame(x = x, y = y)
 
 # Plot the normal distribution
 plot <- ggplot(df, aes(x = x, y = y)) +
   geom_line(color = "black")
+
+# Calculate the percentiles
+percentiles <- c(25, 50, 75, 100)
+quantiles <- quantile(x, probs = percentiles / 100)
 
 # Shade regions corresponding to percentiles
 for (i in seq_along(quantiles)) {
@@ -41,5 +41,5 @@ plot <- plot +
       "Distribution with Quantiles")
 
 # Save plot as PNG
-ggsave("63-quantiles.png", plot,
+ggsave("63-dist.png", plot,
   width = 800, height = 400, units = "px")

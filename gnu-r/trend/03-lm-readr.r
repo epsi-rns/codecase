@@ -1,4 +1,4 @@
-# Load required libraries
+# # Load required library
 library(readr)
 
 # Read data from CSV file
