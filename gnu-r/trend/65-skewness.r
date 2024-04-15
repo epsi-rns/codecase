@@ -50,6 +50,7 @@ plot <- ggplot() +
       "High Positive Skewness = 6")) +
   theme_minimal() +
   theme(
+    plot.background = element_rect(fill = "white"),
     text = element_text(size = 4))
 
 # Save plot as PNG

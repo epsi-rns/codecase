@@ -25,6 +25,7 @@ plot <- ggplot(
     title = "Histogram Plot for ys1, ys2, and ys3") +
   theme_minimal() +
   theme(
+    plot.background = element_rect(fill = "white"),
     text = element_text(size = 4))
 
 # Save plot as PNG

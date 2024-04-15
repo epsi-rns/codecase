@@ -79,6 +79,7 @@ create_plot <- function(
       x = "x", y = "y", title = title) +
     theme_minimal() +
     theme(legend.position = "right",
+        plot.background = element_rect(fill = "white"),
         text = element_text(size = 4)) +
     scale_color_manual(
       name = "Plot",
@@ -129,3 +130,5 @@ create_plot(regress_3,
   "Cubic curve fitting",
   "Cubic Curve",
   "16-lm-gg-cubic.png")
+
+

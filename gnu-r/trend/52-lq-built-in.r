@@ -32,11 +32,14 @@ x_sq_deviation <- sum(x_deviation^2)
 y_sq_deviation <- sum(y_deviation^2)
 
 # Calculate cross-deviation
-xy_cross_deviation <- sum(x_deviation * y_deviation)
+xy_cross_deviation <- sum(
+  x_deviation * y_deviation)
 
 # Calculate slope (m) and intercept (b)
-m_slope <- lm(y_observed ~ x_observed)$coefficients[2]
-b_intercept <- lm(y_observed ~ x_observed)$coefficients[1]
+m_slope <- lm(y_observed ~
+  x_observed)$coefficients[2]
+b_intercept <- lm(y_observed ~
+  x_observed)$coefficients[1]
 
 # Output of least square calculation
 cat(sprintf("∑(xᵢ-x̄)    = %9.2f\n", sum(x_deviation)))

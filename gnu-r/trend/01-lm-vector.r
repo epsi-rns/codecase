@@ -22,3 +22,4 @@ coefficients <- coefficients[
 # Print coefficients
 cat("Coefficients (a, b, c, d):\n\t",
   coefficients, "\n")
+

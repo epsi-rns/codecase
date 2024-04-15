@@ -53,6 +53,7 @@ plot <- ggplot(data, aes(x = x, y = y)) +
   theme_minimal() +
   theme(legend.position = "right",
         legend.text = element_text(size = 2),
+        plot.background = element_rect(fill = "white"),
         text = element_text(size = 4)) +
   scale_color_manual(
     name = "Plot",
@@ -71,3 +72,5 @@ plot <- ggplot(data, aes(x = x, y = y)) +
 # Save plot as PNG
 ggsave("14-lm-gg-line.png",
   plot, width = 800, height = 400, units = "px")
+
+  

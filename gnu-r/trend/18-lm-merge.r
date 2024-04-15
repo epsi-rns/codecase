@@ -103,6 +103,7 @@ create_plot <- function(regression_data) {
     theme_minimal() +
     theme(legend.position = "right",
           legend.text = element_text(size = 2),
+          plot.background = element_rect(fill = "white"),
           text = element_text(size = 4)) +
     scale_color_manual(
       name = "Plot",
