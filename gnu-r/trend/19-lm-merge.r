@@ -115,13 +115,7 @@ CurveFitting <- R6Class("CurveFitting",
             "Data Points" = "black",
             "Linear Equation" = "red", 
             "Quadratic Curve" = "green", 
-            "Cubic Curve" = "blue")) +
-        guides(
-          color = guide_legend(
-            override.aes = list(
-              shape = c(4, NA), linetype = c(0, 1))
-          )
-        )
+            "Cubic Curve" = "blue"))
 
       # Save plot as PNG
       ggsave("19-lm-merge.png", plot,
@@ -142,3 +136,4 @@ curve_fitting <- CurveFitting$new(
 curve_fitting$generate_regressions()
 curve_fitting$show_coeffs()
 curve_fitting$create_plot()
+
