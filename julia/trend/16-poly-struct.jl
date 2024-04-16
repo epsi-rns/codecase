@@ -3,20 +3,18 @@ using CSV, DataFrames, Polynomials, Plots, Printf
 mutable struct CurveFitter
   df::DataFrame
   x_col::Symbol
-  y_cols::Vector{Symbol}
+  y_col::Symbol
 
   function CurveFitter(df::DataFrame,
-      x_col::Symbol, y_cols::Vector{Symbol})
-    return new(df, x_col, y_cols)
+      x_col::Symbol, y_col::Symbol)
+    return new(df, x_col, y_col)
   end
 end
 
-function calc_coeff(cf::CurveFitter,
-    y_col::Symbol, order::Int)
-
+function calc_coeff(cf::CurveFitter, order::Int)
   # Extract x and y values
   xs = cf.df[!, cf.x_col]
-  ys = cf.df[!, y_col]
+  ys = cf.df[!, cf.y_col]
 
   order_text = Dict(1 => "Linear",
     2 => "Quadratic", 3 => "Cubic")
@@ -31,23 +29,23 @@ function calc_coeff(cf::CurveFitter,
   cfs_fmt = [round(c, digits=2) for c in cfs_r]
 
   # Using string interpolation to print the result
-  println("Curve type for $y_col: ",
+  println("Curve type for $(cf.y_col): ",
     order_text[order])
   println("Coefficients ",
     coeff_text[order], ":\n\t", cfs_fmt, "\n")
 end
 
-function calc_coeffs(cf::CurveFitter, orders::Vector{Int})
+function calc_coeffs(cf::CurveFitter)
   println("Using Polynomials.fit\n")
-  for (y_col, order) in zip(cf.y_cols, orders)
-      calc_coeff(cf, y_col, order)
+  for order in 1:3
+    calc_coeff(cf, order)
   end
 end
 
-function calc_plot_all(cf::CurveFitter, y_col::Symbol)
+function calc_plot_all(cf::CurveFitter)
   # Extract x and y values
   xs = cf.df[!, cf.x_col]
-  ys = cf.df[!, y_col]
+  ys = cf.df[!, cf.y_col]
 
   # Generate x values for plotting
   xp = range(minimum(xs), maximum(xs), length=100)
@@ -81,10 +79,7 @@ df = CSV.read("series.csv", DataFrame)
 rename!(df, Symbol.(strip.(string.(names(df)))))
 
 # Define a CurveFitter object
-# Specify the orders for each y_col
-cf = CurveFitter(df, :xs, [:ys1, :ys2, :ys3])
-orders = [1, 2, 3]
-
 # Calculate coefficients and plot all three series
-calc_coeffs(cf, orders)
-calc_plot_all(cf, :ys3)
+cf = CurveFitter(df, :xs, :ys3)
+calc_coeffs(cf)
+calc_plot_all(cf)

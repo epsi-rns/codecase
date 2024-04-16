@@ -1,4 +1,4 @@
-using CSV, DataFrames, DataFramesMeta
+using CSV, DataFrames
 
 # Read data from CSV file
 # Strip spaces from column names

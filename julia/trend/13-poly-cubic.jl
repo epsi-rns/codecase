@@ -33,4 +33,4 @@ ylabel!("Y values")
 title!("Cubic curve fitting")
 
 # Save the plot as a PNG file
-savefig("12-poly-quadratic.png")
+savefig("13-poly-cubic.png")

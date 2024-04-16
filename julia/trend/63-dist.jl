@@ -25,7 +25,6 @@ for (i, q) in enumerate(quantiles)
   # vline!([q], color=i, alpha=0.3, label="")
 end
 
-
 # Add labels and title
 xlabel!("x")
 ylabel!("Density")

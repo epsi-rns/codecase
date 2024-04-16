@@ -11,10 +11,6 @@ y_values1 = df.ys1
 y_values2 = df.ys2
 y_values3 = df.ys3
 
-println(x_values)
-println(y_values1)
-println()
-
 # Perform linear regression for ys1
 pf_1 = fit(x_values, y_values1, 1)
 

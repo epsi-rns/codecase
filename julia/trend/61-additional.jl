@@ -20,8 +20,10 @@ y_min = minimum(y_observed)
 y_range = y_max - y_min
 
 # Output of maximum, minimum, and range
-@printf("x (max, min, range) = (%7.2f, %7.2f, %7.2f)\n", x_min, x_max, x_range)
-@printf("y (max, min, range) = (%7.2f, %7.2f, %7.2f)\n\n", y_min, y_max, y_range)
+@printf("x (max, min, range) = (%7.2f, %7.2f, %7.2f)\n",
+  x_min, x_max, x_range)
+@printf("y (max, min, range) = (%7.2f, %7.2f, %7.2f)\n\n",
+  y_min, y_max, y_range)
 
 # Calculate median
 x_median = median(x_observed)
