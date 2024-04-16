@@ -2,7 +2,7 @@ using CSV, DataFrames, Statistics, StatsPlots, ColorSchemes
 
 # Read data from CSV file
 df = CSV.read("series.csv", DataFrame, types=Dict())
-rename!(df, Symbol.(strip.(string.(names(df)), ' ')))
+rename!(df, Symbol.(strip.(string.(names(df)))))
 
 # Extract x and y values from CSV data
 xs = df.xs

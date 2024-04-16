@@ -78,7 +78,7 @@ end
 
 # Read data from CSV file
 df = CSV.read("series.csv", DataFrame)
-rename!(df, Symbol.(strip.(string.(names(df)), ' ')))
+rename!(df, Symbol.(strip.(string.(names(df)))))
 
 # Define a CurveFitter object
 # Specify the orders for each y_col

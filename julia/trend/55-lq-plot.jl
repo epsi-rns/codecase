@@ -34,4 +34,4 @@ regression_line = plot!(
   color = :red, linewidth = 2)
 
 # Save plot as PNG
-savefig("53-lq-plot.png")
+savefig("55-lq-plot.png")

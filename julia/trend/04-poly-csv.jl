@@ -3,7 +3,7 @@ using CSV, DataFrames, Polynomials, Printf
 # Read data from CSV file
 # Strip spaces from column names
 df = CSV.read("series.csv", DataFrame)
-rename!(df, Symbol.(strip.(string.(names(df)), ' ')))
+rename!(df, Symbol.(strip.(string.(names(df)))))
 
 # Extract columns from DataFrame
 x_values = df.xs
