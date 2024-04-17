@@ -35,3 +35,4 @@ regression_line = plot!(
 
 # Save plot as PNG
 savefig("55-lq-plot.png")
+

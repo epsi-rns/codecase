@@ -38,3 +38,4 @@ y_mode = mode(y_observed)
 @printf("y median         = %9.2f\n", y_median)
 @printf("x mode           = %9.2f\n", x_mode)
 @printf("y mode           = %9.2f\n\n", y_mode)
+

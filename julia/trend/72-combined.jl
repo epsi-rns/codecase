@@ -69,3 +69,5 @@ plot_combined = plot(
 
 # Save plot as PNG
 savefig("72-combined.png")
+
+

@@ -101,3 +101,4 @@ t_value = m_slope / std_err_slope
 @printf("MSE = ∑ϵ²/(n-2)     = %9.2f\n", var_residuals)
 @printf("SE(β₁)  = √(MSE/sₓ) = %9.2f\n", std_err_slope)
 @printf("t-value = β̅₁/SE(β₁) = %9.2f\n\n", t_value)
+

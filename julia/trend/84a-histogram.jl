@@ -2,12 +2,12 @@ using CSV, DataFrames, StatsPlots
 
 # Read data from CSV file
 df = CSV.read("series.csv", DataFrame)
+rename!(df, Symbol.(strip.(string.(names(df)))))
 
 # Melt the DataFrame to long format for histplot
 df_long = stack(df, Not(:xs))
-rename!(df, Symbol.(strip.(string.(names(df)))))
 
-# Create histogram plot using StatsPlots.jl with custom colors
+# Create histogram plot using StatsPlots with custom colors
 hist_plot = histogram(
     df_long.value,
     group = df_long.variable,

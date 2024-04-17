@@ -19,7 +19,7 @@ cfs_fmt = [
 println("Coefficients (a, b) for ys:")
 println(cfs_fmt, "\n")
 
-# Draw Plot
+# Generate Series for Plotting
 xp = range(minimum(xs), maximum(xs), length=100)
 yp = pf.(xp)
 
@@ -34,3 +34,5 @@ title!("Straight line fitting")
 
 # Save the plot as a PNG file
 savefig("11-poly-linear.png")
+
+

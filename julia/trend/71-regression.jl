@@ -10,7 +10,7 @@ ys1 = df.ys1
 ys2 = df.ys2
 ys3 = df.ys3
 
-# Scatter plot with regression lines
+# Scatter plot without regression lines
 scatter(
   xs, ys1, label="ys1", 
   seriestype=:scatter, color=:red, 
@@ -21,14 +21,6 @@ scatter!(
 scatter!(
   xs, ys3, label="ys3", 
   seriestype=:scatter, color=:blue)
-
-# Add regression lines
-scatter!(
-  xs, ys1, label="", color=:red)
-scatter!(
-  xs, ys2, label="", color=:green)
-scatter!(
-  xs, ys3, label="", color=:blue)
 
 # Calculate standard error for each y series
 se1 = std(ys1) / sqrt(length(ys1))

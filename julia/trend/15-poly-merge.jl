@@ -27,12 +27,12 @@ function calc_coeff(df::DataFrame,
 end
 
 function calc_coeffs(df::DataFrame)
-  # Call the function for each y column
+  # Call the function for only ys3 column
   # with respective order
   println("Using Polynomials.fit\n")
 
-  calc_coeff(df, :xs, :ys1, 1)
-  calc_coeff(df, :xs, :ys2, 2)
+  calc_coeff(df, :xs, :ys3, 1)
+  calc_coeff(df, :xs, :ys3, 2)
   calc_coeff(df, :xs, :ys3, 3)
 end
 

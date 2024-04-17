@@ -19,7 +19,7 @@ cfs_fmt = [
 println("Coefficients (a, b, c) for ys:")
 println(cfs_fmt, "\n")
 
-# Draw Plot
+# Generate Series for Plotting
 xp = range(minimum(xs), maximum(xs), length=100)
 yp = pf.(xp)
 

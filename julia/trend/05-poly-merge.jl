@@ -38,3 +38,4 @@ println("Using Polynomials.fit\n")
 calc_coeff(df, :xs, :ys1, 1)
 calc_coeff(df, :xs, :ys2, 2)
 calc_coeff(df, :xs, :ys3, 3)
+

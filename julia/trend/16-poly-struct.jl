@@ -83,3 +83,4 @@ rename!(df, Symbol.(strip.(string.(names(df)))))
 cf = CurveFitter(df, :xs, :ys3)
 calc_coeffs(cf)
 calc_plot_all(cf)
+

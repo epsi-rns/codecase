@@ -4,7 +4,7 @@ using CSV, DataFrames, StatsPlots
 df = CSV.read("series.csv", DataFrame)
 rename!(df, Symbol.(strip.(string.(names(df)))))
 
-# Melt the DataFrame to long format for strip plot
+# Melt the DataFrame to long format for KDE plot
 df_long = stack(df, Not(:xs))
 
 # Create KDE plot using StatsPlots with custom colors
