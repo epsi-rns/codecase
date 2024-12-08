@@ -1,0 +1,49 @@
+# Linux Based
+path = "/home/epsi/movies-by-year/"
+
+# Windows Based
+path = "D:/movies-by-year"
+
+# Included Files
+csv_s = [
+  "movies_1980",
+  "movies_1981",
+  "movies_1982",
+  "movies_1983",
+  "movies_1984",
+  "movies_1985",
+  "movies_1986",
+  "movies_1987",
+  "movies_1988",
+  "movies_1989",
+  "movies_1990",
+  "movies_1991",
+  "movies_1992",
+  "movies_1993",
+  "movies_1994",
+  "movies_1995",
+  "movies_1996",
+  "movies_1997",
+  "movies_1998",
+  "movies_1999",
+  "movies_2000",
+  "movies_2001",
+  "movies_2002",
+  "movies_2003",
+  "movies_2004",
+  "movies_2005",
+  "movies_2006",
+  "movies_2007",
+  "movies_2008",
+  "movies_2009",
+  "movies_2010",
+  "movies_2011",
+  "movies_2012",
+  "movies_2013",
+  "movies_2014",
+  "movies_2015",
+  "movies_2016",
+  "movies_2017",
+  "movies_2018",
+  "movies_2019"
+]
