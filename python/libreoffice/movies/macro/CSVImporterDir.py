@@ -50,7 +50,6 @@ class CSVImporterDir:
     # with an index starting from the largest number
     for idx, filename in enumerate(reversed(csv_files), start=1):
         input_csv = os.path.join(self.input_dir, filename)
-        print(input_csv)
 
         # Format the sheet name with
         # a two-digit index followed by year

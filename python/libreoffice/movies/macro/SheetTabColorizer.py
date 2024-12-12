@@ -30,13 +30,13 @@ brownScale = {
 class SheetTabColorizer:
   def __init__(self):
     # Get the current LibreOffice context and document
-    self.desktop  = XSCRIPTCONTEXT.getDesktop()
     self.document = XSCRIPTCONTEXT.getDocument()
 
     # List of palettes to cycle through
     self.palettes = [blueScale, tealScale, amberScale, brownScale]
 
-  def apply_color_to_sheets(self):
+  # Apply Color To Sheets
+  def run(self):
     # Loop through each sheet and apply color based on index
     sheets = self.document.Sheets
 
@@ -51,15 +51,8 @@ class SheetTabColorizer:
       tab_color = self.palettes[palette_index][color_index]
       sheet.TabColor = tab_color  # Set the tab color
 
-  def run(self):
-    # Run the colorizing function
-    self.apply_color_to_sheets()
-
 def main():
   # Create the colorizer instance and run it
   colorizer = SheetTabColorizer()
   colorizer.run()
 
-# Program entry point
-if __name__ == "__main__":
-  main()
