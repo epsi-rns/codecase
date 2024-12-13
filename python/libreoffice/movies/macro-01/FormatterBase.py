@@ -104,10 +104,6 @@ class FormatterBase(ABC):
     rows.getByIndex(0).Height = row_height_div
     rows.getByIndex(self.max_row + 2).Height = row_height_div
 
-  @abstractmethod
-  def set_sheetwide_view(self) -> None:
-    pass
-
   # To be used only within the formatOneSheet()
   def is_first_column_empty(self) -> bool:
     rows = self.sheet.Rows
