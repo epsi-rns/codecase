@@ -29,6 +29,7 @@ class TabularFormatterCommon(FormatterBase):
     self.document = XSCRIPTCONTEXT.getDocument()
     super().__init__()
 
+  # Simple Configuration
   def init_field_metadata(self) -> None:
     self.fields = {
        'Year'     : { 'col': 'B', 'width': 1.5, 'bg': blueScale[3],
@@ -47,6 +48,7 @@ class TabularFormatterCommon(FormatterBase):
                       'align': 'center' }
     }
 
+  # Formatting Procedure: Abstract Override
   def set_sheetwide_view(self) -> None:
     # activate sheet
     spreadsheetView = self.controller
@@ -56,6 +58,7 @@ class TabularFormatterCommon(FormatterBase):
     spreadsheetView.ShowGrid = False
     spreadsheetView.freezeAtPosition(2, 3)
 
+  # Formatting Procedure
   def reset_pos_columns(self) -> None:
     columns = self.sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
@@ -70,6 +73,7 @@ class TabularFormatterCommon(FormatterBase):
     columns.getByIndex( 7).Width = column_width_div
     columns.getByIndex(11).Width = column_width_div
 
+  # Formatting Procedure
   def add_merged_title(self) -> None:
     self.sheet['B2:K3'].HoriJustify = CENTER
     self.sheet['B2:K2'].CharWeight = BOLD 
@@ -90,6 +94,7 @@ class TabularFormatterCommon(FormatterBase):
       1, 1, 8, 8, self.lfBlack)
     self.sheet['I2:K2'].merge(True)
 
+  # Formatting Procedure
   def format_head_borders(self) -> None:  
     # Base Movie Data
     self.apply_head_border(
@@ -99,6 +104,7 @@ class TabularFormatterCommon(FormatterBase):
     self.apply_head_border(
       'I', 'K', self.lfBlack, self.lfBlack)
 
+  # Formatting Procedure
   def format_data_borders(self) -> None:  
     # Base Movie Data
     self.apply_data_border(

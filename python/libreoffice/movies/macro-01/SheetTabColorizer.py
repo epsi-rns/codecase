@@ -55,4 +55,3 @@ def main():
   # Create the colorizer instance and run it
   colorizer = SheetTabColorizer()
   colorizer.run()
-

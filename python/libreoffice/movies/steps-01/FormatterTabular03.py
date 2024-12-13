@@ -1,7 +1,19 @@
-class FormatterBase:
+from abc import ABC, abstractmethod
+
+class FormatterBase(ABC):
   def __init__(self) -> None:
     self.controller = self.document.getCurrentController()
 
+  @abstractmethod
+  def reset_pos_columns(self) -> None:
+    pass
+
+  @abstractmethod
+  def set_sheetwide_view(self) -> None:
+    pass
+
+  # Sheet Helper
+  # To be used only within the formatOneSheet(), reset_pos_rows()
   def get_last_used_row(self) -> None:
     cursor = self.sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
@@ -10,6 +22,7 @@ class FormatterBase:
     
     return len(rows)
 
+  # Formatting Procedure
   def reset_pos_rows(self) -> None:
     rows = self.sheet.Rows
     row_height = 0.5 * 1000  # Height of 0.5 cm
@@ -28,9 +41,8 @@ class FormatterBase:
     rows.getByIndex(0).Height = row_height_div
     rows.getByIndex(self.max_row + 2).Height = row_height_div
 
-  def set_sheetwide_view(self) -> None:
-    pass
-
+  # Sheet Helper
+  # To be used only within the formatOneSheet()
   def is_first_column_empty(self) -> bool:
     rows = self.sheet.Rows
     max_sampling_row = 10
@@ -41,6 +53,7 @@ class FormatterBase:
       if cell.String != "": return False
     return True
 
+  # Basic Flow
   def formatOneSheet(self) -> None:
     self.max_row = self.get_last_used_row()
 
@@ -55,10 +68,12 @@ class FormatterBase:
     print(' * Formatting Columns')
     self.set_sheetwide_view()
 
+  # Basic Flow
   def processOne(self) -> None:
     self.sheet = self.controller.getActiveSheet()
     self.formatOneSheet()
 
+  # Basic Flow
   def processAll(self) -> None:
     for sheet in self.document.Sheets:
       print(sheet.Name)
@@ -72,6 +87,7 @@ class TabularFormatterCommon(FormatterBase):
     self.document = XSCRIPTCONTEXT.getDocument()
     super().__init__()
 
+  # Formatting Procedure: Abstract Override
   def set_sheetwide_view(self) -> None:
     # activate sheet
     spreadsheetView = self.controller
@@ -81,6 +97,7 @@ class TabularFormatterCommon(FormatterBase):
     spreadsheetView.ShowGrid = False
     spreadsheetView.freezeAtPosition(2, 3)
 
+  # Formatting Procedure
   def reset_pos_columns(self) -> None:
     columns = self.sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
