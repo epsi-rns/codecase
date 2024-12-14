@@ -363,7 +363,7 @@ class FormatterBase(ABC):
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-class TabularFormatterCommon(FormatterBase):
+class FormatterTabularCommon(FormatterBase):
   def __init__(self) -> None:
     self.document = XSCRIPTCONTEXT.getDocument()
     super().__init__()
@@ -460,9 +460,9 @@ class TabularFormatterCommon(FormatterBase):
 # Represent Class in Macro
 
 def processOne() -> None:
-  sample = TabularFormatterCommon()
+  sample = FormatterTabularCommon()
   sample.processOne()
 
 def processAll() -> None:
-  sample = TabularFormatterCommon()
+  sample = FormatterTabularCommon()
   sample.processAll()
