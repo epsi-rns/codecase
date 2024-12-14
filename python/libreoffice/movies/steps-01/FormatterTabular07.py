@@ -163,7 +163,7 @@ class FormatterBase(ABC):
     return index - 1  # Convert to 0-based index
 
   # Sheet Helper
-  # To be used only within the apply_head_border
+  # To be used only within the apply_head_border()
   def get_head_range(self, letter_start, letter_end):
     # Define the cell range for rows and columns
     head_row = 2
@@ -175,7 +175,7 @@ class FormatterBase(ABC):
       col_start, head_row, col_end, head_row)
 
   # Sheet Helper
-  # To be used only within the apply_data_border
+  # To be used only within the apply_data_border()
   def get_data_range(self, letter_start, letter_end):
     # Define the cell range for rows and columns
     start_row = 3
@@ -456,6 +456,8 @@ class TabularFormatterCommon(FormatterBase):
       'I', 'K', self.lfBlack, self.lfGray, self.lfGray)
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+# Represent Class in Macro
 
 def processOne() -> None:
   sample = TabularFormatterCommon()

@@ -122,11 +122,11 @@ class FormatterBase:
     pass
 
   @abstractmethod
-  def format_data_borders(self) -> None:  
+  def format_head_colors(self) -> None:
     pass
 
   @abstractmethod
-  def format_head_colors(self) -> None:
+  def format_data_borders(self) -> None:  
     pass
 
   # -- -- --
@@ -405,6 +405,22 @@ class FormatterCommon(FormatterBase):
           letter_start, letter_end, outer_line, vert_line)
 
   # Formatting Procedure: Abstract Override
+  def format_head_colors(self) -> None:
+    for metadata in self.metadatas:
+      start_letter = metadata['col-start']
+      start_index  = self.column_letter_to_index(start_letter)
+
+      pairs = metadata['fields'].items()
+      for pair_index, (field, data) in enumerate(pairs, start=1):
+        if bg_color := data.get('bg'): 
+          row_index = 2
+          col_index = start_index + pair_index - 1
+
+          cell = self.sheet.getCellByPosition(
+            col_index , row_index)
+          cell.CellBackColor = bg_color 
+
+  # Formatting Procedure: Abstract Override
   def format_data_borders(self) -> None:
     for metadata in self.metadatas:
       start_letter = metadata['col-start']
@@ -421,22 +437,6 @@ class FormatterCommon(FormatterBase):
         self.apply_data_border(
           letter_start, letter_end,
           outer_line, vert_line, horz_line)
-
-  # Formatting Procedure: Abstract Override
-  def format_head_colors(self) -> None:
-    for metadata in self.metadatas:
-      start_letter = metadata['col-start']
-      start_index  = self.column_letter_to_index(start_letter)
-
-      pairs = metadata['fields'].items()
-      for pair_index, (field, data) in enumerate(pairs, start=1):
-        if bg_color := data.get('bg'): 
-          row_index = 2
-          col_index = start_index + pair_index - 1
-
-          cell = self.sheet.getCellByPosition(
-            col_index , row_index)
-          cell.CellBackColor = bg_color 
 
   # -- -- --
 
@@ -537,49 +537,6 @@ class FormatterTabular(FormatterCommon):
     spreadsheetView.ShowGrid = False
     spreadsheetView.freezeAtPosition(3, 3)
 
-  # Rebuild array of tuple using the helper function
-  def get_rows_affected_letter(self):
-    return [
-      (self.column_index_to_letter(start_col_index + start - 1),
-       self.column_index_to_letter(start_col_index + end - 1))
-      for metadata in self.metadatas
-        # Inline temporary variable
-        for start_col_index in [
-          self.column_letter_to_index(metadata['col-start'])]
-        # Inner loop
-        for start, end, *_ in metadata['head-borders']
-    ]
-
-  def color_row(self, row) -> None:
-    # get cell address value for current row and previous
-    col = self.color_group
-    value_current = self.sheet[f'{col}{row}'].Value
-    value_prev    = self.sheet[f'{col}{row-1}'].Value
-
-    # flip state whenever log index changed
-    if (value_current!=value_prev):
-      self.color_state = 1 if self.color_state==0 else 0
-
-    if self.color_state == 1:
-      # color row based on color_state
-      for letter_start, letter_end in self.rows_affected:
-        self.sheet[f'{letter_start}{row}:{letter_end}{row}']\
-          .CellBackColor = blueScale[0]
-
-  def color_logs(self) -> None:
-    # reset color state, flip flop, 0 or 1
-    self.color_state = 0
-
-    self.rows_affected = self.get_rows_affected_letter()
-    print(f'   {self.rows_affected}')
-
-    for row in range(3, self.max_row+2):
-      self.color_row(row)
-     
-      # Show progress every 5,000 rows
-      if (row - 3) % 2500 == 0:
-        print(f"   - Processing rows: {row-2}")
-
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabularData(FormatterTabular):
@@ -587,6 +544,7 @@ class FormatterTabularData(FormatterTabular):
     self.document = XSCRIPTCONTEXT.getDocument()
     super().__init__()
 
+  # Unified Configuration
   def init_metadatas(self) -> None:
     self.metadata_movies_base = {
       'fields': {
@@ -636,6 +594,8 @@ class FormatterTabularData(FormatterTabular):
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabularMovies(FormatterTabularData):
+
+  # Merge Configuration
   def merge_metadatas(self) -> None:
     # Columns:   A, H,  L
     self.gaps = [0, 7, 11]
@@ -649,6 +609,8 @@ class FormatterTabularMovies(FormatterTabularData):
     }]
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+# Represent Class in Macro
 
 def tabular_single_movies() -> None:
   sample = FormatterTabularMovies()

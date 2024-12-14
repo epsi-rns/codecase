@@ -1,18 +1,3 @@
-import sys
-
-# Linux Based
-lib_path = '/home/epsi/.config/libreoffice/4/user/Scripts/python/Movies'
-
-# Windows Based
-# lib_path =  'C:\\Users\\epsir\\AppData\\Roaming\\LibreOffice\\4\\user\\Scripts\\python\\Movies'
-
-# Add the path to the macro
-sys.path.append(lib_path)
-
-from lib.BorderFormat import (lfBlack, lfGray, lfNone)
-
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 from abc import ABC, abstractmethod
 
 from com.sun.star.\
@@ -20,7 +5,75 @@ from com.sun.star.\
 from com.sun.star.\
   table.CellHoriJustify import LEFT, CENTER, RIGHT
 from com.sun.star.\
-  table import TableBorder2
+  table import BorderLine2, BorderLineStyle
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+# Google Material Color Scale 
+blueScale = {
+  0: 0xE3F2FD, 1: 0xBBDEFB, 2: 0x90CAF9,
+  3: 0x64B5F6, 4: 0x42A5F5, 5: 0x2196F3,
+  6: 0x1E88E5, 7: 0x1976D2, 8: 0x1565C0,
+  9: 0x0D47A1
+}
+
+tealScale = {
+  0: 0xE0F2F1, 1: 0xB2DFDB, 2: 0x80CBC4,
+  3: 0x4DB6AC, 4: 0x26A69A, 5: 0x009688,
+  6: 0x00897B, 7: 0x00796B, 8: 0x00695C,
+  9: 0x004D40
+}
+
+amberScale = {
+  0: 0xFFF8E1, 1: 0xFFECB3, 2: 0xFFE082,
+  3: 0xFFD54F, 4: 0xFFCA28, 5: 0xFFC107,
+  6: 0xFFB300, 7: 0xFFA000, 8: 0xFF8F00,
+  9: 0xFF6F00
+}
+
+brownScale = {
+  0: 0xEFEBE9, 1: 0xD7CCC8, 2: 0xBCAAA4,
+  3: 0xA1887F, 4: 0x8D6E63, 5: 0x795548,
+  6: 0x6D4C41, 7: 0x5D4037, 8: 0x4E342E,
+  9: 0x3E2723
+}
+
+redScale = {
+  0: 0xffebee, 1: 0xffcdd2, 2: 0xef9a9a,
+  3: 0xe57373, 4: 0xef5350, 5: 0xf44336,
+  6: 0xe53935, 7: 0xd32f2f, 8: 0xc62828,
+  9: 0xb71c1c
+}
+
+clBlack = 0x000000
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+class BorderFormatManager:
+  def create_line_format_none(self):
+    lineFormatNone = BorderLine2()
+    lineFormatNone.LineStyle = BorderLineStyle.NONE
+    return lineFormatNone
+
+  def create_line_format_black(self):
+    lineFormatBlack = BorderLine2()
+    lineFormatBlack.LineStyle = BorderLineStyle.SOLID
+    lineFormatBlack.LineWidth = 20
+    lineFormatBlack.Color = 0x000000 #black
+    return lineFormatBlack
+
+  def create_line_format_gray(self):
+    lineFormatGray = BorderLine2()
+    lineFormatGray.LineStyle = BorderLineStyle.SOLID
+    lineFormatGray.LineWidth = 20
+    lineFormatGray.Color = 0xE0E0E0 #gray300
+    return lineFormatGray
+
+# table border
+bfm = BorderFormatManager()
+lfNone  = bfm.create_line_format_none()
+lfBlack = bfm.create_line_format_black()
+lfGray  = bfm.create_line_format_gray()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -64,18 +117,6 @@ class FormatterBase:
   def add_merged_titles(self) -> None:
     pass
 
-  @abstractmethod
-  def format_head_borders(self) -> None:  
-    pass
-
-  @abstractmethod
-  def format_head_colors(self) -> None:
-    pass
-
-  @abstractmethod
-  def format_data_borders(self) -> None:  
-    pass
-
   # -- -- --
 
   # Basic Flow
@@ -98,12 +139,6 @@ class FormatterBase:
     # Apply Header Settings
     print(' * Formatting Header')
     self.add_merged_titles()
-    self.format_head_borders()
-    self.format_head_colors()
-
-    # Apply borders to the specified range
-    print(' * Formatting Border')
-    self.format_data_borders()
 
     # Call the hook method (default does nothing)
     self.format_one_sheet_post()
@@ -335,139 +370,84 @@ class FormatterCommon(FormatterBase):
     """Hook method to be overridden by subclasses if needed."""
     pass
 
-  # Formatting Procedure: Abstract Override
-  def format_head_borders(self) -> None:
-    for metadata in self.metadatas:
-      start_letter = metadata['col-start']
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-      for border_config in metadata['head-borders']:
-        col_start_id, col_end_id, outer_line, vert_line = border_config
+class FormatterTabular(FormatterCommon):
+  def set_sheetwide_view(self) -> None:
+    # activate sheet
+    spreadsheetView = self.controller
+    spreadsheetView.setActiveSheet(self.sheet)
 
-        letter_start = self.get_relative_column_letter(
-          start_letter, col_start_id)  
-        letter_end   = self.get_relative_column_letter(
-          start_letter, col_end_id)
+    # sheet wide
+    spreadsheetView.ShowGrid = False
+    spreadsheetView.freezeAtPosition(3, 3)
 
-        self.apply_head_border(
-          letter_start, letter_end, outer_line, vert_line)
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-  # Formatting Procedure: Abstract Override
-  def format_head_colors(self) -> None:
-    for metadata in self.metadatas:
-      start_letter = metadata['col-start']
-      start_index  = self.column_letter_to_index(start_letter)
+class FormatterTabularData(FormatterTabular):
+  def __init__(self) -> None:
+    self.document = XSCRIPTCONTEXT.getDocument()
+    super().__init__()
 
-      pairs = metadata['fields'].items()
-      for pair_index, (field, data) in enumerate(pairs, start=1):
-        if bg_color := data.get('bg'): 
-          row_index = 2
-          col_index = start_index + pair_index - 1
+  # Unified Configuration
+  def init_metadatas(self) -> None:
+    self.metadata_movies_base = {
+      'fields': {
+        'Year'     : { 'width': 1.5, 'bg': blueScale[3],
+                       'align': 'center' },
+        'Title'    : { 'width': 6,   'bg': blueScale[2] },
+        'Genre'    : { 'width': 3,   'bg': blueScale[1] },
+        'Plot'     : { 'width': 6,   'bg': blueScale[2] },
+        'Actors'   : { 'width': 6,   'bg': blueScale[1] },
+        'Director' : { 'width': 5,   'bg': blueScale[2] }
+      },
 
-          cell = self.sheet.getCellByPosition(
-            col_index , row_index)
-          cell.CellBackColor = bg_color 
+      'titles': [{ 
+        'col-start-id' : 1, 'col-end-id' : 6, 'text' : 'Base Movie Data', 
+        'bg' : blueScale[3], 'fg' : clBlack                    
+      }]
+    }
 
-  # Formatting Procedure: Abstract Override
-  def format_data_borders(self) -> None:
-    for metadata in self.metadatas:
-      start_letter = metadata['col-start']
+    self.metadata_movies_additional = {
+      'fields': {
+        'Rated'    : { 'width': 2,   'bg': tealScale[2],
+                       'align': 'center' },
+        'Runtime'  : { 'width': 2.5, 'bg': tealScale[1],
+                       'align': 'center' },
+        'Metascore': { 'width': 2,   'bg': tealScale[2],
+                       'align': 'center' }
+      },
+      'titles': [{ 
+        'col-start-id' : 1, 'col-end-id' : 3, 'text' : 'Additional Data', 
+        'bg' : tealScale[3], 'fg' : clBlack                    
+      }]
+    }
 
-      for border_config in metadata['data-borders']:
-        col_start_id, col_end_id, \
-        outer_line, vert_line, horz_line = border_config
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-        letter_start = self.get_relative_column_letter(
-          start_letter, col_start_id)  
-        letter_end   = self.get_relative_column_letter(
-          start_letter, col_end_id)  
+class FormatterTabularMovies(FormatterTabularData):
 
-        self.apply_data_border(
-          letter_start, letter_end,
-          outer_line, vert_line, horz_line)
+  # Merge Configuration
+  def merge_metadatas(self) -> None:
+    # Columns:   A, H,  L
+    self.gaps = [0, 7, 11]
 
-  # -- -- --
+    self.metadatas = [{
+      'col-start'     : 'B',
+      **self.metadata_movies_base
+    }, {
+      'col-start'     : 'I',
+      **self.metadata_movies_additional
+    }]
 
-  # Sheet Helper
-  # To be used only within the apply_head_border()
-  def get_head_range(self, letter_start, letter_end):
-    # Define the cell range for rows and columns
-    head_row = 2
-    col_start = self.column_letter_to_index(letter_start)
-    col_end   = self.column_letter_to_index(letter_end)
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-    # Define the cell range for the outer border and vertical lines
-    return self.sheet.getCellRangeByPosition(
-      col_start, head_row, col_end, head_row)
+# Represent Class in Macro
 
-  # Sheet Helper
-  # To be used only within the apply_data_border()
-  def get_data_range(self, letter_start, letter_end):
-    # Define the cell range for rows and columns
-    start_row = 3
-    end_row = self.max_row
-    col_start = self.column_letter_to_index(letter_start)
-    col_end   = self.column_letter_to_index(letter_end)
+def tabular_single_movies() -> None:
+  sample = FormatterTabularMovies()
+  sample.process_one()
 
-    # Define the cell range for the outer border and vertical lines
-    return self.sheet.getCellRangeByPosition(
-      col_start, start_row, col_end, end_row)
-
-  # Sheet Helper
-  # To be used only within the apply_head_border()
-  def set_head_rectangle(self,
-        letter_start, letter_end, line_format) -> None:
-    # Define the cell range for rows and columns
-    # Top, Bottom (max row), Left, Right
-    a_t = 2
-    a_b = 2
-    a_l = self.column_letter_to_index(letter_start)
-    a_r = self.column_letter_to_index(letter_end)
-
-    self.format_cell_rectangle(a_t, a_b, a_l, a_r, line_format)
-
-  # Sheet Helper
-  # To be used only within the apply_data_border()
-  def set_data_rectangle(self,
-        letter_start, letter_end, line_format) -> None:
-    # Define the cell range for rows and columns
-    # Top, Bottom (max row), Left, Right
-    a_t = 3
-    a_b = self.max_row
-    a_l = self.column_letter_to_index(letter_start)
-    a_r = self.column_letter_to_index(letter_end)
-
-    self.format_cell_rectangle(a_t, a_b, a_l, a_r, line_format)
-
-  # Sheet Helper
-  # To be used only within the format_head_borders()
-  def apply_head_border(self,
-        letter_start, letter_end,
-        outer_line, vert_line) -> None:
-    self.set_head_rectangle(
-      letter_start, letter_end, outer_line)
-
-    border = TableBorder2()
-    border.IsVerticalLineValid   = True
-    border.VerticalLine   = vert_line
-
-    cell_range = self.get_head_range(
-      letter_start, letter_end)
-    cell_range.TableBorder2 = border
-
-  # Sheet Helper
-  # To be used only within the format_data_borders()
-  def apply_data_border(self,
-        letter_start, letter_end,
-        outer_line, vert_line, horz_line) -> None:
-    self.set_data_rectangle(
-      letter_start, letter_end, outer_line)
-
-    border = TableBorder2()
-    border.IsVerticalLineValid   = True
-    border.IsHorizontalLineValid = True
-    border.VerticalLine   = vert_line
-    border.HorizontalLine = horz_line
-
-    cell_range = self.get_data_range(
-      letter_start, letter_end)
-    cell_range.TableBorder2 = border
+def tabular_multi_movies() -> None:
+  sample = FormatterTabularMovies()
+  sample.process_all()

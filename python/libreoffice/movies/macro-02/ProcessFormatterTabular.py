@@ -21,6 +21,7 @@ class FormatterTabularData(FormatterTabular):
     self.document = XSCRIPTCONTEXT.getDocument()
     super().__init__()
 
+  # Unified Configuration
   def init_metadatas(self) -> None:
     self.metadata_movies_base = {
       'fields': {
@@ -69,8 +70,9 @@ class FormatterTabularData(FormatterTabular):
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-
 class FormatterTabularMovies(FormatterTabularData):
+
+  # Merge Configuration
   def merge_metadatas(self) -> None:
     # Columns:   A, H,  L
     self.gaps = [0, 7, 11]
@@ -84,6 +86,8 @@ class FormatterTabularMovies(FormatterTabularData):
     }]
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+# Represent Class in Macro
 
 def tabular_single_movies() -> None:
   sample = FormatterTabularMovies()

@@ -160,7 +160,7 @@ class FormatterBase(ABC):
     return index - 1  # Convert to 0-based index
 
   # Sheet Helper
-  # To be used only within the apply_head_border
+  # To be used only within the apply_head_border()
   def get_head_range(self, letter_start, letter_end):
     # Define the cell range for rows and columns
     head_row = 2
