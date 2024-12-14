@@ -3,6 +3,10 @@ from abc import ABC, abstractmethod
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterBase:
+  @property
+  @abstractmethod
+  def document(self): pass
+
   def __init__(self) -> None:
     self.controller = self.document.getCurrentController()
     self.merge_metadatas()
@@ -17,10 +21,9 @@ class FormatterBase:
 
   # Basic Flow
   def format_one_sheet(self) -> None:
-    if not self.is_first_column_empty():
-      # Rearranging Columns
-      print(' * Rearranging Columns')
-      self.reset_pos_columns()
+    # Rearranging Columns
+    print(' * Rearranging Columns')
+    self.reset_pos_columns()
 
     # Call the hook method (default does nothing)
     self.format_one_sheet_post()
@@ -56,20 +59,6 @@ class FormatterBase:
       index = index // 26 - 1
     return letters
 
-  # -- -- --
-
-  # Sheet Helper
-  # To be used only within the formatOneSheet()
-  def is_first_column_empty(self) -> bool:
-    rows = self.sheet.Rows
-    max_sampling_row = 10
-
-    for row_index in range(max_sampling_row + 1):
-      cell = self.sheet.getCellByPosition(0, row_index)
-      # 0 indicates an empty cell
-      if cell.String != "": return False
-    return True
-
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterCommon(FormatterBase):
@@ -89,9 +78,8 @@ class FormatterCommon(FormatterBase):
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabularData(FormatterCommon):
-  def __init__(self) -> None:
-    self.document = XSCRIPTCONTEXT.getDocument()
-    super().__init__()
+  @property
+  def document(self): return XSCRIPTCONTEXT.getDocument()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

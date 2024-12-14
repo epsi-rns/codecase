@@ -17,9 +17,8 @@ from lib.FormatterTabular import FormatterTabular
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabularData(FormatterTabular):
-  def __init__(self) -> None:
-    self.document = XSCRIPTCONTEXT.getDocument()
-    super().__init__()
+  @property
+  def document(self): return XSCRIPTCONTEXT.getDocument()
 
   # Unified Configuration
   def init_metadatas(self) -> None:

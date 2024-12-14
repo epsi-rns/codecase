@@ -67,7 +67,7 @@ class FormatterBase(ABC):
 
   # Sheet Helper
   # To be used only within the formatOneSheet(), reset_pos_rows()
-  def get_last_used_row(self) -> None:
+  def get_last_used_row(self) -> int:
     cursor = self.sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
     cursor.gotoStartOfUsedArea(True)

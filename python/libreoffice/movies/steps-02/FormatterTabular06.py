@@ -78,6 +78,10 @@ lfGray  = bfm.create_line_format_gray()
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterBase:
+  @property
+  @abstractmethod
+  def document(self): pass
+
   def __init__(self) -> None:
     self.controller = self.document.getCurrentController()
 
@@ -203,7 +207,7 @@ class FormatterBase:
 
   # Sheet Helper
   # To be used only within the formatOneSheet(), reset_pos_rows()
-  def get_last_used_row(self) -> None:
+  def get_last_used_row(self) -> int:
     cursor = self.sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
     cursor.gotoStartOfUsedArea(True)
@@ -470,9 +474,8 @@ class FormatterTabular(FormatterCommon):
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabularData(FormatterTabular):
-  def __init__(self) -> None:
-    self.document = XSCRIPTCONTEXT.getDocument()
-    super().__init__()
+  @property
+  def document(self): return XSCRIPTCONTEXT.getDocument()
 
   # Unified Configuration
   def init_metadatas(self) -> None:

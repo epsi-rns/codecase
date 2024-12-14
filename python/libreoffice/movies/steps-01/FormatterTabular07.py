@@ -50,7 +50,8 @@ clBlack = 0x000000
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterBase(ABC):
-  def __init__(self) -> None:
+  def __init__(self, document) -> None:
+    self.document   = document
     self.controller = self.document.getCurrentController()
 
     self.init_field_metadata()
@@ -107,7 +108,7 @@ class FormatterBase(ABC):
 
   # Sheet Helper
   # To be used only within the formatOneSheet(), reset_pos_rows()
-  def get_last_used_row(self) -> None:
+  def get_last_used_row(self) -> int:
     cursor = self.sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
     cursor.gotoStartOfUsedArea(True)
@@ -365,8 +366,7 @@ class FormatterBase(ABC):
 
 class FormatterTabularMovies(FormatterBase):
   def __init__(self) -> None:
-    self.document = XSCRIPTCONTEXT.getDocument()
-    super().__init__()
+    super().__init__(XSCRIPTCONTEXT.getDocument())
 
   # Simple Configuration
   def init_field_metadata(self) -> None:

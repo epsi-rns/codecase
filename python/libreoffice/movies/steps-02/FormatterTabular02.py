@@ -3,6 +3,10 @@ from abc import ABC, abstractmethod
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterBase:
+  @property
+  @abstractmethod
+  def document(self): pass
+
   def __init__(self) -> None:
     self.controller = self.document.getCurrentController()
     self.merge_metadatas()
@@ -69,7 +73,7 @@ class FormatterBase:
 
   # Sheet Helper
   # To be used only within the formatOneSheet(), reset_pos_rows()
-  def get_last_used_row(self) -> None:
+  def get_last_used_row(self) -> int:
     cursor = self.sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
     cursor.gotoStartOfUsedArea(True)

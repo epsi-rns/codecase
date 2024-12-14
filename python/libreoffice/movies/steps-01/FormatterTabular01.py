@@ -1,5 +1,6 @@
 class FormatterBase:
-  def __init__(self) -> None:
+  def __init__(self, document) -> None:
+    self.document   = document
     self.controller = self.document.getCurrentController()
 
   # Basic Flow
@@ -22,8 +23,7 @@ class FormatterBase:
 
 class FormatterTabularMovies(FormatterBase):
   def __init__(self) -> None:
-    self.document = XSCRIPTCONTEXT.getDocument()
-    super().__init__()
+    super().__init__(XSCRIPTCONTEXT.getDocument())
 
   # Formatting Procedure
   def reset_pos_columns(self) -> None:
