@@ -24,7 +24,7 @@ from com.sun.star.\
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-class TabularFormatterCommon(FormatterBase):
+class FormatterTabularMovies(FormatterBase):
   def __init__(self) -> None:
     self.document = XSCRIPTCONTEXT.getDocument()
     super().__init__()
@@ -118,10 +118,12 @@ class TabularFormatterCommon(FormatterBase):
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-def processOne() -> None:
-  sample = TabularFormatterCommon()
-  sample.processOne()
+# Represent Class in Macro
 
-def processAll() -> None:
-  sample = TabularFormatterCommon()
-  sample.processAll()
+def tabular_single_movies() -> None:
+  movies = FormatterTabularMovies()
+  movies.process_one()
+
+def tabular_multi_movies() -> None:
+  movies = FormatterTabularMovies()
+  movies.process_all()

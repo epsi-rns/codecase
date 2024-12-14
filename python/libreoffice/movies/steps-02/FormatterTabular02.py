@@ -145,9 +145,9 @@ class FormatterTabularMovies(FormatterTabularData):
 # Represent Class in Macro
 
 def tabular_single_movies() -> None:
-  sample = FormatterTabularMovies()
-  sample.process_one()
+  movies = FormatterTabularMovies()
+  movies.process_one()
 
 def tabular_multi_movies() -> None:
-  sample = FormatterTabularMovies()
-  sample.process_all()
+  movies = FormatterTabularMovies()
+  movies.process_all()

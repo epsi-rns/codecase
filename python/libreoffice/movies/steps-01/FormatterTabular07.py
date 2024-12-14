@@ -324,7 +324,7 @@ class FormatterBase(ABC):
         cell.CellBackColor = bg_color 
 
   # Basic Flow
-  def formatOneSheet(self) -> None:
+  def format_one_sheet(self) -> None:
     self.max_row = self.get_last_used_row()
 
     if not self.is_first_column_empty():
@@ -350,20 +350,20 @@ class FormatterBase(ABC):
     self.format_data_borders()
 
   # Basic Flow
-  def processOne(self) -> None:
+  def process_one(self) -> None:
     self.sheet = self.controller.getActiveSheet()
-    self.formatOneSheet()
+    self.format_one_sheet()
 
   # Basic Flow
-  def processAll(self) -> None:
+  def process_all(self) -> None:
     for sheet in self.document.Sheets:
       print(sheet.Name)
       self.sheet = sheet
-      self.formatOneSheet()
+      self.format_one_sheet()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-class FormatterTabularCommon(FormatterBase):
+class FormatterTabularMovies(FormatterBase):
   def __init__(self) -> None:
     self.document = XSCRIPTCONTEXT.getDocument()
     super().__init__()
@@ -459,10 +459,10 @@ class FormatterTabularCommon(FormatterBase):
 
 # Represent Class in Macro
 
-def processOne() -> None:
-  sample = FormatterTabularCommon()
-  sample.processOne()
+def tabular_single_movies() -> None:
+  tabular = FormatterTabularMovies()
+  tabular.process_one()
 
-def processAll() -> None:
-  sample = FormatterTabularCommon()
-  sample.processAll()
+def tabular_multi_movies() -> None:
+  tabular = FormatterTabularMovies()
+  tabular.process_all()
