@@ -1,23 +1,23 @@
 class FormatterBase:
   def __init__(self, document) -> None:
-    self.document   = document
-    self.controller = self.document.getCurrentController()
+    self.__document = document
+    self.controller = self.__document.getCurrentController()
 
   # Basic Flow
-  def format_one_sheet(self) -> None:
-    self.reset_pos_columns()
+  def __format_one_sheet(self) -> None:
+    self._reset_pos_columns()
 
   # Basic Flow
   def process_one(self) -> None:
-    self.sheet = self.controller.getActiveSheet()
-    self.format_one_sheet()
+    self._sheet = self.controller.getActiveSheet()
+    self.__format_one_sheet()
 
   # Basic Flow
   def process_all(self) -> None:
-    for sheet in self.document.Sheets:
+    for sheet in self.__document.Sheets:
       print(sheet.Name)
-      self.sheet = sheet
-      self.format_one_sheet()
+      self._sheet = sheet
+      self.__format_one_sheet()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -26,8 +26,8 @@ class FormatterTabularMovies(FormatterBase):
     super().__init__(XSCRIPTCONTEXT.getDocument())
 
   # Formatting Procedure
-  def reset_pos_columns(self) -> None:
-    columns = self.sheet.Columns
+  def _reset_pos_columns(self) -> None:
+    columns = self._sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
 
     # Insert one column at the specified indexes

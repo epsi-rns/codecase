@@ -2,21 +2,21 @@ from abc import ABC, abstractmethod
 
 class FormatterBase(ABC):
   def __init__(self, document) -> None:
-    self.document   = document
-    self.controller = self.document.getCurrentController()
+    self.__document = document
+    self.controller = self.__document.getCurrentController()
 
   @abstractmethod
-  def reset_pos_columns(self) -> None:
+  def _reset_pos_columns(self) -> None:
     pass
 
   @abstractmethod
-  def set_sheetwide_view(self) -> None:
+  def _set_sheetwide_view(self) -> None:
     pass
 
   # Sheet Helper
   # To be used only within the formatOneSheet(), reset_pos_rows()
-  def get_last_used_row(self) -> int:
-    cursor = self.sheet.createCursor()
+  def __get_last_used_row(self) -> int:
+    cursor = self._sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
     cursor.gotoStartOfUsedArea(True)
     rows = cursor.getRows()
@@ -24,8 +24,8 @@ class FormatterBase(ABC):
     return len(rows)
 
   # Formatting Procedure
-  def reset_pos_rows(self) -> None:
-    rows = self.sheet.Rows
+  def __reset_pos_rows(self) -> None:
+    rows = self._sheet.Rows
     row_height = 0.5 * 1000  # Height of 0.5 cm
 
     # Range to be processed
@@ -44,42 +44,42 @@ class FormatterBase(ABC):
 
   # Sheet Helper
   # To be used only within the formatOneSheet()
-  def is_first_column_empty(self) -> bool:
-    rows = self.sheet.Rows
+  def __is_first_column_empty(self) -> bool:
+    rows = self._sheet.Rows
     max_sampling_row = 10
 
     for row_index in range(max_sampling_row + 1):
-      cell = self.sheet.getCellByPosition(0, row_index)
-      # 0 indicates an empty cell
+      cell = self._sheet.getCellByPosition(0, row_index)
+      # Indicates an empty cell
       if cell.String != "": return False
     return True
 
   # Basic Flow
-  def format_one_sheet(self) -> None:
-    self.max_row = self.get_last_used_row()
+  def __format_one_sheet(self) -> None:
+    self.max_row = self.__get_last_used_row()
 
-    if not self.is_first_column_empty():
+    if not self.__is_first_column_empty():
       # Rearranging Columns
       print(' * Rearranging Columns')
-      self.reset_pos_columns()
-      self.reset_pos_rows()
+      self._reset_pos_columns()
+      self.__reset_pos_rows()
       self.max_row += 1
 
     # Apply Sheet Wide
     print(' * Formatting Columns')
-    self.set_sheetwide_view()
+    self._set_sheetwide_view()
 
   # Basic Flow
   def process_one(self) -> None:
-    self.sheet = self.controller.getActiveSheet()
-    self.format_one_sheet()
+    self._sheet = self.controller.getActiveSheet()
+    self.__format_one_sheet()
 
   # Basic Flow
   def process_all(self) -> None:
-    for sheet in self.document.Sheets:
+    for sheet in self.__document.Sheets:
       print(sheet.Name)
-      self.sheet = sheet
-      self.format_one_sheet()
+      self._sheet = sheet
+      self.__format_one_sheet()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -88,18 +88,18 @@ class FormatterTabularMovies(FormatterBase):
     super().__init__(XSCRIPTCONTEXT.getDocument())
 
   # Formatting Procedure: Abstract Override
-  def set_sheetwide_view(self) -> None:
+  def _set_sheetwide_view(self) -> None:
     # activate sheet
     spreadsheetView = self.controller
-    spreadsheetView.setActiveSheet(self.sheet)
+    spreadsheetView.setActiveSheet(self._sheet)
 
     # sheet wide
     spreadsheetView.ShowGrid = False
     spreadsheetView.freezeAtPosition(2, 3)
 
   # Formatting Procedure
-  def reset_pos_columns(self) -> None:
-    columns = self.sheet.Columns
+  def _reset_pos_columns(self) -> None:
+    columns = self._sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
 
     # Insert one column at the specified indexes
