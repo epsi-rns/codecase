@@ -1,5 +1,9 @@
 from abc import ABC, abstractmethod
 
+from com.sun.star.sheet import XSpreadsheetDocument
+from com.sun.star.util  import XNumberFormats
+from com.sun.star.table import XCellRange
+
 from com.sun.star.\
   awt.FontWeight import BOLD
 from com.sun.star.\
@@ -50,10 +54,12 @@ clBlack = 0x000000
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterBase(ABC):
-  def __init__(self, document) -> None:
+  def __init__(self, document: XSpreadsheetDocument) -> None:
     self.__document = document
-    self.controller = self.__document.getCurrentController()
+    self._sheet = None
+    self._controller = self.__document.getCurrentController()
 
+    self._fields = {}
     self._init_field_metadata()
     self.__prepare_sheet()
 
@@ -78,7 +84,7 @@ class FormatterBase(ABC):
     pass
 
   # Class Property: Sheet Variables
-  def __prepare_sheet(self):
+  def __prepare_sheet(self) -> None:
     # number and date format
     self.numberfmt = self.__document.NumberFormats
     self.locale    = self.__document.CharLocale
@@ -114,7 +120,9 @@ class FormatterBase(ABC):
 
   # Sheet Helper
   # To be used only within the __set_columns_format()
-  def __get_number_format(self, format_string):
+  def __get_number_format(self,
+        format_string: str) -> XNumberFormats:
+
     nf = self.numberfmt.queryKey(  \
               format_string, self.locale, True)
     if nf == -1:
@@ -162,7 +170,9 @@ class FormatterBase(ABC):
 
   # Sheet Helper
   # To be used only within the apply_head_border()
-  def __get_head_range(self, letter_start, letter_end):
+  def __get_head_range(self,
+        letter_start: str, letter_end: str) -> XCellRange:
+
     # Define the cell range for rows and columns
     head_row = 2
     col_start = self._column_letter_to_index(letter_start)
@@ -174,7 +184,8 @@ class FormatterBase(ABC):
 
   # Helper: Multiple Usages
   def _format_cell_rectangle(self,
-        a_t, a_b, a_l, a_r, line_format) -> None:
+        a_t: int, a_b: int, a_l: int, a_r: int,
+        line_format: BorderLine2) -> None:
 
     func_gcrb = self._sheet.getCellRangeByPosition
 
@@ -211,7 +222,8 @@ class FormatterBase(ABC):
   # Sheet Helper
   # To be used only within the apply_head_border()
   def __set_head_rectangle(self,
-        letter_start, letter_end, line_format) -> None:
+        letter_start: str, letter_end: str,
+        line_format: BorderLine2) -> None:
 
     # Define the cell range for rows and columns  
     # Top, Bottom (max row), Left, Right
@@ -225,8 +237,8 @@ class FormatterBase(ABC):
   # Sheet Helper
   # To be used only within the format_head_borders()
   def _apply_head_border(self,
-        letter_start, letter_end,
-        outer_line, vert_line) -> None:
+        letter_start: str, letter_end: str,
+        outer_line: BorderLine2, vert_line: BorderLine2) -> None:
 
     # Border Outside: Edges and Corner
     self.__set_head_rectangle(
@@ -249,7 +261,7 @@ class FormatterBase(ABC):
     alignment_map = {
         'left'  : LEFT,  'center': CENTER, 'right' : RIGHT }
 
-    for field, data in self.fields.items():
+    for field, data in self._fields.items():
       letter = data['col']
       width  = data['width'] * 1000
       align  = data.get('align')
@@ -271,7 +283,7 @@ class FormatterBase(ABC):
 
   # Formatting Procedure
   def _format_head_colors(self) -> None:  
-    for field, data in self.fields.items():
+    for field, data in self._fields.items():
       if bg_color := data.get('bg'):
         letter = data['col']      
         row_index = 2
@@ -305,7 +317,7 @@ class FormatterBase(ABC):
 
   # Basic Flow
   def process_one(self) -> None:
-    self._sheet = self.controller.getActiveSheet()
+    self._sheet = self._controller.getActiveSheet()
     self.__format_one_sheet()
 
   # Basic Flow
@@ -323,7 +335,7 @@ class FormatterTabularMovies(FormatterBase):
 
   # Simple Configuration
   def _init_field_metadata(self) -> None:
-    self.fields = {
+    self._fields = {
        'Year'     : { 'col': 'B', 'width': 1.5, 'bg': blueScale[3],
                       'align': 'center' },
        'Title'    : { 'col': 'C', 'width': 6,   'bg': blueScale[2] },
@@ -343,7 +355,7 @@ class FormatterTabularMovies(FormatterBase):
   # Formatting Procedure: Abstract Override
   def _set_sheetwide_view(self) -> None:
     # activate sheet
-    spreadsheetView = self.controller
+    spreadsheetView = self._controller
     spreadsheetView.setActiveSheet(self._sheet)
 
     # sheet wide

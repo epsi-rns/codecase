@@ -1,7 +1,10 @@
+from com.sun.star.sheet import XSpreadsheetDocument
+
 class FormatterBase:
-  def __init__(self, document) -> None:
+  def __init__(self, document: XSpreadsheetDocument) -> None:
     self.__document = document
-    self.controller = self.__document.getCurrentController()
+    self._sheet = None
+    self._controller = self.__document.getCurrentController()
 
   # Sheet Helper
   # To be used only within the formatOneSheet(), reset_pos_rows()
@@ -57,7 +60,7 @@ class FormatterBase:
 
   # Basic Flow
   def process_one(self) -> None:
-    self._sheet = self.controller.getActiveSheet()
+    self._sheet = self._controller.getActiveSheet()
     self.__format_one_sheet()
 
   # Basic Flow

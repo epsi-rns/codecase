@@ -15,65 +15,75 @@ from lib.BorderFormat import (lfBlack, lfGray, lfNone)
 
 from abc import ABC, abstractmethod
 
+from com.sun.star.util  import XNumberFormats
+from com.sun.star.table import XCellRange
+
 from com.sun.star.\
   awt.FontWeight import BOLD
 from com.sun.star.\
   table.CellHoriJustify import LEFT, CENTER, RIGHT
 from com.sun.star.\
-  table import TableBorder2
+  table import BorderLine2, BorderLineStyle, TableBorder2
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterBase:
   @property
   @abstractmethod
-  def document(self): pass
+  def _document(self): pass
 
   def __init__(self) -> None:
-    self.controller = self.document.getCurrentController()
+    self._sheet = None
+    self._controller = self._document.getCurrentController()
+    self._gaps = []
+    self._metadatas = []
 
-    self.prepare_sheet()
-    self.init_metadatas()
-    self.merge_metadatas()
+    self.__prepare_sheet()
+    self._init_metadatas()
+    self._merge_metadatas()
 
   # Class Property: Sheet Variables
-  def prepare_sheet(self):
+  def __prepare_sheet(self) -> None:
     # number and date format
-    self.numberfmt = self.document.NumberFormats
-    self.locale    = self.document.CharLocale
+    self.numberfmt = self._document.NumberFormats
+    self.locale    = self._document.CharLocale
 
   # -- -- --
 
   @abstractmethod
-  def init_metadatas(self) -> None:
+  def _init_metadatas(self) -> None:
     pass
 
   @abstractmethod
-  def reset_pos_columns(self) -> None:
+  def _merge_metadatas(self) -> None:
     pass
 
   @abstractmethod
-  def reset_pos_rows(self) -> None:
+  def _reset_pos_columns(self) -> None:
     pass
 
   @abstractmethod
-  def set_sheetwide_view(self) -> None:
+  def _reset_pos_rows(self) -> None:
     pass
 
   @abstractmethod
-  def set_columns_format(self) -> None:
+  def _set_sheetwide_view(self) -> None:
     pass
 
   @abstractmethod
-  def add_merged_titles(self) -> None:
+  def _set_columns_format(self) -> None:
     pass
 
   @abstractmethod
-  def format_head_borders(self) -> None:  
+  def _add_merged_titles(self) -> None:
     pass
 
   @abstractmethod
-  def format_head_colors(self) -> None:
+  def _format_head_borders(self) -> None:  
+    pass
+
+  @abstractmethod
+  def _format_head_colors(self) -> None:
     pass
 
   @abstractmethod
@@ -83,59 +93,59 @@ class FormatterBase:
   # -- -- --
 
   # Basic Flow
-  def format_one_sheet(self) -> None:
-    self.max_row = self.get_last_used_row()
+  def __format_one_sheet(self) -> None:
+    self.max_row = self.__get_last_used_row()
 
-    if not self.is_first_column_empty():
+    if not self.__is_first_column_empty():
       # Rearranging Columns
       print(' * Rearranging Columns')
-      self.reset_pos_columns()
+      self._reset_pos_columns()
       print(' * Setting Rows Width')
-      self.reset_pos_rows()
+      self._reset_pos_rows()
       self.max_row += 1
 
     # Apply Sheet Wide
     print(' * Formatting Columns')
-    self.set_sheetwide_view()
-    self.set_columns_format()
+    self._set_sheetwide_view()
+    self._set_columns_format()
 
     # Apply Header Settings
     print(' * Formatting Header')
-    self.add_merged_titles()
-    self.format_head_borders()
-    self.format_head_colors()
+    self._add_merged_titles()
+    self._format_head_borders()
+    self._format_head_colors()
 
     # Apply borders to the specified range
     print(' * Formatting Border')
     self.format_data_borders()
 
     # Call the hook method (default does nothing)
-    self.format_one_sheet_post()
+    self._format_one_sheet_post()
 
     print(' * Finished')
     print()
 
   # Basic Flow: Hook
-  def format_one_sheet_post(self) -> None:
+  def _format_one_sheet_post(self) -> None:
     """Hook method to be overridden by subclasses if needed."""
     pass
 
   # Basic Flow
   def process_one(self) -> None:
-    self.sheet = self.controller.getActiveSheet()
-    self.format_one_sheet()
+    self.sheet = self._controller.getActiveSheet()
+    self.__format_one_sheet()
 
   # Basic Flow
   def process_all(self) -> None:
-    for sheet in self.document.Sheets:
+    for sheet in self._document.Sheets:
       print(sheet.Name)
       self.sheet = sheet
-      self.format_one_sheet()
+      self.__format_one_sheet()
 
   # -- -- --
 
   # Helper: Multiple Usages
-  def column_index_to_letter(self, index: int) -> str:
+  def _column_index_to_letter(self, index: int) -> str:
     """Convert a 0-based column index to Excel-style column letters."""
     letters = ''
     while index >= 0:
@@ -144,7 +154,7 @@ class FormatterBase:
     return letters
 
   # Helper: Multiple Usages
-  def column_letter_to_index(self, column_letter: str) -> int:
+  def _column_letter_to_index(self, column_letter: str) -> int:
     """Convert Excel-style column letters to a 0-based column index."""
     index = 0
     for i, char in enumerate(reversed(column_letter)):
@@ -152,17 +162,17 @@ class FormatterBase:
     return index - 1
 
   # Helper: Multiple Usages
-  def get_relative_column_letter(self, start_letter: str, offset: int) -> str:
+  def _get_relative_column_letter(self, start_letter: str, offset: int) -> str:
     """Get the Excel-style column letter at an offset from the start_letter."""
-    start_index    = self.column_letter_to_index(start_letter)
+    start_index    = self._column_letter_to_index(start_letter)
     relative_index = start_index + offset - 1
-    return self.column_index_to_letter(relative_index)
+    return self._column_index_to_letter(relative_index)
 
   # -- -- --
 
   # Sheet Helper
-  # To be used only within the formatOneSheet(), reset_pos_rows()
-  def get_last_used_row(self) -> int:
+  # To be used only within the formatOneSheet(), _reset_pos_rows()
+  def __get_last_used_row(self) -> int:
     cursor = self.sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
     cursor.gotoStartOfUsedArea(True)
@@ -172,7 +182,7 @@ class FormatterBase:
 
   # Sheet Helper
   # To be used only within the formatOneSheet()
-  def is_first_column_empty(self) -> bool:
+  def __is_first_column_empty(self) -> bool:
     rows = self.sheet.Rows
     max_sampling_row = 10
 
@@ -183,8 +193,10 @@ class FormatterBase:
     return True
 
   # Sheet Helper
-  # To be used only within the set_columns_format()
-  def get_number_format(self, format_string):
+  # To be used only within the _set_columns_format()
+  def __get_number_format(self,
+        format_string: str) -> XNumberFormats:
+
     nf = self.numberfmt.queryKey(  \
               format_string, self.locale, True)
     if nf == -1:
@@ -193,8 +205,9 @@ class FormatterBase:
     return nf
 
   # Sheet Helper: Multiple Usages
-  def format_cell_rectangle(self,
-        a_t, a_b, a_l, a_r, line_format) -> None:
+  def _format_cell_rectangle(self,
+        a_t: int, a_b: int, a_l: int, a_r: int,
+        line_format: BorderLine2) -> None:
 
     func_gcrb = self.sheet.getCellRangeByPosition
 
@@ -233,20 +246,20 @@ class FormatterBase:
 class FormatterCommon(FormatterBase):
 
   # Formatting Procedure: Abstract Override
-  def reset_pos_columns(self) -> None:
+  def _reset_pos_columns(self) -> None:
     columns = self.sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
 
     # Insert column, and set width
-    for gap in self.gaps:
+    for gap in self._gaps:
       columns.insertByIndex(gap, 1)
       columns.getByIndex(gap).Width  = column_width_div
 
-      letter = self.column_index_to_letter(gap)
+      letter = self._column_index_to_letter(gap)
       print(f"   - Insert Gap: {letter}")
 
   # Formatting Procedure: Abstract Override
-  def reset_pos_rows(self) -> None:
+  def _reset_pos_rows(self) -> None:
     rows = self.sheet.Rows
     row_height = 0.5 * 1000  # Height of 0.5 cm
 
@@ -265,24 +278,24 @@ class FormatterCommon(FormatterBase):
     rows.getByIndex(self.max_row + 2).Height = row_height_div
 
   # Formatting Procedure: Abstract Override
-  def set_columns_format(self) -> None:
+  def _set_columns_format(self) -> None:
     columns = self.sheet.Columns
 
     # Alignment mapping
     alignment_map = {
         'left'  : LEFT,  'center': CENTER, 'right' : RIGHT }
 
-    for metadata in self.metadatas:
+    for metadata in self._metadatas:
       start_letter = metadata['col-start']
 
       pairs = metadata['fields'].items()
       for pair_index, (field, data) in enumerate(pairs, start=1):
-        letter = self.get_relative_column_letter(
+        letter = self._get_relative_column_letter(
           start_letter, pair_index)
         width  = data['width'] * 1000
         align  = data.get('align')
 
-        col_index = self.column_letter_to_index(letter)
+        col_index = self._column_letter_to_index(letter)
         column = columns.getByIndex(col_index)
         column.Width = width
 
@@ -297,14 +310,14 @@ class FormatterCommon(FormatterBase):
         if cell_format := data.get('format'):
            cell_range.NumberFormat = self.get_number_format(cell_format)
 
-  # Formatting Procedure: Refactored from add_merged_titles()
-  def set_merged_title(self, metadata) -> None:
+  # Formatting Procedure: Refactored from _add_merged_titles()
+  def __set_merged_title(self, metadata: dict[str, any]) -> None:
     start_letter = metadata['col-start']
 
     for title in metadata['titles']:
-      col_letter_start = self.get_relative_column_letter(
+      col_letter_start = self._get_relative_column_letter(
           start_letter, title['col-start-id'])  
-      col_letter_end   = self.get_relative_column_letter(
+      col_letter_end   = self._get_relative_column_letter(
           start_letter, title['col-end-id'])
 
       cell = self.sheet[f"{col_letter_start}2"]
@@ -312,8 +325,8 @@ class FormatterCommon(FormatterBase):
       cell.CellBackColor = title['bg']
       cell.CharColor     = title['fg']
 
-      pos = self.column_letter_to_index(col_letter_start)
-      self.format_cell_rectangle(
+      pos = self._column_letter_to_index(col_letter_start)
+      self._format_cell_rectangle(
         1, 1, pos, pos, lfBlack)
 
       merge_address = f"{col_letter_start}2:{col_letter_end}2"
@@ -324,42 +337,42 @@ class FormatterCommon(FormatterBase):
       self.sheet[header_address].HoriJustify = CENTER
 
   # Formatting Procedure: Abstract Override
-  def add_merged_titles(self) -> None:
+  def _add_merged_titles(self) -> None:
     self.sheet['B2:BC3'].HoriJustify = CENTER
     self.sheet['B2:BC2'].CharWeight  = BOLD 
 
-    for metadata in self.metadatas:
-      self.set_merged_title(metadata)
+    for metadata in self._metadatas:
+      self.__set_merged_title(metadata)
 
     # Call the hook method (default does nothing)
-    self.add_merged_titles_post()
+    self._add_merged_titles_post()
 
   # Formatting Procedure: Hook
-  def add_merged_titles_post(self) -> None:
+  def _add_merged_titles_post(self) -> None:
     """Hook method to be overridden by subclasses if needed."""
     pass
 
   # Formatting Procedure: Abstract Override
-  def format_head_borders(self) -> None:
-    for metadata in self.metadatas:
+  def _format_head_borders(self) -> None:
+    for metadata in self._metadatas:
       start_letter = metadata['col-start']
 
       for border_config in metadata['head-borders']:
         col_start_id, col_end_id, outer_line, vert_line = border_config
 
-        letter_start = self.get_relative_column_letter(
+        letter_start = self._get_relative_column_letter(
           start_letter, col_start_id)  
-        letter_end   = self.get_relative_column_letter(
+        letter_end   = self._get_relative_column_letter(
           start_letter, col_end_id)
 
-        self.apply_head_border(
+        self.__apply_head_border(
           letter_start, letter_end, outer_line, vert_line)
 
   # Formatting Procedure: Abstract Override
-  def format_head_colors(self) -> None:
-    for metadata in self.metadatas:
+  def _format_head_colors(self) -> None:
+    for metadata in self._metadatas:
       start_letter = metadata['col-start']
-      start_index  = self.column_letter_to_index(start_letter)
+      start_index  = self._column_letter_to_index(start_letter)
 
       pairs = metadata['fields'].items()
       for pair_index, (field, data) in enumerate(pairs, start=1):
@@ -373,97 +386,108 @@ class FormatterCommon(FormatterBase):
 
   # Formatting Procedure: Abstract Override
   def format_data_borders(self) -> None:
-    for metadata in self.metadatas:
+    for metadata in self._metadatas:
       start_letter = metadata['col-start']
 
       for border_config in metadata['data-borders']:
         col_start_id, col_end_id, \
         outer_line, vert_line, horz_line = border_config
 
-        letter_start = self.get_relative_column_letter(
+        letter_start = self._get_relative_column_letter(
           start_letter, col_start_id)  
-        letter_end   = self.get_relative_column_letter(
+        letter_end   = self._get_relative_column_letter(
           start_letter, col_end_id)  
 
-        self.apply_data_border(
+        self.__apply_data_border(
           letter_start, letter_end,
           outer_line, vert_line, horz_line)
 
   # -- -- --
 
   # Sheet Helper
-  # To be used only within the apply_head_border()
-  def get_head_range(self, letter_start, letter_end):
+  # To be used only within the __apply_head_border()
+  def __get_head_range(self,
+        letter_start: str, letter_end:  str) -> XCellRange:
+
     # Define the cell range for rows and columns
     head_row = 2
-    col_start = self.column_letter_to_index(letter_start)
-    col_end   = self.column_letter_to_index(letter_end)
+    col_start = self._column_letter_to_index(letter_start)
+    col_end   = self._column_letter_to_index(letter_end)
 
     # Define the cell range for the outer border and vertical lines
     return self.sheet.getCellRangeByPosition(
       col_start, head_row, col_end, head_row)
 
   # Sheet Helper
-  # To be used only within the apply_data_border()
-  def get_data_range(self, letter_start, letter_end):
+  # To be used only within the __apply_data_border()
+  def __get_data_range(self,
+        letter_start: str, letter_end:  str) -> XCellRange:
+
     # Define the cell range for rows and columns
     start_row = 3
     end_row = self.max_row
-    col_start = self.column_letter_to_index(letter_start)
-    col_end   = self.column_letter_to_index(letter_end)
+    col_start = self._column_letter_to_index(letter_start)
+    col_end   = self._column_letter_to_index(letter_end)
 
     # Define the cell range for the outer border and vertical lines
     return self.sheet.getCellRangeByPosition(
       col_start, start_row, col_end, end_row)
 
   # Sheet Helper
-  # To be used only within the apply_head_border()
-  def set_head_rectangle(self,
-        letter_start, letter_end, line_format) -> None:
+  # To be used only within the __apply_head_border()
+  def __set_head_rectangle(self,
+        letter_start: str, letter_end: str,
+        line_format: BorderLine2) -> None:
+
     # Define the cell range for rows and columns
     # Top, Bottom (max row), Left, Right
     a_t = 2
     a_b = 2
-    a_l = self.column_letter_to_index(letter_start)
-    a_r = self.column_letter_to_index(letter_end)
+    a_l = self._column_letter_to_index(letter_start)
+    a_r = self._column_letter_to_index(letter_end)
 
-    self.format_cell_rectangle(a_t, a_b, a_l, a_r, line_format)
+    self._format_cell_rectangle(a_t, a_b, a_l, a_r, line_format)
 
   # Sheet Helper
-  # To be used only within the apply_data_border()
-  def set_data_rectangle(self,
-        letter_start, letter_end, line_format) -> None:
+  # To be used only within the __apply_data_border()
+  def __set_data_rectangle(self,
+        letter_start: str, letter_end: str,
+        line_format: BorderLine2) -> None:
+
     # Define the cell range for rows and columns
     # Top, Bottom (max row), Left, Right
     a_t = 3
     a_b = self.max_row
-    a_l = self.column_letter_to_index(letter_start)
-    a_r = self.column_letter_to_index(letter_end)
+    a_l = self._column_letter_to_index(letter_start)
+    a_r = self._column_letter_to_index(letter_end)
 
-    self.format_cell_rectangle(a_t, a_b, a_l, a_r, line_format)
+    self._format_cell_rectangle(a_t, a_b, a_l, a_r, line_format)
 
   # Sheet Helper
-  # To be used only within the format_head_borders()
-  def apply_head_border(self,
-        letter_start, letter_end,
-        outer_line, vert_line) -> None:
-    self.set_head_rectangle(
+  # To be used only within the _format_head_borders()
+  def __apply_head_border(self,
+        letter_start: str, letter_end: str,
+        outer_line: BorderLine2, vert_line: BorderLine2) -> None:
+
+    self.__set_head_rectangle(
       letter_start, letter_end, outer_line)
 
     border = TableBorder2()
     border.IsVerticalLineValid   = True
     border.VerticalLine   = vert_line
 
-    cell_range = self.get_head_range(
+    cell_range = self.__get_head_range(
       letter_start, letter_end)
     cell_range.TableBorder2 = border
 
   # Sheet Helper
   # To be used only within the format_data_borders()
-  def apply_data_border(self,
-        letter_start, letter_end,
-        outer_line, vert_line, horz_line) -> None:
-    self.set_data_rectangle(
+  def __apply_data_border(self,
+        letter_start: str, letter_end: str,
+        outer_line: BorderLine2, vert_line: BorderLine2,
+        horz_line: BorderLine2) -> None:
+
+    self.__set_data_rectangle(
       letter_start, letter_end, outer_line)
 
     border = TableBorder2()
@@ -472,6 +496,6 @@ class FormatterCommon(FormatterBase):
     border.VerticalLine   = vert_line
     border.HorizontalLine = horz_line
 
-    cell_range = self.get_data_range(
+    cell_range = self.__get_data_range(
       letter_start, letter_end)
     cell_range.TableBorder2 = border

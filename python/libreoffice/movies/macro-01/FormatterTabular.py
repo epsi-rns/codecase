@@ -26,12 +26,11 @@ from com.sun.star.\
 
 class FormatterTabularMovies(FormatterBase):
   def __init__(self) -> None:
-    self.document = XSCRIPTCONTEXT.getDocument()
-    super().__init__()
+    super().__init__(XSCRIPTCONTEXT.getDocument())
 
   # Simple Configuration
-  def init_field_metadata(self) -> None:
-    self.fields = {
+  def _init_field_metadata(self) -> None:
+    self._fields = {
        'Year'     : { 'col': 'B', 'width': 1.5, 'bg': blueScale[3],
                       'align': 'center' },
        'Title'    : { 'col': 'C', 'width': 6,   'bg': blueScale[2] },
@@ -49,18 +48,18 @@ class FormatterTabularMovies(FormatterBase):
     }
 
   # Formatting Procedure: Abstract Override
-  def set_sheetwide_view(self) -> None:
+  def _set_sheetwide_view(self) -> None:
     # activate sheet
-    spreadsheetView = self.controller
-    spreadsheetView.setActiveSheet(self.sheet)
+    spreadsheetView = self._controller
+    spreadsheetView.setActiveSheet(self._sheet)
 
     # sheet wide
     spreadsheetView.ShowGrid = False
     spreadsheetView.freezeAtPosition(2, 3)
 
   # Formatting Procedure
-  def reset_pos_columns(self) -> None:
-    columns = self.sheet.Columns
+  def _reset_pos_columns(self) -> None:
+    columns = self._sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
 
     # Insert one column at the specified indexes
@@ -74,46 +73,46 @@ class FormatterTabularMovies(FormatterBase):
     columns.getByIndex(11).Width = column_width_div
 
   # Formatting Procedure
-  def add_merged_title(self) -> None:
-    self.sheet['B2:K3'].HoriJustify = CENTER
-    self.sheet['B2:K2'].CharWeight = BOLD 
+  def _add_merged_title(self) -> None:
+    self._sheet['B2:K3'].HoriJustify = CENTER
+    self._sheet['B2:K2'].CharWeight = BOLD 
 
-    cell = self.sheet['B2']
+    cell = self._sheet['B2']
     cell.String = 'Base Movie Data'
     cell.CellBackColor = blueScale[3]
     cell.CharColor = clBlack
-    self.format_cell_rectangle(
+    self._format_cell_rectangle(
       1, 1, 1, 1, self.lfBlack)
-    self.sheet['B2:G2'].merge(True)
+    self._sheet['B2:G2'].merge(True)
 
-    cell = self.sheet['I2']
+    cell = self._sheet['I2']
     cell.String = 'Additional'
     cell.CellBackColor = tealScale[3]
     cell.CharColor = clBlack
-    self.format_cell_rectangle(
+    self._format_cell_rectangle(
       1, 1, 8, 8, self.lfBlack)
-    self.sheet['I2:K2'].merge(True)
+    self._sheet['I2:K2'].merge(True)
 
   # Formatting Procedure
-  def format_head_borders(self) -> None:  
+  def _format_head_borders(self) -> None:  
     # Base Movie Data
-    self.apply_head_border(
+    self._apply_head_border(
       'B', 'G', self.lfBlack, self.lfBlack)
 
     # Additional Data
-    self.apply_head_border(
+    self._apply_head_border(
       'I', 'K', self.lfBlack, self.lfBlack)
 
   # Formatting Procedure
-  def format_data_borders(self) -> None:  
+  def _format_data_borders(self) -> None:  
     # Base Movie Data
-    self.apply_data_border(
+    self._apply_data_border(
       'B', 'C', self.lfBlack, self.lfBlack, self.lfGray)
-    self.apply_data_border(
+    self._apply_data_border(
       'D', 'G', self.lfBlack, self.lfGray, self.lfGray)
 
     # Additional Data
-    self.apply_data_border(
+    self._apply_data_border(
       'I', 'K', self.lfBlack, self.lfGray, self.lfGray)
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -121,9 +120,9 @@ class FormatterTabularMovies(FormatterBase):
 # Represent Class in Macro
 
 def tabular_single_movies() -> None:
-  movies = FormatterTabularMovies()
-  movies.process_one()
+  tabular = FormatterTabularMovies()
+  tabular.process_one()
 
 def tabular_multi_movies() -> None:
-  movies = FormatterTabularMovies()
-  movies.process_all()
+  tabular = FormatterTabularMovies()
+  tabular.process_all()

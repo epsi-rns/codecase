@@ -1,136 +1,106 @@
 from abc import ABC, abstractmethod
 
+from com.sun.star.sheet import XSpreadsheetDocument
+from com.sun.star.util  import XNumberFormats
+
 from com.sun.star.\
   table.CellHoriJustify import LEFT, CENTER, RIGHT
-
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
-# Google Material Color Scale 
-blueScale = {
-  0: 0xE3F2FD, 1: 0xBBDEFB, 2: 0x90CAF9,
-  3: 0x64B5F6, 4: 0x42A5F5, 5: 0x2196F3,
-  6: 0x1E88E5, 7: 0x1976D2, 8: 0x1565C0,
-  9: 0x0D47A1
-}
-
-tealScale = {
-  0: 0xE0F2F1, 1: 0xB2DFDB, 2: 0x80CBC4,
-  3: 0x4DB6AC, 4: 0x26A69A, 5: 0x009688,
-  6: 0x00897B, 7: 0x00796B, 8: 0x00695C,
-  9: 0x004D40
-}
-
-amberScale = {
-  0: 0xFFF8E1, 1: 0xFFECB3, 2: 0xFFE082,
-  3: 0xFFD54F, 4: 0xFFCA28, 5: 0xFFC107,
-  6: 0xFFB300, 7: 0xFFA000, 8: 0xFF8F00,
-  9: 0xFF6F00
-}
-
-brownScale = {
-  0: 0xEFEBE9, 1: 0xD7CCC8, 2: 0xBCAAA4,
-  3: 0xA1887F, 4: 0x8D6E63, 5: 0x795548,
-  6: 0x6D4C41, 7: 0x5D4037, 8: 0x4E342E,
-  9: 0x3E2723
-}
-
-redScale = {
-  0: 0xffebee, 1: 0xffcdd2, 2: 0xef9a9a,
-  3: 0xe57373, 4: 0xef5350, 5: 0xf44336,
-  6: 0xe53935, 7: 0xd32f2f, 8: 0xc62828,
-  9: 0xb71c1c
-}
-
-clBlack = 0x000000
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterBase:
   @property
   @abstractmethod
-  def document(self): pass
+  def _document(self): pass
 
   def __init__(self) -> None:
-    self.controller = self.document.getCurrentController()
+    self._sheet = None
+    self._controller = self._document.getCurrentController()
+    self._gaps = []
+    self._metadatas = []
 
-    self.prepare_sheet()
-    self.init_metadatas()
-    self.merge_metadatas()
+    self.__prepare_sheet()
+    self._init_metadatas()
+    self._merge_metadatas()
 
   # Class Property: Sheet Variables
-  def prepare_sheet(self):
+  def __prepare_sheet(self) -> None:
     # number and date format
-    self.numberfmt = self.document.NumberFormats
-    self.locale    = self.document.CharLocale
+    self.numberfmt = self._document.NumberFormats
+    self.locale    = self._document.CharLocale
 
   # -- -- --
 
   @abstractmethod
-  def init_metadatas(self) -> None:
+  def _init_metadatas(self) -> None:
     pass
 
   @abstractmethod
-  def reset_pos_columns(self) -> None:
+  def _merge_metadatas(self) -> None:
     pass
 
   @abstractmethod
-  def reset_pos_rows(self) -> None:
+  def _reset_pos_columns(self) -> None:
     pass
 
   @abstractmethod
-  def set_sheetwide_view(self) -> None:
+  def _reset_pos_rows(self) -> None:
     pass
 
   @abstractmethod
-  def set_columns_format(self) -> None:
+  def _set_sheetwide_view(self) -> None:
+    pass
+
+  @abstractmethod
+  def __set_columns_format(self) -> None:
     pass
 
   # -- -- --
 
   # Basic Flow
-  def format_one_sheet(self) -> None:
-    self.max_row = self.get_last_used_row()
+  def __format_one_sheet(self) -> None:
+    self.max_row = self.__get_last_used_row()
 
-    if not self.is_first_column_empty():
+    if not self.__is_first_column_empty():
       # Rearranging Columns
       print(' * Rearranging Columns')
-      self.reset_pos_columns()
+      self._reset_pos_columns()
       print(' * Setting Rows Width')
-      self.reset_pos_rows()
+      self._reset_pos_rows()
       self.max_row += 1
 
     # Apply Sheet Wide
     print(' * Formatting Columns')
-    self.set_sheetwide_view()
-    self.set_columns_format()
+    self._set_sheetwide_view()
+    self._set_columns_format()
 
     # Call the hook method (default does nothing)
-    self.format_one_sheet_post()
+    self._format_one_sheet_post()
 
     print(' * Finished')
     print()
 
   # Basic Flow: Hook
-  def format_one_sheet_post(self) -> None:
+  def _format_one_sheet_post(self) -> None:
     """Hook method to be overridden by subclasses if needed."""
     pass
 
   # Basic Flow
   def process_one(self) -> None:
-    self.sheet = self.controller.getActiveSheet()
-    self.format_one_sheet()
+    self.sheet = self._controller.getActiveSheet()
+    self.__format_one_sheet()
 
   # Basic Flow
   def process_all(self) -> None:
-    for sheet in self.document.Sheets:
+    for sheet in self._document.Sheets:
       print(sheet.Name)
       self.sheet = sheet
-      self.format_one_sheet()
+      self.__format_one_sheet()
 
   # -- -- --
 
   # Helper: Multiple Usages
-  def column_index_to_letter(self, index: int) -> str:
+  def _column_index_to_letter(self, index: int) -> str:
     """Convert a 0-based column index to Excel-style column letters."""
     letters = ''
     while index >= 0:
@@ -139,7 +109,7 @@ class FormatterBase:
     return letters
 
   # Helper: Multiple Usages
-  def column_letter_to_index(self, column_letter: str) -> int:
+  def _column_letter_to_index(self, column_letter: str) -> int:
     """Convert Excel-style column letters to a 0-based column index."""
     index = 0
     for i, char in enumerate(reversed(column_letter)):
@@ -147,17 +117,17 @@ class FormatterBase:
     return index - 1
 
   # Helper: Multiple Usages
-  def get_relative_column_letter(self, start_letter: str, offset: int) -> str:
+  def _get_relative_column_letter(self, start_letter: str, offset: int) -> str:
     """Get the Excel-style column letter at an offset from the start_letter."""
-    start_index    = self.column_letter_to_index(start_letter)
+    start_index    = self._column_letter_to_index(start_letter)
     relative_index = start_index + offset - 1
-    return self.column_index_to_letter(relative_index)
+    return self._column_index_to_letter(relative_index)
 
   # -- -- --
 
   # Sheet Helper
-  # To be used only within the formatOneSheet(), reset_pos_rows()
-  def get_last_used_row(self) -> int:
+  # To be used only within the formatOneSheet(), _reset_pos_rows()
+  def __get_last_used_row(self) -> int:
     cursor = self.sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
     cursor.gotoStartOfUsedArea(True)
@@ -167,7 +137,7 @@ class FormatterBase:
 
   # Sheet Helper
   # To be used only within the formatOneSheet()
-  def is_first_column_empty(self) -> bool:
+  def __is_first_column_empty(self) -> bool:
     rows = self.sheet.Rows
     max_sampling_row = 10
 
@@ -178,8 +148,10 @@ class FormatterBase:
     return True
 
   # Sheet Helper
-  # To be used only within the set_columns_format()
-  def get_number_format(self, format_string):
+  # To be used only within the _set_columns_format()
+  def __get_number_format(self,
+        format_string: str) -> XNumberFormats:
+
     nf = self.numberfmt.queryKey(  \
               format_string, self.locale, True)
     if nf == -1:
@@ -192,20 +164,20 @@ class FormatterBase:
 class FormatterCommon(FormatterBase):
 
   # Formatting Procedure: Abstract Override
-  def reset_pos_columns(self) -> None:
+  def _reset_pos_columns(self) -> None:
     columns = self.sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
 
     # Insert column, and set width
-    for gap in self.gaps:
+    for gap in self._gaps:
       columns.insertByIndex(gap, 1)
       columns.getByIndex(gap).Width  = column_width_div
 
-      letter = self.column_index_to_letter(gap)
+      letter = self._column_index_to_letter(gap)
       print(f"   - Insert Gap: {letter}")
 
   # Formatting Procedure: Abstract Override
-  def reset_pos_rows(self) -> None:
+  def _reset_pos_rows(self) -> None:
     rows = self.sheet.Rows
     row_height = 0.5 * 1000  # Height of 0.5 cm
 
@@ -224,24 +196,24 @@ class FormatterCommon(FormatterBase):
     rows.getByIndex(self.max_row + 2).Height = row_height_div
 
   # Formatting Procedure: Abstract Override
-  def set_columns_format(self) -> None:
+  def _set_columns_format(self) -> None:
     columns = self.sheet.Columns
 
     # Alignment mapping
     alignment_map = {
         'left'  : LEFT,  'center': CENTER, 'right' : RIGHT }
 
-    for metadata in self.metadatas:
+    for metadata in self._metadatas:
       start_letter = metadata['col-start']
 
       pairs = metadata['fields'].items()
       for pair_index, (field, data) in enumerate(pairs, start=1):
-        letter = self.get_relative_column_letter(
+        letter = self._get_relative_column_letter(
           start_letter, pair_index)
         width  = data['width'] * 1000
         align  = data.get('align')
 
-        col_index = self.column_letter_to_index(letter)
+        col_index = self._column_letter_to_index(letter)
         column = columns.getByIndex(col_index)
         column.Width = width
 
@@ -259,9 +231,9 @@ class FormatterCommon(FormatterBase):
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabular(FormatterCommon):
-  def set_sheetwide_view(self) -> None:
+  def _set_sheetwide_view(self) -> None:
     # activate sheet
-    spreadsheetView = self.controller
+    spreadsheetView = self._controller
     spreadsheetView.setActiveSheet(self.sheet)
 
     # sheet wide
@@ -272,30 +244,27 @@ class FormatterTabular(FormatterCommon):
 
 class FormatterTabularData(FormatterTabular):
   @property
-  def document(self): return XSCRIPTCONTEXT.getDocument()
+  def _document(self) -> XSpreadsheetDocument:
+    return XSCRIPTCONTEXT.getDocument()
 
   # Unified Configuration
-  def init_metadatas(self) -> None:
-    self.metadata_movies_base = {
+  def _init_metadatas(self) -> None:
+    self._metadata_movies_base = {
       'fields': {
-        'Year'     : { 'width': 1.5, 'bg': blueScale[3],
-                       'align': 'center' },
-        'Title'    : { 'width': 6,   'bg': blueScale[2] },
-        'Genre'    : { 'width': 3,   'bg': blueScale[1] },
-        'Plot'     : { 'width': 6,   'bg': blueScale[2] },
-        'Actors'   : { 'width': 6,   'bg': blueScale[1] },
-        'Director' : { 'width': 5,   'bg': blueScale[2] }
+        'Year'     : { 'width': 1.5, 'align': 'center' },
+        'Title'    : { 'width': 6 },
+        'Genre'    : { 'width': 3 },
+        'Plot'     : { 'width': 6 },
+        'Actors'   : { 'width': 6 },
+        'Director' : { 'width': 5 }
       }
     }
 
-    self.metadata_movies_additional = {
+    self._metadata_movies_additional = {
       'fields': {
-        'Rated'    : { 'width': 2,   'bg': tealScale[2],
-                       'align': 'center' },
-        'Runtime'  : { 'width': 2.5, 'bg': tealScale[1],
-                       'align': 'center' },
-        'Metascore': { 'width': 2,   'bg': tealScale[2],
-                       'align': 'center' }
+        'Rated'    : { 'width': 2,   'align': 'center' },
+        'Runtime'  : { 'width': 2.5, 'align': 'center' },
+        'Metascore': { 'width': 2,   'align': 'center' }
       }
     }
 
@@ -304,16 +273,16 @@ class FormatterTabularData(FormatterTabular):
 class FormatterTabularMovies(FormatterTabularData):
 
   # Merge Configuration
-  def merge_metadatas(self) -> None:
+  def _merge_metadatas(self) -> None:
     # Columns:   A, H,  L
-    self.gaps = [0, 7, 11]
+    self._gaps = [0, 7, 11]
 
-    self.metadatas = [{
+    self._metadatas = [{
       'col-start'     : 'B',
-      **self.metadata_movies_base
+      **self._metadata_movies_base
     }, {
       'col-start'     : 'I',
-      **self.metadata_movies_additional
+      **self._metadata_movies_additional
     }]
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

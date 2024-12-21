@@ -1,57 +1,65 @@
 from abc import ABC, abstractmethod
+from com.sun.star.sheet import XSpreadsheetDocument
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterBase:
   @property
   @abstractmethod
-  def document(self): pass
+  def _document(self): pass
 
   def __init__(self) -> None:
-    self.controller = self.document.getCurrentController()
-    self.merge_metadatas()
+    self._sheet = None
+    self._controller = self._document.getCurrentController()
+    self._gaps = []
+
+    self._merge_metadatas()
 
   # -- -- --
 
   @abstractmethod
-  def reset_pos_columns(self) -> None:
+  def _merge_metadatas(self) -> None:
+    pass
+
+  @abstractmethod
+  def _reset_pos_columns(self) -> None:
     pass
 
   # -- -- --
 
   # Basic Flow
-  def format_one_sheet(self) -> None:
+  def __format_one_sheet(self) -> None:
     # Rearranging Columns
     print(' * Rearranging Columns')
-    self.reset_pos_columns()
+    self._reset_pos_columns()
 
     # Call the hook method (default does nothing)
-    self.format_one_sheet_post()
+    self._format_one_sheet_post()
 
     print(' * Finished')
     print()
 
   # Basic Flow: Hook
-  def format_one_sheet_post(self) -> None:
+  def _format_one_sheet_post(self) -> None:
     """Hook method to be overridden by subclasses if needed."""
     pass
 
   # Basic Flow
   def process_one(self) -> None:
-    self.sheet = self.controller.getActiveSheet()
-    self.format_one_sheet()
+    self.sheet = self._controller.getActiveSheet()
+    self.__format_one_sheet()
 
   # Basic Flow
   def process_all(self) -> None:
-    for sheet in self.document.Sheets:
+    for sheet in self._document.Sheets:
       print(sheet.Name)
       self.sheet = sheet
-      self.format_one_sheet()
+      self.__format_one_sheet()
 
   # -- -- --
 
   # Helper: Multiple Usages
-  def column_index_to_letter(self, index: int) -> str:
+  def _column_index_to_letter(self, index: int) -> str:
     """Convert a 0-based column index to Excel-style column letters."""
     letters = ''
     while index >= 0:
@@ -63,31 +71,32 @@ class FormatterBase:
 
 class FormatterCommon(FormatterBase):
   # Formatting Procedure: Abstract Override
-  def reset_pos_columns(self) -> None:
+  def _reset_pos_columns(self) -> None:
     columns = self.sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
 
     # Insert column, and set width
-    for gap in self.gaps:
+    for gap in self._gaps:
       columns.insertByIndex(gap, 1)
       columns.getByIndex(gap).Width  = column_width_div
 
-      letter = self.column_index_to_letter(gap)
+      letter = self._column_index_to_letter(gap)
       print(f"   - Insert Gap: {letter}")
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabularData(FormatterCommon):
   @property
-  def document(self): return XSCRIPTCONTEXT.getDocument()
+  def _document(self) -> XSpreadsheetDocument:
+    return XSCRIPTCONTEXT.getDocument()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabularMovies(FormatterTabularData):
   # Merge Configuration
-  def merge_metadatas(self) -> None:
+  def _merge_metadatas(self) -> None:
     # Columns:   A, H,  L
-    self.gaps = [0, 7, 11]
+    self._gaps = [0, 7, 11]
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

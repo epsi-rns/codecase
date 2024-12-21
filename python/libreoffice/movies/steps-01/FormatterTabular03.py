@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
+from com.sun.star.sheet import XSpreadsheetDocument
 
 class FormatterBase(ABC):
-  def __init__(self, document) -> None:
+  def __init__(self, document: XSpreadsheetDocument) -> None:
     self.__document = document
-    self.controller = self.__document.getCurrentController()
+    self._sheet = None
+    self._controller = self.__document.getCurrentController()
 
   @abstractmethod
   def _reset_pos_columns(self) -> None:
@@ -71,7 +73,7 @@ class FormatterBase(ABC):
 
   # Basic Flow
   def process_one(self) -> None:
-    self._sheet = self.controller.getActiveSheet()
+    self._sheet = self._controller.getActiveSheet()
     self.__format_one_sheet()
 
   # Basic Flow
@@ -90,7 +92,7 @@ class FormatterTabularMovies(FormatterBase):
   # Formatting Procedure: Abstract Override
   def _set_sheetwide_view(self) -> None:
     # activate sheet
-    spreadsheetView = self.controller
+    spreadsheetView = self._controller
     spreadsheetView.setActiveSheet(self._sheet)
 
     # sheet wide

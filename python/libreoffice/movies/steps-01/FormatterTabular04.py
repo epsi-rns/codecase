@@ -1,15 +1,20 @@
 from abc import ABC, abstractmethod
 
+from com.sun.star.sheet import XSpreadsheetDocument
+from com.sun.star.util  import XNumberFormats
+
 from com.sun.star.\
   table.CellHoriJustify import LEFT, CENTER, RIGHT
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterBase(ABC):
-  def __init__(self, document) -> None:
+  def __init__(self, document: XSpreadsheetDocument) -> None:
     self.__document = document
-    self.controller = self.__document.getCurrentController()
+    self._sheet = None
+    self._controller = self.__document.getCurrentController()
 
+    self._fields = {}
     self._init_field_metadata()
     self.__prepare_sheet()
 
@@ -26,7 +31,7 @@ class FormatterBase(ABC):
     pass
 
   # Class Property: Sheet Variables
-  def __prepare_sheet(self):
+  def __prepare_sheet(self) -> None:
     # number and date format
     self.numberfmt = self.__document.NumberFormats
     self.locale    = self.__document.CharLocale
@@ -43,7 +48,9 @@ class FormatterBase(ABC):
 
   # Sheet Helper
   # To be used only within the __set_columns_format()
-  def __get_number_format(self, format_string):
+  def __get_number_format(self,
+        format_string: str) -> XNumberFormats:
+
     nf = self.numberfmt.queryKey(  \
               format_string, self.locale, True)
     if nf == -1:
@@ -97,7 +104,7 @@ class FormatterBase(ABC):
     alignment_map = {
         'left'  : LEFT,  'center': CENTER, 'right' : RIGHT }
 
-    for field, data in self.fields.items():
+    for field, data in self._fields.items():
       letter = data['col']
       width  = data['width'] * 1000
       align  = data.get('align')
@@ -135,7 +142,7 @@ class FormatterBase(ABC):
 
   # Basic Flow
   def process_one(self) -> None:
-    self._sheet = self.controller.getActiveSheet()
+    self._sheet = self._controller.getActiveSheet()
     self.__format_one_sheet()
 
   # Basic Flow
@@ -153,7 +160,7 @@ class FormatterTabularMovies(FormatterBase):
 
   # Simple Configuration
   def _init_field_metadata(self) -> None:
-    self.fields = {
+    self._fields = {
        'Year'     : { 'col': 'B', 'width': 1.5, 'align': 'center' },
        'Title'    : { 'col': 'C', 'width': 6 },
        'Genre'    : { 'col': 'D', 'width': 3 },
@@ -169,7 +176,7 @@ class FormatterTabularMovies(FormatterBase):
   # Formatting Procedure: Abstract Override
   def _set_sheetwide_view(self) -> None:
     # activate sheet
-    spreadsheetView = self.controller
+    spreadsheetView = self._controller
     spreadsheetView.setActiveSheet(self._sheet)
 
     # sheet wide

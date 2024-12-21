@@ -14,15 +14,18 @@ from lib.ColorScale import (
 from lib.BorderFormat import (lfBlack, lfGray, lfNone)
 from lib.FormatterTabular import FormatterTabular
 
+from com.sun.star.sheet import XSpreadsheetDocument
+
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabularData(FormatterTabular):
   @property
-  def document(self): return XSCRIPTCONTEXT.getDocument()
+  def _document(self) -> XSpreadsheetDocument:
+    return XSCRIPTCONTEXT.getDocument()
 
   # Unified Configuration
-  def init_metadatas(self) -> None:
-    self.metadata_movies_base = {
+  def _init_metadatas(self) -> None:
+    self._metadata_movies_base = {
       'fields': {
         'Year'     : { 'width': 1.5, 'bg': blueScale[3],
                        'align': 'center' },
@@ -48,7 +51,7 @@ class FormatterTabularData(FormatterTabular):
         ( 3,  6, lfBlack, lfGray,  lfGray)]
     }
 
-    self.metadata_movies_additional = {
+    self._metadata_movies_additional = {
       'fields': {
         'Rated'    : { 'width': 2,   'bg': tealScale[2],
                        'align': 'center' },
@@ -72,16 +75,16 @@ class FormatterTabularData(FormatterTabular):
 class FormatterTabularMovies(FormatterTabularData):
 
   # Merge Configuration
-  def merge_metadatas(self) -> None:
+  def _merge_metadatas(self) -> None:
     # Columns:   A, H,  L
-    self.gaps = [0, 7, 11]
+    self._gaps = [0, 7, 11]
 
-    self.metadatas = [{
+    self._metadatas = [{
       'col-start'     : 'B',
-      **self.metadata_movies_base
+      **self._metadata_movies_base
     }, {
       'col-start'     : 'I',
-      **self.metadata_movies_additional
+      **self._metadata_movies_additional
     }]
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -95,3 +98,4 @@ def tabular_single_movies() -> None:
 def tabular_multi_movies() -> None:
   movies = FormatterTabularMovies()
   movies.process_all()
+

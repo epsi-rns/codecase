@@ -1,79 +1,83 @@
 from abc import ABC, abstractmethod
+from com.sun.star.sheet import XSpreadsheetDocument
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterBase:
   @property
   @abstractmethod
-  def document(self): pass
+  def _document(self): pass
 
   def __init__(self) -> None:
-    self.controller = self.document.getCurrentController()
-    self.merge_metadatas()
+    self._sheet = None
+    self._controller = self._document.getCurrentController()
+    self._gaps = []
+
+    self._merge_metadatas()
 
   # -- -- --
 
   @abstractmethod
-  def init_metadatas(self) -> None:
+  def _merge_metadatas(self) -> None:
     pass
 
   @abstractmethod
-  def reset_pos_columns(self) -> None:
+  def _reset_pos_columns(self) -> None:
     pass
 
   @abstractmethod
-  def reset_pos_rows(self) -> None:
+  def _reset_pos_rows(self) -> None:
     pass
 
   @abstractmethod
-  def set_sheetwide_view(self) -> None:
+  def _set_sheetwide_view(self) -> None:
     pass
 
   # -- -- --
 
   # Basic Flow
-  def format_one_sheet(self) -> None:
-    self.max_row = self.get_last_used_row()
+  def __format_one_sheet(self) -> None:
+    self.max_row = self.__get_last_used_row()
 
-    if not self.is_first_column_empty():
+    if not self.__is_first_column_empty():
       # Rearranging Columns
       print(' * Rearranging Columns')
-      self.reset_pos_columns()
+      self._reset_pos_columns()
       print(' * Setting Rows Width')
-      self.reset_pos_rows()
+      self._reset_pos_rows()
       self.max_row += 1
 
     # Apply Sheet Wide
     print(' * Formatting Columns')
-    self.set_sheetwide_view()
+    self._set_sheetwide_view()
 
     # Call the hook method (default does nothing)
-    self.format_one_sheet_post()
+    self._format_one_sheet_post()
 
     print(' * Finished')
     print()
 
   # Basic Flow: Hook
-  def format_one_sheet_post(self) -> None:
+  def _format_one_sheet_post(self) -> None:
     """Hook method to be overridden by subclasses if needed."""
     pass
 
   # Basic Flow
   def process_one(self) -> None:
-    self.sheet = self.controller.getActiveSheet()
-    self.format_one_sheet()
+    self.sheet = self._controller.getActiveSheet()
+    self.__format_one_sheet()
 
   # Basic Flow
   def process_all(self) -> None:
-    for sheet in self.document.Sheets:
+    for sheet in self._document.Sheets:
       print(sheet.Name)
       self.sheet = sheet
-      self.format_one_sheet()
+      self.__format_one_sheet()
 
   # -- -- --
 
   # Helper: Multiple Usages
-  def column_index_to_letter(self, index: int) -> str:
+  def _column_index_to_letter(self, index: int) -> str:
     """Convert a 0-based column index to Excel-style column letters."""
     letters = ''
     while index >= 0:
@@ -84,8 +88,8 @@ class FormatterBase:
   # -- -- --
 
   # Sheet Helper
-  # To be used only within the formatOneSheet(), reset_pos_rows()
-  def get_last_used_row(self) -> int:
+  # To be used only within the formatOneSheet(), _reset_pos_rows()
+  def __get_last_used_row(self) -> int:
     cursor = self.sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
     cursor.gotoStartOfUsedArea(True)
@@ -95,7 +99,7 @@ class FormatterBase:
 
   # Sheet Helper
   # To be used only within the formatOneSheet()
-  def is_first_column_empty(self) -> bool:
+  def __is_first_column_empty(self) -> bool:
     rows = self.sheet.Rows
     max_sampling_row = 10
 
@@ -110,20 +114,20 @@ class FormatterBase:
 class FormatterCommon(FormatterBase):
 
   # Formatting Procedure: Abstract Override
-  def reset_pos_columns(self) -> None:
+  def _reset_pos_columns(self) -> None:
     columns = self.sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
 
     # Insert column, and set width
-    for gap in self.gaps:
+    for gap in self._gaps:
       columns.insertByIndex(gap, 1)
       columns.getByIndex(gap).Width  = column_width_div
 
-      letter = self.column_index_to_letter(gap)
+      letter = self._column_index_to_letter(gap)
       print(f"   - Insert Gap: {letter}")
 
   # Formatting Procedure: Abstract Override
-  def reset_pos_rows(self) -> None:
+  def _reset_pos_rows(self) -> None:
     rows = self.sheet.Rows
     row_height = 0.5 * 1000  # Height of 0.5 cm
 
@@ -144,9 +148,9 @@ class FormatterCommon(FormatterBase):
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabular(FormatterCommon):
-  def set_sheetwide_view(self) -> None:
+  def _set_sheetwide_view(self) -> None:
     # activate sheet
-    spreadsheetView = self.controller
+    spreadsheetView = self._controller
     spreadsheetView.setActiveSheet(self.sheet)
 
     # sheet wide
@@ -157,15 +161,16 @@ class FormatterTabular(FormatterCommon):
 
 class FormatterTabularData(FormatterTabular):
   @property
-  def document(self): return XSCRIPTCONTEXT.getDocument()
+  def _document(self) -> XSpreadsheetDocument:
+    return XSCRIPTCONTEXT.getDocument()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabularMovies(FormatterTabularData):
   # Merge Configuration
-  def merge_metadatas(self) -> None:
+  def _merge_metadatas(self) -> None:
     # Columns:   A, H,  L
-    self.gaps = [0, 7, 11]
+    self._gaps = [0, 7, 11]
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
