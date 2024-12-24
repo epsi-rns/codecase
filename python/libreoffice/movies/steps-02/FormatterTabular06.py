@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 from com.sun.star.sheet import XSpreadsheetDocument
 from com.sun.star.util  import XNumberFormats
@@ -84,7 +84,8 @@ lfGray  = bfm.create_line_format_gray()
 class FormatterBase:
   @property
   @abstractmethod
-  def _document(self): pass
+  def _document(self) -> XSpreadsheetDocument:
+    pass
 
   def __init__(self) -> None:
     self._sheet = None
@@ -99,8 +100,8 @@ class FormatterBase:
   # Class Property: Sheet Variables
   def __prepare_sheet(self) -> None:
     # number and date format
-    self.numberfmt = self._document.NumberFormats
-    self.locale    = self._document.CharLocale
+    self._numberfmt = self._document.NumberFormats
+    self._locale    = self._document.CharLocale
 
   # -- -- --
 
@@ -144,7 +145,7 @@ class FormatterBase:
 
   # Basic Flow
   def __format_one_sheet(self) -> None:
-    self.max_row = self.__get_last_used_row()
+    self._max_row = self.__get_last_used_row()
 
     if not self.__is_first_column_empty():
       # Rearranging Columns
@@ -152,7 +153,7 @@ class FormatterBase:
       self._reset_pos_columns()
       print(' * Setting Rows Width')
       self._reset_pos_rows()
-      self.max_row += 1
+      self._max_row += 1
 
     # Apply Sheet Wide
     print(' * Formatting Columns')
@@ -178,14 +179,14 @@ class FormatterBase:
 
   # Basic Flow
   def process_one(self) -> None:
-    self.sheet = self._controller.getActiveSheet()
+    self._sheet = self._controller.getActiveSheet()
     self.__format_one_sheet()
 
   # Basic Flow
   def process_all(self) -> None:
     for sheet in self._document.Sheets:
       print(sheet.Name)
-      self.sheet = sheet
+      self._sheet = sheet
       self.__format_one_sheet()
 
   # -- -- --
@@ -200,7 +201,9 @@ class FormatterBase:
     return letters
 
   # Helper: Multiple Usages
-  def _column_letter_to_index(self, column_letter: str) -> int:
+  def _column_letter_to_index(self,
+        column_letter: str) -> int:
+
     """Convert Excel-style column letters to a 0-based column index."""
     index = 0
     for i, char in enumerate(reversed(column_letter)):
@@ -208,7 +211,9 @@ class FormatterBase:
     return index - 1
 
   # Helper: Multiple Usages
-  def _get_relative_column_letter(self, start_letter: str, offset: int) -> str:
+  def _get_relative_column_letter(self,
+        start_letter: str, offset: int) -> str:
+
     """Get the Excel-style column letter at an offset from the start_letter."""
     start_index    = self._column_letter_to_index(start_letter)
     relative_index = start_index + offset - 1
@@ -219,7 +224,7 @@ class FormatterBase:
   # Sheet Helper
   # To be used only within the formatOneSheet(), _reset_pos_rows()
   def __get_last_used_row(self) -> int:
-    cursor = self.sheet.createCursor()
+    cursor = self._sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
     cursor.gotoStartOfUsedArea(True)
     rows = cursor.getRows()
@@ -229,25 +234,25 @@ class FormatterBase:
   # Sheet Helper
   # To be used only within the formatOneSheet()
   def __is_first_column_empty(self) -> bool:
-    rows = self.sheet.Rows
+    rows = self._sheet.Rows
     max_sampling_row = 10
 
     for row_index in range(max_sampling_row + 1):
-      cell = self.sheet.getCellByPosition(0, row_index)
-      # 0 indicates an empty cell
+      cell = self._sheet.getCellByPosition(0, row_index)
+      # indicates an empty cell
       if cell.String != "": return False
     return True
 
   # Sheet Helper
   # To be used only within the _set_columns_format()
-  def __get_number_format(self,
+  def _get_number_format(self,
         format_string: str) -> XNumberFormats:
 
-    nf = self.numberfmt.queryKey(  \
-              format_string, self.locale, True)
+    nf = self._numberfmt.queryKey(  \
+              format_string, self._locale, True)
     if nf == -1:
-       nf = self.numberfmt.addNew( \
-              format_string, self.locale)
+       nf = self._numberfmt.addNew( \
+              format_string, self._locale)
     return nf
 
   # Sheet Helper: Multiple Usages
@@ -255,7 +260,7 @@ class FormatterBase:
         a_t: int, a_b: int, a_l: int, a_r: int,
         line_format: BorderLine2) -> None:
 
-    func_gcrb = self.sheet.getCellRangeByPosition
+    func_gcrb = self._sheet.getCellRangeByPosition
 
     # Formatting Rectangle Edges
     cr_top = func_gcrb(a_l, a_t, a_r, a_t)
@@ -293,7 +298,7 @@ class FormatterCommon(FormatterBase):
 
   # Formatting Procedure: Abstract Override
   def _reset_pos_columns(self) -> None:
-    columns = self.sheet.Columns
+    columns = self._sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
 
     # Insert column, and set width
@@ -306,12 +311,12 @@ class FormatterCommon(FormatterBase):
 
   # Formatting Procedure: Abstract Override
   def _reset_pos_rows(self) -> None:
-    rows = self.sheet.Rows
+    rows = self._sheet.Rows
     row_height = 0.5 * 1000  # Height of 0.5 cm
 
     # Range to be processed
     # Omit header and plus one for the last
-    range_rows = range(2, self.max_row + 1)
+    range_rows = range(2, self._max_row + 1)
 
     for row_index in range_rows:
       rows.getByIndex(row_index).Height = row_height
@@ -321,11 +326,11 @@ class FormatterCommon(FormatterBase):
 
     row_height_div = 0.3 * 1000  # Height of 0.3 cm
     rows.getByIndex(0).Height = row_height_div
-    rows.getByIndex(self.max_row + 2).Height = row_height_div
+    rows.getByIndex(self._max_row + 2).Height = row_height_div
 
   # Formatting Procedure: Abstract Override
   def _set_columns_format(self) -> None:
-    columns = self.sheet.Columns
+    columns = self._sheet.Columns
 
     # Alignment mapping
     alignment_map = {
@@ -346,15 +351,15 @@ class FormatterCommon(FormatterBase):
         column.Width = width
 
         start_row = 3
-        end_row = self.max_row
-        cell_range = self.sheet.getCellRangeByPosition(
+        end_row = self._max_row
+        cell_range = self._sheet.getCellRangeByPosition(
           col_index, start_row, col_index, end_row)
 
         if align in alignment_map:
            cell_range.HoriJustify = alignment_map[align]
 
         if cell_format := data.get('format'):
-           cell_range.NumberFormat = self.get_number_format(cell_format)
+           cell_range.NumberFormat = self._get_number_format(cell_format)
 
   # Formatting Procedure: Refactored from _add_merged_titles()
   def __set_merged_title(self, metadata: dict[str, any]) -> None:
@@ -366,7 +371,7 @@ class FormatterCommon(FormatterBase):
       col_letter_end   = self._get_relative_column_letter(
           start_letter, title['col-end-id'])
 
-      cell = self.sheet[f"{col_letter_start}2"]
+      cell = self._sheet[f"{col_letter_start}2"]
       cell.String        = title['text']
       cell.CellBackColor = title['bg']
       cell.CharColor     = title['fg']
@@ -376,17 +381,14 @@ class FormatterCommon(FormatterBase):
         1, 1, pos, pos, lfBlack)
 
       merge_address = f"{col_letter_start}2:{col_letter_end}2"
-      self.sheet[merge_address].merge(True)
-      self.sheet[merge_address].CharWeight = BOLD
+      self._sheet[merge_address].merge(True)
+      self._sheet[merge_address].CharWeight = BOLD
 
       header_address = f"{col_letter_start}2:{col_letter_end}3"
-      self.sheet[header_address].HoriJustify = CENTER
+      self._sheet[header_address].HoriJustify = CENTER
 
   # Formatting Procedure: Abstract Override
   def _add_merged_titles(self) -> None:
-    self.sheet['B2:BC3'].HoriJustify = CENTER
-    self.sheet['B2:BC2'].CharWeight  = BOLD 
-
     for metadata in self._metadatas:
       self.__set_merged_title(metadata)
 
@@ -426,7 +428,7 @@ class FormatterCommon(FormatterBase):
           row_index = 2
           col_index = start_index + pair_index - 1
 
-          cell = self.sheet.getCellByPosition(
+          cell = self._sheet.getCellByPosition(
             col_index , row_index)
           cell.CellBackColor = bg_color 
 
@@ -443,7 +445,7 @@ class FormatterCommon(FormatterBase):
     col_end   = self._column_letter_to_index(letter_end)
 
     # Define the cell range for the outer border and vertical lines
-    return self.sheet.getCellRangeByPosition(
+    return self._sheet.getCellRangeByPosition(
       col_start, head_row, col_end, head_row)
 
   # Sheet Helper
@@ -484,7 +486,7 @@ class FormatterTabular(FormatterCommon):
   def _set_sheetwide_view(self) -> None:
     # activate sheet
     spreadsheetView = self._controller
-    spreadsheetView.setActiveSheet(self.sheet)
+    spreadsheetView.setActiveSheet(self._sheet)
 
     # sheet wide
     spreadsheetView.ShowGrid = False

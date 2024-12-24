@@ -23,7 +23,7 @@ class FormatterBase:
 
     # Range to be processed
     # Omit header and plus one for the last
-    range_rows = range(2, self.max_row + 1)
+    range_rows = range(2, self._max_row + 1)
 
     for row_index in range_rows:
       rows.getByIndex(row_index).Height = row_height
@@ -33,7 +33,7 @@ class FormatterBase:
 
     row_height_div = 0.3 * 1000  # Height of 0.3 cm
     rows.getByIndex(0).Height = row_height_div
-    rows.getByIndex(self.max_row + 2).Height = row_height_div
+    rows.getByIndex(self._max_row + 2).Height = row_height_div
 
   # Sheet Helper
   # To be used only within the formatOneSheet()
@@ -49,14 +49,14 @@ class FormatterBase:
 
   # Basic Flow
   def __format_one_sheet(self) -> None:
-    self.max_row = self.__get_last_used_row()
+    self._max_row = self.__get_last_used_row()
 
     if not self.__is_first_column_empty():
       # Rearranging Columns
       print(' * Rearranging Columns')
       self._reset_pos_columns()
       self.__reset_pos_rows()
-      self.max_row += 1
+      self._max_row += 1
 
   # Basic Flow
   def process_one(self) -> None:

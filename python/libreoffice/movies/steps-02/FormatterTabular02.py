@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from com.sun.star.sheet import XSpreadsheetDocument
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -6,7 +6,8 @@ from com.sun.star.sheet import XSpreadsheetDocument
 class FormatterBase:
   @property
   @abstractmethod
-  def _document(self): pass
+  def _document(self) -> XSpreadsheetDocument:
+    pass
 
   def __init__(self) -> None:
     self._sheet = None
@@ -33,7 +34,7 @@ class FormatterBase:
 
   # Basic Flow
   def __format_one_sheet(self) -> None:
-    self.max_row = self.__get_last_used_row()
+    self._max_row = self.__get_last_used_row()
 
     if not self.__is_first_column_empty():
       # Rearranging Columns
@@ -41,7 +42,7 @@ class FormatterBase:
       self._reset_pos_columns()
       print(' * Setting Rows Width')
       self._reset_pos_rows()
-      self.max_row += 1
+      self._max_row += 1
 
     # Call the hook method (default does nothing)
     self._format_one_sheet_post()
@@ -56,14 +57,14 @@ class FormatterBase:
 
   # Basic Flow
   def process_one(self) -> None:
-    self.sheet = self._controller.getActiveSheet()
+    self._sheet = self._controller.getActiveSheet()
     self.__format_one_sheet()
 
   # Basic Flow
   def process_all(self) -> None:
     for sheet in self._document.Sheets:
       print(sheet.Name)
-      self.sheet = sheet
+      self._sheet = sheet
       self.__format_one_sheet()
 
   # -- -- --
@@ -82,7 +83,7 @@ class FormatterBase:
   # Sheet Helper
   # To be used only within the formatOneSheet(), _reset_pos_rows()
   def __get_last_used_row(self) -> int:
-    cursor = self.sheet.createCursor()
+    cursor = self._sheet.createCursor()
     cursor.gotoEndOfUsedArea(False)
     cursor.gotoStartOfUsedArea(True)
     rows = cursor.getRows()
@@ -92,12 +93,12 @@ class FormatterBase:
   # Sheet Helper
   # To be used only within the formatOneSheet()
   def __is_first_column_empty(self) -> bool:
-    rows = self.sheet.Rows
+    rows = self._sheet.Rows
     max_sampling_row = 10
 
     for row_index in range(max_sampling_row + 1):
-      cell = self.sheet.getCellByPosition(0, row_index)
-      # 0 indicates an empty cell
+      cell = self._sheet.getCellByPosition(0, row_index)
+      # indicates an empty cell
       if cell.String != "": return False
     return True
 
@@ -107,7 +108,7 @@ class FormatterCommon(FormatterBase):
 
   # Formatting Procedure: Abstract Override
   def _reset_pos_columns(self) -> None:
-    columns = self.sheet.Columns
+    columns = self._sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
 
     # Insert column, and set width
@@ -120,12 +121,12 @@ class FormatterCommon(FormatterBase):
 
   # Formatting Procedure: Abstract Override
   def _reset_pos_rows(self) -> None:
-    rows = self.sheet.Rows
+    rows = self._sheet.Rows
     row_height = 0.5 * 1000  # Height of 0.5 cm
 
     # Range to be processed
     # Omit header and plus one for the last
-    range_rows = range(2, self.max_row + 1)
+    range_rows = range(2, self._max_row + 1)
 
     for row_index in range_rows:
       rows.getByIndex(row_index).Height = row_height
@@ -135,7 +136,7 @@ class FormatterCommon(FormatterBase):
 
     row_height_div = 0.3 * 1000  # Height of 0.3 cm
     rows.getByIndex(0).Height = row_height_div
-    rows.getByIndex(self.max_row + 2).Height = row_height_div
+    rows.getByIndex(self._max_row + 2).Height = row_height_div
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

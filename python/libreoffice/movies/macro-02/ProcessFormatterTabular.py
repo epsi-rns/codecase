@@ -98,4 +98,3 @@ def tabular_single_movies() -> None:
 def tabular_multi_movies() -> None:
   movies = FormatterTabularMovies()
   movies.process_all()
-

@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from com.sun.star.sheet import XSpreadsheetDocument
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -6,7 +6,8 @@ from com.sun.star.sheet import XSpreadsheetDocument
 class FormatterBase:
   @property
   @abstractmethod
-  def _document(self): pass
+  def _document(self) -> XSpreadsheetDocument:
+    pass
 
   def __init__(self) -> None:
     self._sheet = None
@@ -46,21 +47,21 @@ class FormatterBase:
 
   # Basic Flow
   def process_one(self) -> None:
-    self.sheet = self._controller.getActiveSheet()
+    self._sheet = self._controller.getActiveSheet()
     self.__format_one_sheet()
 
   # Basic Flow
   def process_all(self) -> None:
     for sheet in self._document.Sheets:
       print(sheet.Name)
-      self.sheet = sheet
+      self._sheet = sheet
       self.__format_one_sheet()
 
   # -- -- --
 
   # Helper: Multiple Usages
   def _column_index_to_letter(self, index: int) -> str:
-    """Convert a 0-based column index to Excel-style column letters."""
+
     letters = ''
     while index >= 0:
       letters = chr(index % 26 + ord('A')) + letters
@@ -72,7 +73,7 @@ class FormatterBase:
 class FormatterCommon(FormatterBase):
   # Formatting Procedure: Abstract Override
   def _reset_pos_columns(self) -> None:
-    columns = self.sheet.Columns
+    columns = self._sheet.Columns
     column_width_div = 0.5 * 1000  # Width of 0.5 cm
 
     # Insert column, and set width

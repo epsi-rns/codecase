@@ -13,7 +13,7 @@ from com.sun.star.\
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-class FormatterBase(ABC):
+class FormatterBase:
   def __init__(self, document: XSpreadsheetDocument) -> None:
     self.__document = document
     self._sheet = None
@@ -50,8 +50,8 @@ class FormatterBase(ABC):
   # Class Property: Sheet Variables
   def __prepare_sheet(self) -> None:
     # number and date format
-    self.numberfmt = self.__document.NumberFormats
-    self.locale    = self.__document.CharLocale
+    self._numberfmt = self.__document.NumberFormats
+    self._locale    = self.__document.CharLocale
 
     # table border
     lineFormatNone = BorderLine2()
@@ -87,11 +87,11 @@ class FormatterBase(ABC):
   def __get_number_format(self,
         format_string: str) -> XNumberFormats:
 
-    nf = self.numberfmt.queryKey(  \
-              format_string, self.locale, True)
+    nf = self._numberfmt.queryKey(  \
+              format_string, self._locale, True)
     if nf == -1:
-       nf = self.numberfmt.addNew( \
-              format_string, self.locale)
+       nf = self._numberfmt.addNew( \
+              format_string, self._locale)
     return nf
 
   # Formatting Procedure
@@ -101,7 +101,7 @@ class FormatterBase(ABC):
 
     # Range to be processed
     # Omit header and plus one for the last
-    range_rows = range(2, self.max_row + 1)
+    range_rows = range(2, self._max_row + 1)
 
     for row_index in range_rows:
       rows.getByIndex(row_index).Height = row_height
@@ -111,7 +111,7 @@ class FormatterBase(ABC):
 
     row_height_div = 0.3 * 1000  # Height of 0.3 cm
     rows.getByIndex(0).Height = row_height_div
-    rows.getByIndex(self.max_row + 2).Height = row_height_div
+    rows.getByIndex(self._max_row + 2).Height = row_height_div
 
   # To be used only within the formatOneSheet()
   def __is_first_column_empty(self) -> bool:
@@ -152,7 +152,7 @@ class FormatterBase(ABC):
 
     # Define the cell range for rows and columns
     start_row = 3
-    end_row = self.max_row
+    end_row = self._max_row
     col_start = self._column_letter_to_index(letter_start)
     col_end   = self._column_letter_to_index(letter_end)
 
@@ -221,7 +221,7 @@ class FormatterBase(ABC):
     # Define the cell range for rows and columns  
     # Top, Bottom (max row), Left, Right
     a_t = 3  
-    a_b = self.max_row
+    a_b = self._max_row
     a_l = self._column_letter_to_index(letter_start)
     a_r = self._column_letter_to_index(letter_end)
 
@@ -286,7 +286,7 @@ class FormatterBase(ABC):
       column.Width = width
 
       start_row = 3
-      end_row = self.max_row
+      end_row = self._max_row
       cell_range = self._sheet.getCellRangeByPosition(
         col_index, start_row, col_index, end_row)
 
@@ -310,14 +310,14 @@ class FormatterBase(ABC):
 
   # Basic Flow
   def __format_one_sheet(self) -> None:
-    self.max_row = self.__get_last_used_row()
+    self._max_row = self.__get_last_used_row()
 
     if not self.__is_first_column_empty():
       # Rearranging Columns
       print(' * Rearranging Columns')
       self._reset_pos_columns()
       self.__reset_pos_rows()
-      self.max_row += 1
+      self._max_row += 1
 
     # Apply Sheet Wide
     print(' * Formatting Columns')
@@ -345,4 +345,3 @@ class FormatterBase(ABC):
       print(sheet.Name)
       self._sheet = sheet
       self.__format_one_sheet()
-

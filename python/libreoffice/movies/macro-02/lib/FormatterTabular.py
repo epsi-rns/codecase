@@ -19,7 +19,7 @@ class FormatterTabular(FormatterCommon):
   def _set_sheetwide_view(self) -> None:
     # activate sheet
     spreadsheetView = self._controller
-    spreadsheetView.setActiveSheet(self.sheet)
+    spreadsheetView.setActiveSheet(self._sheet)
 
     # sheet wide
     spreadsheetView.ShowGrid = False
