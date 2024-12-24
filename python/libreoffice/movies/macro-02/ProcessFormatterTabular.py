@@ -87,6 +87,15 @@ class FormatterTabularMovies(FormatterTabularData):
       **self._metadata_movies_additional
     }]
 
+  def _add_merged_titles_post(self) -> None:
+    # Altering Manually
+    self._sheet['F3'].String = 'Actors/Actress'
+
+  def _format_one_sheet_post(self) -> None:
+    print(f' * Additional Formatting: {self._max_row} rows')
+    self._color_group = 'B'
+    self._color_logs()
+
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 # Represent Class in Macro

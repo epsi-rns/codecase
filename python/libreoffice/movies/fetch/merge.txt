@@ -1,0 +1,1 @@
+cat header.csv > movies_all.csv && tail -n +2 -q $(ls by-year/movies_*.csv | sort) >> movies_all.csv

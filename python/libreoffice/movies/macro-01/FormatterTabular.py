@@ -115,6 +115,30 @@ class FormatterTabularMovies(FormatterBase):
     self._apply_data_border(
       'I', 'K', self.lfBlack, self.lfGray, self.lfGray)
 
+  # Sheet Helper
+  def _color_row(self, row: int) -> None:
+    # get cell address value for current row and previous
+    value_current = self._sheet[f'B{row}'].Value
+    value_prev    = self._sheet[f'B{row-1}'].Value
+
+    # flip state whenever log index changed_
+    if (value_current!=value_prev):
+      self._color_state = 1 if self._color_state==0 else 0
+
+    if self._color_state == 1:
+      # color row based on color_state
+      self._sheet[f'B{row}:G{row}'].CellBackColor = blueScale[0]
+      self._sheet[f'I{row}:K{row}'].CellBackColor = blueScale[0]
+
+  def _format_one_sheet(self) -> None:
+    super()._format_one_sheet() 
+
+    # Additional formatting
+    print(f' * Additional Formatting: {self._max_row} rows')
+    self._color_logs()
+
+    print(' * Finished')
+
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 # Represent Class in Macro

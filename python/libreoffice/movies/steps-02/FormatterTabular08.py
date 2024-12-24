@@ -141,6 +141,10 @@ class FormatterBase:
   def _format_head_colors(self) -> None:
     pass
 
+  @abstractmethod
+  def format_data_borders(self) -> None:  
+    pass
+
   # -- -- --
 
   # Basic Flow
@@ -165,6 +169,10 @@ class FormatterBase:
     self._add_merged_titles()
     self._format_head_borders()
     self._format_head_colors()
+
+    # Apply borders to the specified range
+    print(' * Formatting Border')
+    self.format_data_borders()
 
     # Call the hook method (default does nothing)
     self._format_one_sheet_post()
@@ -432,6 +440,24 @@ class FormatterCommon(FormatterBase):
             col_index , row_index)
           cell.CellBackColor = bg_color 
 
+  # Formatting Procedure: Abstract Override
+  def format_data_borders(self) -> None:
+    for metadata in self._metadatas:
+      start_letter = metadata['col-start']
+
+      for border_config in metadata['data-borders']:
+        col_start_id, col_end_id, \
+        outer_line, vert_line, horz_line = border_config
+
+        letter_start = self._get_relative_column_letter(
+          start_letter, col_start_id)  
+        letter_end   = self._get_relative_column_letter(
+          start_letter, col_end_id)  
+
+        self.__apply_data_border(
+          letter_start, letter_end,
+          outer_line, vert_line, horz_line)
+
   # -- -- --
 
   # Sheet Helper
@@ -449,6 +475,21 @@ class FormatterCommon(FormatterBase):
       col_start, head_row, col_end, head_row)
 
   # Sheet Helper
+  # To be used only within the __apply_data_border()
+  def __get_data_range(self,
+        letter_start: str, letter_end:  str) -> XCellRange:
+
+    # Define the cell range for rows and columns
+    start_row = 3
+    end_row = self._max_row
+    col_start = self._column_letter_to_index(letter_start)
+    col_end   = self._column_letter_to_index(letter_end)
+
+    # Define the cell range for the outer border and vertical lines
+    return self._sheet.getCellRangeByPosition(
+      col_start, start_row, col_end, end_row)
+
+  # Sheet Helper
   # To be used only within the __apply_head_border()
   def __set_head_rectangle(self,
         letter_start: str, letter_end: str,
@@ -464,6 +505,21 @@ class FormatterCommon(FormatterBase):
     self._format_cell_rectangle(a_t, a_b, a_l, a_r, line_format)
 
   # Sheet Helper
+  # To be used only within the __apply_data_border()
+  def __set_data_rectangle(self,
+        letter_start: str, letter_end: str,
+        line_format: BorderLine2) -> None:
+
+    # Define the cell range for rows and columns
+    # Top, Bottom (max row), Left, Right
+    a_t = 3
+    a_b = self._max_row
+    a_l = self._column_letter_to_index(letter_start)
+    a_r = self._column_letter_to_index(letter_end)
+
+    self._format_cell_rectangle(a_t, a_b, a_l, a_r, line_format)
+
+  # Sheet Helper
   # To be used only within the _format_head_borders()
   def __apply_head_border(self,
         letter_start: str, letter_end: str,
@@ -473,10 +529,30 @@ class FormatterCommon(FormatterBase):
       letter_start, letter_end, outer_line)
 
     border = TableBorder2()
-    border.IsVerticalLineValid = True
-    border.VerticalLine = vert_line
+    border.IsVerticalLineValid   = True
+    border.VerticalLine   = vert_line
 
     cell_range = self.__get_head_range(
+      letter_start, letter_end)
+    cell_range.TableBorder2 = border
+
+  # Sheet Helper
+  # To be used only within the format_data_borders()
+  def __apply_data_border(self,
+        letter_start: str, letter_end: str,
+        outer_line: BorderLine2, vert_line: BorderLine2,
+        horz_line: BorderLine2) -> None:
+
+    self.__set_data_rectangle(
+      letter_start, letter_end, outer_line)
+
+    border = TableBorder2()
+    border.IsVerticalLineValid   = True
+    border.IsHorizontalLineValid = True
+    border.VerticalLine   = vert_line
+    border.HorizontalLine = horz_line
+
+    cell_range = self.__get_data_range(
       letter_start, letter_end)
     cell_range.TableBorder2 = border
 
@@ -491,6 +567,49 @@ class FormatterTabular(FormatterCommon):
     # sheet wide
     spreadsheetView.ShowGrid = False
     spreadsheetView.freezeAtPosition(3, 3)
+
+  # Rebuild array of tuple using the helper function
+  def __get_rows_affected_letter(self):
+    return [
+      (self._column_index_to_letter(start_col_index + start - 1),
+       self._column_index_to_letter(start_col_index + end - 1))
+      for metadata in self._metadatas
+        # Inline temporary variable
+        for start_col_index in [
+          self._column_letter_to_index(metadata['col-start'])]
+        # Inner loop
+        for start, end, *_ in metadata['head-borders']
+    ]
+
+  def __color_row(self, row) -> None:
+    # get cell address value for current row and previous
+    col = self._color_group
+    value_current = self._sheet[f'{col}{row}'].Value
+    value_prev    = self._sheet[f'{col}{row-1}'].Value
+
+    # flip state whenever log index changed
+    if (value_current!=value_prev):
+      self._color_state = 1 if self._color_state==0 else 0
+
+    if self._color_state == 1:
+      # color row based on color_state
+      for letter_start, letter_end in self._rows_affected:
+        self._sheet[f'{letter_start}{row}:{letter_end}{row}']\
+          .CellBackColor = blueScale[0]
+
+  def _color_logs(self) -> None:
+    # reset color state, flip flop, 0 or 1
+    self._color_state = 1
+
+    self._rows_affected = self.__get_rows_affected_letter()
+    print(f'   {self._rows_affected}')
+
+    for row in range(4, self._max_row+2):
+      self.__color_row(row)
+     
+      # Show progress every 5,000 rows
+      if (row - 3) % 2500 == 0:
+        print(f"   - Processing rows: {row-2}")
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -514,12 +633,17 @@ class FormatterTabularData(FormatterTabular):
 
       'titles': [{ 
         'col-start-id' : 1, 'col-end-id' : 6, 'text' : 'Base Movie Data', 
-        'bg' : blueScale[3], 'fg' : clBlack
+        'bg' : blueScale[3], 'fg' : clBlack                    
       }],
 
       # letter_start, letter_end, outer_line, vert_line
       'head-borders': [
         ( 1, 6, lfBlack, lfBlack)],
+
+      # letter_start, letter_end, outer_line, vert_line, horz_line
+      'data-borders': [
+        ( 1,  2, lfBlack, lfBlack, lfGray),
+        ( 3,  6, lfBlack, lfGray,  lfGray)]
     }
 
     self._metadata_movies_additional = {
@@ -536,7 +660,9 @@ class FormatterTabularData(FormatterTabular):
         'bg' : tealScale[3], 'fg' : clBlack                    
       }],
       'head-borders': [
-        ( 1, 3, lfBlack, lfBlack)]
+        ( 1, 3, lfBlack, lfBlack)],
+      'data-borders': [
+        ( 1, 3, lfBlack, lfGray, lfGray)]
     }
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -555,6 +681,15 @@ class FormatterTabularMovies(FormatterTabularData):
       'col-start'     : 'I',
       **self._metadata_movies_additional
     }]
+
+  def _add_merged_titles_post(self) -> None:
+    # Altering Manually
+    self._sheet['F3'].String = 'Actors/Actress'
+
+  def _format_one_sheet_post(self) -> None:
+    print(f' * Additional Formatting: {self._max_row} rows')
+    self._color_group = 'B'
+    self._color_logs()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

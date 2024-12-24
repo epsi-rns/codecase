@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 from com.sun.star.sheet import XSpreadsheetDocument
 from com.sun.star.util  import XNumberFormats
@@ -10,6 +10,46 @@ from com.sun.star.\
   table.CellHoriJustify import LEFT, CENTER, RIGHT
 from com.sun.star.\
   table import BorderLine2, BorderLineStyle, TableBorder2
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+# Google Material Color Scale 
+blueScale = {
+  0: 0xE3F2FD, 1: 0xBBDEFB, 2: 0x90CAF9,
+  3: 0x64B5F6, 4: 0x42A5F5, 5: 0x2196F3,
+  6: 0x1E88E5, 7: 0x1976D2, 8: 0x1565C0,
+  9: 0x0D47A1
+}
+
+tealScale = {
+  0: 0xE0F2F1, 1: 0xB2DFDB, 2: 0x80CBC4,
+  3: 0x4DB6AC, 4: 0x26A69A, 5: 0x009688,
+  6: 0x00897B, 7: 0x00796B, 8: 0x00695C,
+  9: 0x004D40
+}
+
+amberScale = {
+  0: 0xFFF8E1, 1: 0xFFECB3, 2: 0xFFE082,
+  3: 0xFFD54F, 4: 0xFFCA28, 5: 0xFFC107,
+  6: 0xFFB300, 7: 0xFFA000, 8: 0xFF8F00,
+  9: 0xFF6F00
+}
+
+brownScale = {
+  0: 0xEFEBE9, 1: 0xD7CCC8, 2: 0xBCAAA4,
+  3: 0xA1887F, 4: 0x8D6E63, 5: 0x795548,
+  6: 0x6D4C41, 7: 0x5D4037, 8: 0x4E342E,
+  9: 0x3E2723
+}
+
+redScale = {
+  0: 0xffebee, 1: 0xffcdd2, 2: 0xef9a9a,
+  3: 0xe57373, 4: 0xef5350, 5: 0xf44336,
+  6: 0xe53935, 7: 0xd32f2f, 8: 0xc62828,
+  9: 0xb71c1c
+}
+
+clBlack = 0x000000
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -365,3 +405,132 @@ class FormatterBase:
       print(sheet.Name)
       self._sheet = sheet
       self._format_one_sheet()
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+class FormatterTabularMovies(FormatterBase):
+  def __init__(self) -> None:
+    super().__init__(XSCRIPTCONTEXT.getDocument())
+
+  # Simple Configuration
+  def _init_field_metadata(self) -> None:
+    self._fields = {
+       'Year'     : { 'col': 'B', 'width': 1.5, 'bg': blueScale[3],
+                      'align': 'center' },
+       'Title'    : { 'col': 'C', 'width': 6,   'bg': blueScale[2] },
+       'Genre'    : { 'col': 'D', 'width': 3,   'bg': blueScale[1] },
+       'Plot'     : { 'col': 'E', 'width': 6,   'bg': blueScale[2] },
+       'Actors'   : { 'col': 'F', 'width': 6,   'bg': blueScale[1] },
+       'Director' : { 'col': 'G', 'width': 5,   'bg': blueScale[2] },
+
+       'Rated'    : { 'col': 'I', 'width': 2,   'bg': tealScale[2],
+                      'align': 'center' },
+       'Runtime'  : { 'col': 'J', 'width': 2.5, 'bg': tealScale[1],
+                      'align': 'center' },
+       'Metascore': { 'col': 'K', 'width': 2,   'bg': tealScale[2],
+                      'align': 'center' }
+    }
+
+  # Formatting Procedure: Abstract Override
+  def _set_sheetwide_view(self) -> None:
+    # activate sheet
+    spreadsheetView = self._controller
+    spreadsheetView.setActiveSheet(self._sheet)
+
+    # sheet wide
+    spreadsheetView.ShowGrid = False
+    spreadsheetView.freezeAtPosition(2, 3)
+
+  # Formatting Procedure
+  def _reset_pos_columns(self) -> None:
+    columns = self._sheet.Columns
+    column_width_div = 0.5 * 1000  # Width of 0.5 cm
+
+    # Insert one column at the specified indexes
+    columns.insertByIndex( 0, 1) # Column A
+    columns.insertByIndex( 7, 1) # Column H
+    columns.insertByIndex(11, 1) # Column L
+
+    # Set widths for columns A, H
+    columns.getByIndex( 0).Width = column_width_div
+    columns.getByIndex( 7).Width = column_width_div
+    columns.getByIndex(11).Width = column_width_div
+
+  # Formatting Procedure
+  def _add_merged_title(self) -> None:
+    self._sheet['B2:K3'].HoriJustify = CENTER
+    self._sheet['B2:K2'].CharWeight = BOLD 
+
+    cell = self._sheet['B2']
+    cell.String = 'Base Movie Data'
+    cell.CellBackColor = blueScale[3]
+    cell.CharColor = clBlack
+    self._format_cell_rectangle(
+      1, 1, 1, 1, self.lfBlack)
+    self._sheet['B2:G2'].merge(True)
+
+    cell = self._sheet['I2']
+    cell.String = 'Additional'
+    cell.CellBackColor = tealScale[3]
+    cell.CharColor = clBlack
+    self._format_cell_rectangle(
+      1, 1, 8, 8, self.lfBlack)
+    self._sheet['I2:K2'].merge(True)
+
+  # Formatting Procedure
+  def _format_head_borders(self) -> None:  
+    # Base Movie Data
+    self._apply_head_border(
+      'B', 'G', self.lfBlack, self.lfBlack)
+
+    # Additional Data
+    self._apply_head_border(
+      'I', 'K', self.lfBlack, self.lfBlack)
+
+  # Formatting Procedure
+  def _format_data_borders(self) -> None:  
+    # Base Movie Data
+    self._apply_data_border(
+      'B', 'C', self.lfBlack, self.lfBlack, self.lfGray)
+    self._apply_data_border(
+      'D', 'G', self.lfBlack, self.lfGray, self.lfGray)
+
+    # Additional Data
+    self._apply_data_border(
+      'I', 'K', self.lfBlack, self.lfGray, self.lfGray)
+
+  # Sheet Helper
+  def _color_row(self, row: int) -> None:
+    # get cell address value for current row and previous
+    value_current = self._sheet[f'B{row}'].Value
+    value_prev    = self._sheet[f'B{row-1}'].Value
+
+    # flip state whenever log index changed_
+    if (value_current!=value_prev):
+      self._color_state = 1 if self._color_state==0 else 0
+
+    if self._color_state == 1:
+      # color row based on color_state
+      self._sheet[f'B{row}:G{row}'].CellBackColor = blueScale[0]
+      self._sheet[f'I{row}:K{row}'].CellBackColor = blueScale[0]
+
+  def _format_one_sheet(self) -> None:
+    super()._format_one_sheet() 
+
+    # Additional formatting
+    print(f' * Additional Formatting: {self._max_row} rows')
+    self._color_logs()
+
+    print(' * Finished')
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+# Represent Class in Macro
+
+def tabular_single_movies() -> None:
+  tabular = FormatterTabularMovies()
+  tabular.process_one()
+
+def tabular_multi_movies() -> None:
+  tabular = FormatterTabularMovies()
+  tabular.process_all()
