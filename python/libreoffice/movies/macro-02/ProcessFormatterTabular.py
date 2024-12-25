@@ -94,7 +94,7 @@ class FormatterTabularMovies(FormatterTabularData):
   def _format_one_sheet_post(self) -> None:
     print(f' * Additional Formatting: {self._max_row} rows')
     self._color_group = 'B'
-    self._color_logs()
+    self._color_groups()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

@@ -135,7 +135,7 @@ class FormatterTabularMovies(FormatterBase):
 
     # Additional formatting
     print(f' * Additional Formatting: {self._max_row} rows')
-    self._color_logs()
+    self._color_groups()
 
     print(' * Finished')
 

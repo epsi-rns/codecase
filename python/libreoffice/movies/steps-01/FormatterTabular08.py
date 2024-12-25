@@ -92,7 +92,7 @@ class FormatterBase:
     pass
 
   @abstractmethod
-  def _color_logs(self) -> None:
+  def _color_groups(self) -> None:
     pass
 
   # Class Property: Sheet Variables
@@ -357,14 +357,14 @@ class FormatterBase:
         cell.CellBackColor = bg_color 
 
   # Formatting Procedure
-  def _color_logs(self) -> None:
+  def _color_groups(self) -> None:
     # reset color state, flip flop, 0 or 1
     self._color_state = 1
 
     for row in range(4, self._max_row+2):
       self._color_row(row)
      
-      # Show progress every 5,000 rows
+      # Show progress every 2,500 rows
       if (row - 3) % 2500 == 0:
           print(f"   - Processing rows: {row-2}")
 
@@ -505,12 +505,12 @@ class FormatterTabularMovies(FormatterBase):
     value_current = self._sheet[f'B{row}'].Value
     value_prev    = self._sheet[f'B{row-1}'].Value
 
-    # flip state whenever log index changed_
+    # flip state whenever group value changed
     if (value_current!=value_prev):
       self._color_state = 1 if self._color_state==0 else 0
 
     if self._color_state == 1:
-      # color row based on color_state
+      # color r`_color_groups()`ow based on color_state
       self._sheet[f'B{row}:G{row}'].CellBackColor = blueScale[0]
       self._sheet[f'I{row}:K{row}'].CellBackColor = blueScale[0]
 
@@ -519,7 +519,7 @@ class FormatterTabularMovies(FormatterBase):
 
     # Additional formatting
     print(f' * Additional Formatting: {self._max_row} rows')
-    self._color_logs()
+    self._color_groups()
 
     print(' * Finished')
 

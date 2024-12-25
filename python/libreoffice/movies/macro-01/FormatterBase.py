@@ -52,7 +52,7 @@ class FormatterBase:
     pass
 
   @abstractmethod
-  def _color_logs(self) -> None:
+  def _color_groups(self) -> None:
     pass
 
   # Class Property: Sheet Variables
@@ -317,7 +317,7 @@ class FormatterBase:
         cell.CellBackColor = bg_color 
 
   # Formatting Procedure
-  def _color_logs(self) -> None:
+  def _color_groups(self) -> None:
     # reset color state, flip flop, 0 or 1
     self._color_state = 1
 

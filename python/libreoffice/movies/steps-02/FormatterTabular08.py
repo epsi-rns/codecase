@@ -587,7 +587,7 @@ class FormatterTabular(FormatterCommon):
     value_current = self._sheet[f'{col}{row}'].Value
     value_prev    = self._sheet[f'{col}{row-1}'].Value
 
-    # flip state whenever log index changed
+    # flip state whenever group value changed
     if (value_current!=value_prev):
       self._color_state = 1 if self._color_state==0 else 0
 
@@ -597,7 +597,7 @@ class FormatterTabular(FormatterCommon):
         self._sheet[f'{letter_start}{row}:{letter_end}{row}']\
           .CellBackColor = blueScale[0]
 
-  def _color_logs(self) -> None:
+  def _color_groups(self) -> None:
     # reset color state, flip flop, 0 or 1
     self._color_state = 1
 
@@ -607,7 +607,7 @@ class FormatterTabular(FormatterCommon):
     for row in range(4, self._max_row+2):
       self.__color_row(row)
      
-      # Show progress every 5,000 rows
+      # Show progress every 2,500 rows
       if (row - 3) % 2500 == 0:
         print(f"   - Processing rows: {row-2}")
 
@@ -689,7 +689,7 @@ class FormatterTabularMovies(FormatterTabularData):
   def _format_one_sheet_post(self) -> None:
     print(f' * Additional Formatting: {self._max_row} rows')
     self._color_group = 'B'
-    self._color_logs()
+    self._color_groups()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

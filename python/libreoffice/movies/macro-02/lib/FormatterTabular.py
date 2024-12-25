@@ -54,7 +54,7 @@ class FormatterTabular(FormatterCommon):
         self._sheet[f'{letter_start}{row}:{letter_end}{row}']\
           .CellBackColor = blueScale[0]
 
-  def _color_logs(self) -> None:
+  def _color_groups(self) -> None:
     # reset color state, flip flop, 0 or 1
     self._color_state = 1
 
