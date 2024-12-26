@@ -13,7 +13,7 @@ from com.sun.star.\
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-class FormatterBase:
+class FormatterBase(ABC):
   def __init__(self, document: XSpreadsheetDocument) -> None:
     self.__document = document
     self._sheet = None

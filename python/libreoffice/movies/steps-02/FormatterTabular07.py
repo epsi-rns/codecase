@@ -81,7 +81,7 @@ lfGray  = bfm.create_line_format_gray()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-class FormatterBase:
+class FormatterBase(ABC):
   @property
   @abstractmethod
   def _document(self) -> XSpreadsheetDocument:

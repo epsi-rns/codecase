@@ -28,7 +28,7 @@ from com.sun.star.\
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-class FormatterBase:
+class FormatterBase(ABC):
   @property
   @abstractmethod
   def _document(self) -> XSpreadsheetDocument:

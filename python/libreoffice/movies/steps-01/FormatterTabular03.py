@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from com.sun.star.sheet import XSpreadsheetDocument
 
-class FormatterBase:
+class FormatterBase(ABC):
   def __init__(self, document: XSpreadsheetDocument) -> None:
     self.__document = document
     self._sheet = None

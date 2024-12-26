@@ -3,7 +3,7 @@ from com.sun.star.sheet import XSpreadsheetDocument
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-class FormatterBase:
+class FormatterBase(ABC):
   @property
   @abstractmethod
   def _document(self) -> XSpreadsheetDocument:
