@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from com.sun.star.sheet import XSpreadsheetDocument
 
 class FormatterBase(ABC):

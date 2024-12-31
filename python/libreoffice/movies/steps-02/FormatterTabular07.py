@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from com.sun.star.sheet import XSpreadsheetDocument
 from com.sun.star.util  import XNumberFormats
@@ -142,7 +142,7 @@ class FormatterBase(ABC):
     pass
 
   @abstractmethod
-  def format_data_borders(self) -> None:  
+  def _format_data_borders(self) -> None:  
     pass
 
   # -- -- --
@@ -172,7 +172,7 @@ class FormatterBase(ABC):
 
     # Apply borders to the specified range
     print(' * Formatting Border')
-    self.format_data_borders()
+    self._format_data_borders()
 
     # Call the hook method (default does nothing)
     self._format_one_sheet_post()
@@ -441,7 +441,7 @@ class FormatterCommon(FormatterBase):
           cell.CellBackColor = bg_color 
 
   # Formatting Procedure: Abstract Override
-  def format_data_borders(self) -> None:
+  def _format_data_borders(self) -> None:
     for metadata in self._metadatas:
       start_letter = metadata['col-start']
 
@@ -537,7 +537,7 @@ class FormatterCommon(FormatterBase):
     cell_range.TableBorder2 = border
 
   # Sheet Helper
-  # To be used only within the format_data_borders()
+  # To be used only within the _format_data_borders()
   def __apply_data_border(self,
         letter_start: str, letter_end: str,
         outer_line: BorderLine2, vert_line: BorderLine2,

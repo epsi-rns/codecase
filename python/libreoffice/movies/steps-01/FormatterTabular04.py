@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from com.sun.star.sheet import XSpreadsheetDocument
 from com.sun.star.util  import XNumberFormats
@@ -10,9 +10,9 @@ from com.sun.star.\
 
 class FormatterBase(ABC):
   def __init__(self, document: XSpreadsheetDocument) -> None:
-    self.__document = document
+    self._document = document
     self._sheet = None
-    self._controller = self.__document.getCurrentController()
+    self._controller = self._document.getCurrentController()
 
     self._fields = {}
     self._init_field_metadata()
@@ -33,8 +33,8 @@ class FormatterBase(ABC):
   # Class Property: Sheet Variables
   def __prepare_sheet(self) -> None:
     # number and date format
-    self._numberfmt = self.__document.NumberFormats
-    self._locale    = self.__document.CharLocale
+    self._numberfmt = self._document.NumberFormats
+    self._locale    = self._document.CharLocale
 
   # Sheet Helper
   # To be used only within the formatOneSheet(), reset_pos_rows()
@@ -147,7 +147,7 @@ class FormatterBase(ABC):
 
   # Basic Flow
   def process_all(self) -> None:
-    for sheet in self.__document.Sheets:
+    for sheet in self._document.Sheets:
       print(sheet.Name)
       self._sheet = sheet
       self.__format_one_sheet()
