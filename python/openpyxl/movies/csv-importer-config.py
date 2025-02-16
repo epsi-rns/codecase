@@ -1,6 +1,11 @@
-import tomli
-import csv
+# Main Program
+#-------------
+
+import tomli, csv
+from datetime import datetime
 from openpyxl import Workbook, load_workbook
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class CSVImporter:
     def __init__(self, config_path, output_xlsx):
@@ -36,6 +41,34 @@ class CSVImporter:
 
         self.filenames = filenames
 
+    def detect_value_type(self, value):
+        """Detect if value is a number, date, or text"""
+
+        # Handle empty values
+        if value.strip() == "":
+            return None  
+
+        # Try parsing as a date
+        date_formats = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d", "%d-%b-%Y"]
+        for fmt in date_formats:
+            try:
+                # Convert to datetime
+                return datetime.strptime(value, fmt)
+            except ValueError:
+                # Try next format
+                continue
+
+        # Try converting to a number
+        try:
+            # Try to convert to int if no decimal point
+            if "." not in value:
+                return int(value)
+            # Convert to float if it has a decimal point
+            return float(value)
+        except ValueError:
+            # Keep as string if conversion fails
+            return value
+
     def load_csv(self, csv_path, sheet_name_dst):
         """Load CSV into a new sheet"""
         with open(csv_path, newline='', encoding='utf-8') as f:
@@ -45,8 +78,11 @@ class CSVImporter:
             ws = self.wb.create_sheet(title=sheet_name_dst)
 
             for row in reader:
+                # Convert numbers while keeping strings unchanged
+                converted_row = [self.detect_value_type(cell) for cell in row]
+
                 # Appending rows from CSV
-                ws.append(row)  
+                ws.append(converted_row)
 
     def process(self):
         # Main logic for importing CSV files
