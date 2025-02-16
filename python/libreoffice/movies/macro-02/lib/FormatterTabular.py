@@ -26,7 +26,7 @@ class FormatterTabular(FormatterCommon):
     spreadsheetView.freezeAtPosition(3, 3)
 
   # Rebuild array of tuple using the helper function
-  def __get_rows_affected_letter(self):
+  def __get_cols_affected_letter(self):
     return [
       (self._column_index_to_letter(start_col_index + start - 1),
        self._column_index_to_letter(start_col_index + end - 1))
@@ -50,7 +50,7 @@ class FormatterTabular(FormatterCommon):
 
     if self._color_state == 1:
       # color row based on color_state
-      for letter_start, letter_end in self._rows_affected:
+      for letter_start, letter_end in self._cols_affected:
         self._sheet[f'{letter_start}{row}:{letter_end}{row}']\
           .CellBackColor = blueScale[0]
 
@@ -58,8 +58,8 @@ class FormatterTabular(FormatterCommon):
     # reset color state, flip flop, 0 or 1
     self._color_state = 1
 
-    self._rows_affected = self.__get_rows_affected_letter()
-    print(f'   {self._rows_affected}')
+    self._cols_affected = self.__get_cols_affected_letter()
+    print(f'   {self._cols_affected}')
 
     for row in range(4, self._max_row+2):
       self.__color_row(row)
