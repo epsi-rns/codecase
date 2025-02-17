@@ -145,7 +145,7 @@ class FormatterBase(ABC):
         # Disable gridlines
         self._sheet.sheet_view.showGridLines = False
 
-        # Freeze at position C3 (Column 3, Row 3)
+        # Freeze at position (Column, Row)
         self._sheet.freeze_panes = self._freeze
 
     # -- -- --

@@ -5,6 +5,9 @@ import tomli, csv
 from datetime import datetime
 from openpyxl import Workbook, load_workbook
 
+from lib.ColorScale import (
+  clBlack, blueScale, tealScale, amberScale, brownScale, greenScale, redScale)
+
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class CSVImporter:
@@ -79,34 +82,72 @@ class CSVImporter:
 
             for row in reader:
                 # Convert numbers while keeping strings unchanged
-                converted_row = [self.detect_value_type(cell) for cell in row]
+                converted_row = [self.detect_value_type(cell)
+                                for cell in row]
 
                 # Appending rows from CSV
                 ws.append(converted_row)
 
-    def process(self):
-        # Main logic for importing CSV files
+    def load_csvs(self, input_type, output_name):
+        # Main function to load Pivot CSV
         for filename in self.filenames:
-            input_csv    = filename['input-expand']
-            output_sheet = filename['sheet-expand']
+            input_csv    = filename[input_type]
+            output_sheet = filename[output_name]
 
-            print(f"Loading: {input_csv} into sheet: {output_sheet}")
+            print(f"Loading: {input_csv}")
             self.load_csv(input_csv, output_sheet)
+
+    def process(self):
+        # Flexible paramater in real life
+        input_type  = 'input-expand'
+        output_name = 'sheet-expand'
+
+        # Main function to load Pivot CSV
+        self.load_csvs(input_type, output_name)
 
         # Remove the initial temporary sheet
         if "Temp" in self.wb.sheetnames:
             self.wb.remove(self.wb["Temp"])
 
+    def save(self) -> None:
         # Save the workbook
         self.wb.save(self.output_xlsx)
 
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+class CSVImporterExtra(CSVImporter):
+    def apply_color_to_sheets(self):
+      # List of palettes to cycle through
+      palettes = [blueScale, tealScale, amberScale, brownScale]
+
+      # Loop through each sheet
+      sheets = self.wb.worksheets
+
+      for i in range(len(sheets)):
+        sheet = sheets[i]
+
+        # Cycle through 4 palettes
+        palette_index = (i // 10) % 4
+        # Cycle through 0 to 9 for each palette
+        color_index = i % 10
+
+        # Get the color from the selected palette
+        tab_color = palettes[palette_index][color_index]
+        # Set the tab color
+        sheet.sheet_properties.tabColor = f"{tab_color:06X}"
+
+    def process_post(self) -> None:
+        self.apply_color_to_sheets()
+
 def main() -> None:
     # Configure paths or parameters as needed
-    config_path = '/home/epsi/Dev/config.toml'  
+    config_path = '/home/epsi/Dev/config.toml'
     output_xlsx = 'movies_by_year.xlsx'
 
-    csv_importer = CSVImporter(config_path, output_xlsx)
+    csv_importer = CSVImporterExtra(config_path, output_xlsx)
     csv_importer.process()
+    csv_importer.process_post()
+    csv_importer.save()
 
 if __name__ == "__main__":
     main()
