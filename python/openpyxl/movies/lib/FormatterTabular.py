@@ -12,13 +12,6 @@ lfGray  = Side(style='thin', color='E0E0E0') #gray300
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabular(FormatterCommon):
-    def _set_sheetwide_view(self) -> None:
-        # Disable gridlines
-        self._sheet.sheet_view.showGridLines = False
-
-        # Freeze at position C3 (Column 3, Row 3)
-        self._sheet.freeze_panes = "C4"
-
     # Rebuild array of tuple using the helper function
     def __get_rows_affected_letter(self):
         return [

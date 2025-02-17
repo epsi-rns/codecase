@@ -103,6 +103,7 @@ class FormatterBase(ABC):
         self._gaps = []
         self._metadatas = []
         self._max_row = 0
+        self._freeze = "C4"
 
         self._init_metadatas()
         self._merge_metadatas()
@@ -180,6 +181,15 @@ class FormatterBase(ABC):
             if cell.value is not None:
                 return False
         return True
+
+    # -- -- --
+
+    def _set_sheetwide_view(self) -> None:
+        # Disable gridlines
+        self._sheet.sheet_view.showGridLines = False
+
+        # Freeze at position C3 (Column 3, Row 3)
+        self._sheet.freeze_panes = self._freeze
 
     # -- -- --
 
@@ -533,13 +543,6 @@ class FormatterCommon(FormatterBase):
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 class FormatterTabular(FormatterCommon):
-    def _set_sheetwide_view(self) -> None:
-        # Disable gridlines
-        self._sheet.sheet_view.showGridLines = False
-
-        # Freeze at position C3 (Column 3, Row 3)
-        self._sheet.freeze_panes = "C4"
-
     # Rebuild array of tuple using the helper function
     def __get_rows_affected_letter(self):
         return [
@@ -654,6 +657,7 @@ class FormatterTabularMovies(FormatterTabularData):
     def _merge_metadatas(self) -> None:
         # Columns:    A, H,  L
         self._gaps = [0, 7, 11]
+        self._freeze = "C4"
 
         self._metadatas = [{
             'col-start'     : 'B',

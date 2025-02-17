@@ -60,6 +60,7 @@ class FormatterBase(ABC):
         self._gaps = []
         self._metadatas = []
         self._max_row = 0
+        self._freeze = "C4"
 
         self._init_metadatas()
         self._merge_metadatas()
@@ -137,6 +138,15 @@ class FormatterBase(ABC):
             if cell.value is not None:
                 return False
         return True
+
+    # -- -- --
+
+    def _set_sheetwide_view(self) -> None:
+        # Disable gridlines
+        self._sheet.sheet_view.showGridLines = False
+
+        # Freeze at position C3 (Column 3, Row 3)
+        self._sheet.freeze_panes = self._freeze
 
     # -- -- --
 
