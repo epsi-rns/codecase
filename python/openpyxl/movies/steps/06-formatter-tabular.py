@@ -94,7 +94,7 @@ class FormatterBase(ABC):
         pass
 
     def __init__(self, workbook: Workbook) -> None:
-        self._workbook = workbook
+        self.__workbook = workbook
         self._sheet = None
         self._gaps = []
         self._metadatas = []
@@ -143,9 +143,9 @@ class FormatterBase(ABC):
 
     # Basic Flow
     def process_all(self) -> None:
-        for sheet in self._workbook.worksheets:
+        for sheet in self.__workbook.worksheets:
             print(sheet.title)
-            self._sheet = sheet
+            self._sheet: Worksheet = sheet
             self.__format_one_sheet()
 
     # -- -- --
@@ -249,9 +249,10 @@ class FormatterBase(ABC):
 class FormatterCommon(FormatterBase):
     # Formatting Procedure: Abstract Override
     def _reset_pos_columns(self) -> None:
-        factor = 5.1
-        width_cm = 0.5
+        # take care of column width
         wscd = self._sheet.column_dimensions
+        factor   = 5.1
+        width_cm = 0.5
 
         for gap in self._gaps:
             letter = get_column_letter(gap + 1)
@@ -284,6 +285,14 @@ class FormatterCommon(FormatterBase):
         row_height_div = 0.3 * factor
         wsrd[1].height = row_height_div
         wsrd[self._max_row + 1].height = row_height_div
+
+    # Formatting Procedure: Abstract Override
+    def _set_sheetwide_view(self) -> None:
+        # Disable gridlines
+        self._sheet.sheet_view.showGridLines = False
+
+        # Freeze at position C3 (Column 3, Row 3)
+        self._sheet.freeze_panes = self._freeze
 
     # Sheet Helper
     # To be used only within the _set_columns_format()
@@ -435,17 +444,7 @@ class FormatterCommon(FormatterBase):
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-class FormatterTabular(FormatterCommon):
-    def _set_sheetwide_view(self) -> None:
-        # Disable gridlines
-        self._sheet.sheet_view.showGridLines = False
-
-        # Freeze at position C3 (Column 3, Row 3)
-        self._sheet.freeze_panes = "C4"
-
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
-class FormatterTabularData(FormatterTabular):
+class FormatterTabularData(FormatterCommon):
     # Unified Configuration
     def _init_metadatas(self) -> None:
         self._metadata_movies_base = {
@@ -496,6 +495,7 @@ class FormatterTabularMovies(FormatterTabularData):
     def _merge_metadatas(self) -> None:
         # Columns:    A, H,  L
         self._gaps = [0, 7, 11]
+        self._freeze = "C4"
 
         self._metadatas = [{
             'col-start'     : 'B',

@@ -23,7 +23,7 @@ class FormatterBase(ABC):
         pass
 
     def __init__(self, workbook):
-        self._workbook = workbook
+        self.__workbook = workbook
         self._sheet = None
         self._gaps = []
         self._max_row = 0
@@ -59,9 +59,9 @@ class FormatterBase(ABC):
 
     # Basic Flow
     def process_all(self) -> None:
-        for sheet in self._workbook.worksheets:
+        for sheet in self.__workbook.worksheets:
             print(sheet.title)
-            self._sheet = sheet
+            self._sheet: Worksheet = sheet
             self.__format_one_sheet()
 
     # -- -- --
@@ -83,9 +83,10 @@ class FormatterBase(ABC):
 class FormatterCommon(FormatterBase):
     # Formatting Procedure: Abstract Override
     def _reset_pos_columns(self) -> None:
-        factor = 5.1
-        width_cm = 0.5
+        # take care of column width
         wscd = self._sheet.column_dimensions
+        factor   = 5.1
+        width_cm = 0.5
 
         for gap in self._gaps:
             letter = get_column_letter(gap + 1)
@@ -118,23 +119,22 @@ class FormatterCommon(FormatterBase):
         wsrd[1].height = row_height_div
         wsrd[self._max_row + 2].height = row_height_div
 
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
-class FormatterTabular(FormatterCommon):
+    # Formatting Procedure: Abstract Override
     def _set_sheetwide_view(self) -> None:
         # Disable gridlines
         self._sheet.sheet_view.showGridLines = False
 
         # Freeze at position C3 (Column 3, Row 3)
-        self._sheet.freeze_panes = "C4"
+        self._sheet.freeze_panes = self._freeze
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-class FormatterTabularMovies(FormatterTabular):
+class FormatterTabularMovies(FormatterCommon):
     # Merge Configuration
     def _merge_metadatas(self) -> None:
         # Columns:    A, H,  L
         self._gaps = [0, 7, 11]
+        self._freeze = "C4"
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

@@ -5,8 +5,8 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 class FormatterBase:
     def __init__(self, workbook) -> None:
-        self._workbook = workbook
-        self._sheet: Worksheet = None
+        self.__workbook = workbook
+        self._sheet = None
 
     # Basic Flow
     def __format_one_sheet(self) -> None:
@@ -14,9 +14,9 @@ class FormatterBase:
 
     # Basic Flow
     def process_all(self) -> None:
-        for sheet in self._workbook.worksheets:
+        for sheet in self.__workbook.worksheets:
             print(sheet.title)
-            self._sheet = sheet
+            self._sheet: Worksheet = sheet
             self.__format_one_sheet()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -45,6 +45,7 @@ class FormatterTabularMovies(FormatterBase):
 def main() -> None:
     input_xlsx  = '../xlsx/movies_by_year.xlsx'
     output_xlsx = '../xlsx/movies_by_year_formatted.xlsx'
+
     wb = load_workbook(input_xlsx)
     formatter = FormatterTabularMovies(wb)
     formatter.process_all()

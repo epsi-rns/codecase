@@ -15,7 +15,7 @@ class FormatterBase(ABC):
         pass
 
     def __init__(self, workbook):
-        self._workbook = workbook
+        self.__workbook = workbook
         self._sheet = None
         self._gaps = []
 
@@ -40,9 +40,9 @@ class FormatterBase(ABC):
 
     # Basic Flow
     def process_all(self) -> None:
-        for sheet in self._workbook.worksheets:
+        for sheet in self.__workbook.worksheets:
             print(sheet.title)
-            self._sheet = sheet
+            self._sheet: Worksheet = sheet
             self.__format_one_sheet()
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -50,11 +50,11 @@ class FormatterBase(ABC):
 class FormatterCommon(FormatterBase):
     # Formatting Procedure: Abstract Override
     def _reset_pos_columns(self) -> None:
-        factor = 5.1
-        width_cm = 0.5
-
         # take care of column width
         wscd = self._sheet.column_dimensions
+        factor   = 5.1
+        width_cm = 0.5
+
         for gap in self._gaps:
             letter = get_column_letter(gap + 1)
 

@@ -68,7 +68,8 @@ class FormatterTabularMovies(FormatterTabularData):
     # Merge Configuration
     def _merge_metadatas(self) -> None:
         # Columns:    A, H,  L
-        self._gaps = [0, 7, 11]
+        self._gaps  = [0, 7, 11]
+        self._freeze = "C4"
 
         self._metadatas = [{
             'col-start'     : 'B',
