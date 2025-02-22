@@ -134,6 +134,7 @@ class FormatterBase(ABC):
         self._set_sheetwide_view()
         self._set_columns_format()
 
+        # Apply Header Settings
         print(" * Formatting Header")
         self._add_merged_titles()
         self._format_head_borders()
@@ -244,7 +245,7 @@ class FormatterBase(ABC):
             vert_side: Side) -> None:
 
         for col in range(a_l+1, a_r):
-            # inner top only
+            # inner left and right only
             cell = self._sheet.cell(row=a_t, column=col)
             current = cell.border
 
@@ -264,7 +265,7 @@ class FormatterBase(ABC):
 
         for col in range(a_l, a_r+1):
             for row in range(a_t, a_b+1):
-                # inner top only
+                # bottom and right only
                 cell = self._sheet.cell(row=row, column=col)
                 current = cell.border
 
@@ -356,9 +357,6 @@ class FormatterCommon(FormatterBase):
     def _set_columns_format(self) -> None:
         factor = 5.1
         wscd = self._sheet.column_dimensions
-        alignment_map = [
-            "left", "center", "right",
-            "justify", "general", "fill"]
 
         for metadata in self._metadatas:
             start_letter = metadata["col-start"]
@@ -543,7 +541,7 @@ class FormatterCommon(FormatterBase):
 
 class FormatterTabular(FormatterCommon):
     # Rebuild array of tuple using the helper function
-    def __get_rows_affected_letter(self):
+    def __get_cols_affected_letter(self):
         return [
             (get_column_letter(start_col_index + start - 1),
              get_column_letter(start_col_index + end - 1))
@@ -555,7 +553,7 @@ class FormatterTabular(FormatterCommon):
                 for start, end, *_ in metadata['head-borders']
         ]
 
-    def __color_row(self, row) -> None:
+    def __color_row(self, row, hex_color, pattern) -> None:
         # get cell address value for current row and previous
         col = self._color_group
         value_current = self._sheet[f'{col}{row}'].value
@@ -566,15 +564,8 @@ class FormatterTabular(FormatterCommon):
             self._color_state = 1 if self._color_state==0 else 0
 
         if self._color_state == 1:
-            # Set background color
-            hex_color = f"ff{blueScale[0]:06x}"
-            pattern = PatternFill(
-                start_color=hex_color,
-                end_color=hex_color,
-                fill_type='solid')
-
             # color row based on color_state
-            for letter_start, letter_end in self._rows_affected:
+            for letter_start, letter_end in self._cols_affected:
                 index_start = column_index_from_string(letter_start)
                 index_end   = column_index_from_string(letter_end)
 
@@ -586,11 +577,18 @@ class FormatterTabular(FormatterCommon):
         # reset color state, flip flop, 0 or 1
         self._color_state = 1
 
-        self._rows_affected = self.__get_rows_affected_letter()
-        print(f'   {self._rows_affected}')
+        self._cols_affected = self.__get_cols_affected_letter()
+        print(f'   {self._cols_affected}')
+
+        # Set background color
+        hex_color = f"ff{blueScale[0]:06x}"
+        pattern = PatternFill(
+            start_color=hex_color,
+            end_color=hex_color,
+            fill_type='solid')
 
         for row in range(4, self._max_row):
-            self.__color_row(row)
+            self.__color_row(row, hex_color, pattern)
      
             # Show progress every 2,500 rows
             if (row - 3) % 2500 == 0:

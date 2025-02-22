@@ -224,9 +224,6 @@ class FormatterCommon(FormatterBase):
     def _set_columns_format(self) -> None:
         factor = 5.1
         wscd = self._sheet.column_dimensions
-        alignment_map = [
-            "left", "center", "right",
-            "justify", "general", "fill"]
 
         for metadata in self._metadatas:
             start_letter = metadata["col-start"]
@@ -307,11 +304,11 @@ class FormatterTabularData(FormatterCommon):
                 'Director' : { 'width': 5 }
             },
 
-           'titles': [{ 
+            'titles': [{
                'col-start-id' : 1, 'col-end-id' : 6,
                'text' : 'Base Movie Data', 
                'bg' : blueScale[3], 'fg' : clBlack                    
-           }]
+            }]
         }
 
         self._metadata_movies_additional = {
@@ -321,11 +318,11 @@ class FormatterTabularData(FormatterCommon):
                 'Metascore': { 'width': 2,   'align': 'center' }
             },
 
-           'titles': [{ 
+            'titles': [{
                'col-start-id' : 1, 'col-end-id' : 3,
                'text' : 'Additional Data', 
                'bg' : tealScale[3], 'fg' : clBlack                    
-           }]
+            }]
         }
 
 

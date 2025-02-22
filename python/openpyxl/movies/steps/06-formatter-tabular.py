@@ -125,6 +125,7 @@ class FormatterBase(ABC):
         self._set_sheetwide_view()
         self._set_columns_format()
 
+        # Apply Header Settings
         print(" * Formatting Header")
         self._add_merged_titles()
         self._format_head_borders()
@@ -230,7 +231,7 @@ class FormatterBase(ABC):
             side: Side) -> None:
 
         for col in range(a_l+1, a_r):
-            # inner top only
+            # inner left and right only
             cell = self._sheet.cell(row=a_t, column=col)
 
             current = cell.border
@@ -311,9 +312,6 @@ class FormatterCommon(FormatterBase):
     def _set_columns_format(self) -> None:
         factor = 5.1
         wscd = self._sheet.column_dimensions
-        alignment_map = [
-            "left", "center", "right",
-            "justify", "general", "fill"]
 
         for metadata in self._metadatas:
             start_letter = metadata["col-start"]

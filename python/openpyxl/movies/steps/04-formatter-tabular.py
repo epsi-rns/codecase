@@ -170,9 +170,6 @@ class FormatterCommon(FormatterBase):
     def _set_columns_format(self) -> None:
         factor = 5.1
         wscd = self._sheet.column_dimensions
-        alignment_map = [
-            "left", "center", "right",
-            "justify", "general", "fill"]
 
         for metadata in self._metadatas:
             start_letter = metadata["col-start"]

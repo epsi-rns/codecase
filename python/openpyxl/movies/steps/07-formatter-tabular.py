@@ -133,6 +133,7 @@ class FormatterBase(ABC):
         self._set_sheetwide_view()
         self._set_columns_format()
 
+        # Apply Header Settings
         print(" * Formatting Header")
         self._add_merged_titles()
         self._format_head_borders()
@@ -243,7 +244,7 @@ class FormatterBase(ABC):
             vert_side: Side) -> None:
 
         for col in range(a_l+1, a_r):
-            # inner top only
+            # inner left and right only
             cell = self._sheet.cell(row=a_t, column=col)
             current = cell.border
 
@@ -263,7 +264,7 @@ class FormatterBase(ABC):
 
         for col in range(a_l, a_r+1):
             for row in range(a_t, a_b+1):
-                # inner top only
+                # bottom and right only
                 cell = self._sheet.cell(row=row, column=col)
                 current = cell.border
 
@@ -355,9 +356,6 @@ class FormatterCommon(FormatterBase):
     def _set_columns_format(self) -> None:
         factor = 5.1
         wscd = self._sheet.column_dimensions
-        alignment_map = [
-            "left", "center", "right",
-            "justify", "general", "fill"]
 
         for metadata in self._metadatas:
             start_letter = metadata["col-start"]
@@ -555,7 +553,7 @@ class FormatterTabularData(FormatterCommon):
             },
 
            'titles': [{ 
-                'col-start-id' : 1, 'col-end-id' : 6,
+                'col-start-id' : 1, 'col-end-id' : 6,#### Formatting: Format Head Colors
                 'text' : 'Base Movie Data', 
                 'bg' : blueScale[3], 'fg' : clBlack                    
            }],
