@@ -154,7 +154,7 @@ class FormatterCommon(FormatterBase):
 
     # Sheet Helper
     # To be used only within the _set_columns_format()
-    def _apply_cell_format(self, letter: str, data: dict) -> None:
+    def __apply_cell_format(self, letter: str, data: dict) -> None:
         alignment_map = [
             "left", "center", "right",
             "justify", "general", "fill"]
@@ -186,7 +186,7 @@ class FormatterCommon(FormatterBase):
                 wscd[letter].width = data["width"] * factor
 
                 # Set alignment and format             
-                self._apply_cell_format(letter, data)
+                self.__apply_cell_format(letter, data)
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

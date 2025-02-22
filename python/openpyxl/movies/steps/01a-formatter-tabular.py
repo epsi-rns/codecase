@@ -49,7 +49,7 @@ def main() -> None:
     wb = load_workbook(input_xlsx)
     formatter = FormatterTabularMovies(wb)
     formatter.process_all()
-    wb.save(output_xlsx )
+    wb.save(output_xlsx)
 
 if __name__ == "__main__":
     main()

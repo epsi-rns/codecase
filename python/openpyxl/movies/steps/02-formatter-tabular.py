@@ -108,7 +108,7 @@ class FormatterCommon(FormatterBase):
         # Adjust header row height
         row_height_div = 0.3 * factor
         wsrd[1].height = row_height_div
-        wsrd[self._max_row + 2].height = row_height_div
+        wsrd[self._max_row + 3].height = row_height_div
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

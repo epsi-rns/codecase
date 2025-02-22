@@ -1,5 +1,4 @@
 import toml
-
 from abc import ABC, abstractmethod
 
 from openpyxl import (Workbook, load_workbook)
@@ -296,7 +295,7 @@ class FormatterCommon(FormatterBase):
 
     # Sheet Helper
     # To be used only within the _set_columns_format()
-    def _apply_cell_format(self, letter: str, data: dict) -> None:
+    def __apply_cell_format(self, letter: str, data: dict) -> None:
         alignment_map = [
             "left", "center", "right",
             "justify", "general", "fill"]
@@ -328,7 +327,7 @@ class FormatterCommon(FormatterBase):
                 wscd[letter].width = data["width"] * factor
 
                 # Set alignment and format             
-                self._apply_cell_format(letter, data)
+                self.__apply_cell_format(letter, data)
 
     # Formatting Procedure: Refactored from _add_merged_titles()
     def __set_merged_title(self, metadata: dict[str, any]) -> None:
@@ -377,10 +376,6 @@ class FormatterCommon(FormatterBase):
     # Formatting Procedure: Hook
     def _add_merged_titles_post(self) -> None:
         """Hook method to be overridden by subclasses if needed."""
-        pass
-
-    # Formatting Procedure: Abstract Override
-    def _format_head_borders(self) -> None:
         pass
 
     # Formatting Procedure: Abstract Override
