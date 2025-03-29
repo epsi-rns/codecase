@@ -54,8 +54,12 @@ class FormatterBase(ABC):
     def _format_data_borders(self) -> None:  
         pass
 
+    @abstractmethod
+    def _format_data_font(self) -> None:
+        pass
+
     def __init__(self, workbook: Workbook) -> None:
-        self._workbook = workbook
+        self.__workbook = workbook
         self._sheet = None
         self._gaps = []
         self._metadatas = []
@@ -84,17 +88,19 @@ class FormatterBase(ABC):
             self._max_row += 1
 
         # Apply Sheet Wide
-        print(" * Formatting Columns")
+        print(" * Formatting Sheet-Wide View")
         self._set_sheetwide_view()
+        print(" * Formatting Columns")
         self._set_columns_format()
 
+        # Apply Header Settings
         print(" * Formatting Header")
         self._add_merged_titles()
         self._format_head_borders()
         self._format_head_colors()
 
-        # Apply borders to the specified range
-        print(' * Formatting Border')
+        # Apply borders and font to the specified range
+        print(' * Formatting Data Border and Font')
         self._format_data_borders()
         self._format_data_font()
 
@@ -110,9 +116,9 @@ class FormatterBase(ABC):
 
     # Basic Flow
     def process_all(self) -> None:
-        for sheet in self._workbook.worksheets:
+        for sheet in self.__workbook.worksheets:
             print(sheet.title)
-            self._sheet = sheet
+            self._sheet: Worksheet = sheet
             self.__format_one_sheet()
 
     # -- -- --
@@ -138,15 +144,6 @@ class FormatterBase(ABC):
             if cell.value is not None:
                 return False
         return True
-
-    # -- -- --
-
-    def _set_sheetwide_view(self) -> None:
-        # Disable gridlines
-        self._sheet.sheet_view.showGridLines = False
-
-        # Freeze at position (Column, Row)
-        self._sheet.freeze_panes = self._freeze
 
     # -- -- --
 
@@ -256,9 +253,10 @@ class FormatterBase(ABC):
 class FormatterCommon(FormatterBase):
     # Formatting Procedure: Abstract Override
     def _reset_pos_columns(self) -> None:
-        factor = 5.1
-        width_cm = 0.5
+        # take care of column width
         wscd = self._sheet.column_dimensions
+        factor   = 5.1
+        width_cm = 0.5
 
         for gap in self._gaps:
             letter = get_column_letter(gap + 1)
@@ -292,9 +290,17 @@ class FormatterCommon(FormatterBase):
         wsrd[1].height = row_height_div
         wsrd[self._max_row + 1].height = row_height_div
 
+    # Formatting Procedure: Abstract Override
+    def _set_sheetwide_view(self) -> None:
+        # Disable gridlines
+        self._sheet.sheet_view.showGridLines = False
+
+        # Freeze at position C3 (Column 3, Row 3)
+        self._sheet.freeze_panes = self._freeze
+
     # Sheet Helper
     # To be used only within the _set_columns_format()
-    def _apply_cell_format(self, letter: str, data: dict) -> None:
+    def __apply_cell_format(self, letter: str, data: dict) -> None:
         alignment_map = [
             "left", "center", "right",
             "justify", "general", "fill"]
@@ -326,7 +332,7 @@ class FormatterCommon(FormatterBase):
                 wscd[letter].width = data["width"] * factor
 
                 # Set alignment and format             
-                self._apply_cell_format(letter, data)
+                self.__apply_cell_format(letter, data)
 
     # Formatting Procedure: Refactored from _add_merged_titles()
     def __set_merged_title(self, metadata: dict[str, any]) -> None:

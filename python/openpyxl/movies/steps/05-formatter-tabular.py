@@ -108,8 +108,9 @@ class FormatterBase(ABC):
             self._max_row += 1
 
         # Apply Sheet Wide
-        print(" * Formatting Columns")
+        print(" * Formatting Sheet-Wide View")
         self._set_sheetwide_view()
+        print(" * Formatting Columns")
         self._set_columns_format()
 
         print(" * Formatting Header")

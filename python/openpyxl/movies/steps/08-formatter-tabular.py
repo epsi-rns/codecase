@@ -130,8 +130,9 @@ class FormatterBase(ABC):
             self._max_row += 1
 
         # Apply Sheet Wide
-        print(" * Formatting Columns")
+        print(" * Formatting Sheet-Wide View")
         self._set_sheetwide_view()
+        print(" * Formatting Columns")
         self._set_columns_format()
 
         # Apply Header Settings
@@ -140,8 +141,8 @@ class FormatterBase(ABC):
         self._format_head_borders()
         self._format_head_colors()
 
-        # Apply borders to the specified range
-        print(' * Formatting Border')
+        # Apply borders and font to the specified range
+        print(' * Formatting Data Border and Font')
         self._format_data_borders()
         self._format_data_font()
 
