@@ -22,7 +22,7 @@ class QuadraticAnimator:
         # Get Seaborn color palette
         colors = sns.color_palette("dark", 4)
 
-        self.line_color = colors[0]   # Main quadratic curve
+        self.line_color  = colors[0]   # Main quadratic curve
         self.point_color = colors[3]  # Sampled points
 
         # Static equation text
@@ -75,17 +75,12 @@ class QuadraticAnimator:
         # Smooth oscillation
         direction = np.cos(t * np.pi * 2)
 
-        if scene == 0:  # Change a only
-            # Varies from +2 to -2 and back
+        a, b, c = 1, -12, -64
+        if scene == 0:
             a = 2 * direction
-            b, c = -12, -64
-        elif scene == 1:  # Change b only
-            a, c = 1, -64
-            # Varies from -12 to +12 and back
+        elif scene == 1:
             b = -12 * direction
-        else:  # Change c only
-            a, b = 1, -12
-            # Varies from -64 to +64 and back
+        else:
             c = -64 * direction
 
         y = self.quadratic_function(self.x, a, b, c)

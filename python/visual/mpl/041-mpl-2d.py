@@ -95,7 +95,7 @@ class QuadraticAnimator:
         return self.line, self.points, self.coeff_text
 
     def animate(self):
-        """Run the animation."""
+        # Run the animation.
         ani = animation.FuncAnimation(
             self.fig, self.update,
             frames=self.total_frames,
