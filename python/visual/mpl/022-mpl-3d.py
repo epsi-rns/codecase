@@ -13,7 +13,6 @@ def f(x, y):
   return x**2 + y**2 - 12*x + 12*y + x*y - 64
   
 # plot figure
-
 fig = plt.figure()
 # ax = fig.gca(projection='3d')
 ax = fig.add_subplot(111, projection='3d')
@@ -61,8 +60,9 @@ ax.set_zlabel('Just Z', rotation=90)
 ax.set_zticks(np.arange(-150, 50, 25))
 
 # latex
-plt.title(r'$z = x^2 + y^2 - 12x + 12y + xy - 64$',
-          fontsize=16, color='b', y=1.06)
+plt.title(
+    r'$z = x^2 + y^2 - 12x + 12y + xy - 64$',
+    fontsize=16, color='b', y=1.06)
 
 # finally
 plt.show()
