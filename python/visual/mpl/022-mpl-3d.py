@@ -15,7 +15,8 @@ def f(x, y):
 # plot figure
 
 fig = plt.figure()
-ax = fig.gca(projection='3d')
+# ax = fig.gca(projection='3d')
+ax = fig.add_subplot(111, projection='3d')
 
 # Make data.
 X = np.arange(-5, 5.1, 0.2)
