@@ -25,25 +25,16 @@ class CurveFitting:
       + f'\n\t{np.flip(mC)}\n')
 
     # Get coefficient matrix
-    return np.flip(mC)
+    return mC
 
   def calc_plot_all(self) -> None:
     self.x_plot = xp = np.linspace(
       min(self.xs), max(self.xs), 100)
 
     # Calculate coefficients directly
-    mCoeff_1st = self.calc_coeff(1)
-    mCoeff_2nd = self.calc_coeff(2)
-    mCoeff_3rd = self.calc_coeff(3)
-
-    [a1, b1] = mCoeff_1st
-    self.y1_plot = a1 + b1 * xp
-
-    [a2, b2, c2] = mCoeff_2nd
-    self.y2_plot = a2 + b2 * xp + c2 * xp ** 2
-
-    [a3, b3, c3, d3] = mCoeff_3rd
-    self.y3_plot = a3 + b3 * xp + c3 * xp ** 2 + d3 * xp ** 3
+    self.y1_plot = np.polyval(self.calc_coeff(1), xp)
+    self.y2_plot = np.polyval(self.calc_coeff(2), xp)
+    self.y3_plot = np.polyval(self.calc_coeff(3), xp)
 
   def draw_plot(self) -> None:
     plt.scatter(self.xs, self.ys, color='teal',
