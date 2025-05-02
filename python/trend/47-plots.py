@@ -72,6 +72,12 @@ class PolynomialOrderAnalyzer:
         print(f"t_value : [" + " ".join(t_v_formatted) + "]")
         print(f"p_value : [" + " ".join(p_v_formatted) + "]")
 
+        return {
+            'SE'      :  SE,
+            't-value' :  t_value,
+            'p-value' :  p_value
+        }
+
 class CurveFitting:
     def __init__(self, xs, ys : List[int]) -> None:
         # Given data
@@ -147,23 +153,50 @@ class CurveFitting:
 
         plt.tight_layout()
 
+    def plot_stats(self, plt) -> None:
+        # Statistics bar plots
+        order = 2
+        stats = self.stats[order]
+        labels = [f"β{i}" for i in range(order+1)]
+
+        def stat_bar(ax, values, title, color):
+            ax.bar(labels, values, color=color)
+            ax.set_title(title)
+            ax.grid(True, axis='y', linestyle='--', alpha=0.3)
+
+        ax1 = plt.subplot(1, 3, 1)
+        stat_bar(ax1, stats['SE'], "Standard Error (SE)", 'orange')
+
+        ax2 = plt.subplot(1, 3, 2)
+        stat_bar(ax2, stats['t-value'], "t-values", 'skyblue')
+
+        ax3 = plt.subplot(1, 3, 3)
+        stat_bar(ax3, stats['p-value'], "p-values", 'salmon')
+
+        # log scale to better show small p-values
+        ax3.set_yscale('log')
+
     def draw_plot(self) -> None:
+        # Plot 1: Trend + Equation
         plt.figure()
         self.plot_trend(plt)
         self.add_plot_text(plt)
 
-        plt.tight_layout()
+        # Plot 2: Bar Plots
+        plt.figure()
+        self.plot_stats(plt)
         plt.show()
 
     def process(self) -> None:
         # Print Statistical Properties
         self.print_props_general()
-        
+
+        self.stats = {}
         for order in [1, 2, 3]:
             case = PolynomialOrderAnalyzer(self.xs, self.ys, order)
             case.calc_props_matrix()
             case.calc_props_mse()
-            case.calc_props_t_p_value()
+            self.stats[order] = case.calc_props_t_p_value()
             print()
 
         self.calc_plot_all()
