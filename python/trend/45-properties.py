@@ -25,12 +25,12 @@ class PolynomialOrderAnalyzer:
         self.order_text = self.ORDER_TEXTS[order]
        
     def calc_props_matrix(self) -> None:
-        # Perform regression     
+        # Design Matrix A
         # mA_1 = np.column_stack([np.ones_like(self.xs), self.xs, self.xs**2])
         # mA_2 = np.column_stack([self.xs**j for j in range(self.order+1)])  # Design matrix
         self.mA = np.flip(np.vander(self.xs, self.order+1), axis=1)
 
-        # matrix operation
+        # Matrix Operation
         mB = self.ys
         mAt   = self.mA.T
         mAt_A = mAt @ self.mA # gram matrix
@@ -43,7 +43,7 @@ class PolynomialOrderAnalyzer:
         mI   = np.linalg.inv(mAt_A)
         self.diag = np.diag(mI)
 
-        # Perform regression using polyfit,
+        # Getting Prediction Series
         poly = Polynomial.fit(self.xs, self.ys, deg=self.order)
         self.mC = poly.convert().coef
         # yp_1    = np.polyval(mC, self.xs)
@@ -51,6 +51,7 @@ class PolynomialOrderAnalyzer:
         # y_pred_2 = self.mA @ mC
         # print(y_pred_2)
 
+        # Print The Statistic Properties Header
         print(f'Using polyfit : {self.order_text}')
         print(f'Coefficients  : {self.coeff_text}: '
             + f'{self.mC}')
@@ -61,6 +62,7 @@ class PolynomialOrderAnalyzer:
         SST = y_sq_deviation = np.sum((self.ys-y_mean) ** 2)
         SSR = np.sum((self.ys - self.yp) ** 2) # ∑ϵᵢ²
         R_squared = 1 - (SSR / SST)
+        # r2 = r2_score(self.ys, yp)
         self.MSE = SSR/self.df
 
         print(f'\t∑(yᵢ - ŷᵢ)² : {SSR:15,.2f}')
@@ -82,8 +84,6 @@ class PolynomialOrderAnalyzer:
         print(f"SE(β)   : [" + " ".join(SE_formatted) + "]")
         print(f"t_value : [" + " ".join(t_v_formatted) + "]")
         print(f"p_value : [" + " ".join(p_v_formatted) + "]")
-
-        print()
 
 class CurveFitting:
     def __init__(self, xs, ys : List[int]) -> None:
@@ -108,6 +108,7 @@ class CurveFitting:
             case.calc_props_matrix()
             case.calc_props_mse()
             case.calc_props_t_p_value()
+            print()
 
 def main() -> int:
     # Getting Matrix Values

@@ -25,20 +25,21 @@ class PolynomialOrderAnalyzer:
         # Display
         self.coeff_text = self.COEFF_TEXTS[order]
         self.order_text = self.ORDER_TEXTS[order]
-       
+
     def calc_props_matrix(self) -> None:
-        # Perform regression using polyfit,
+        # Getting Prediction Series
         poly = Polynomial.fit(self.xs, self.ys, deg=self.order)
         self.mC = poly.convert().coef
         self.yp = poly(self.xs)
 
-        # matrix operation
+        # Matrix Operation
         self.mA = np.flip(np.vander(self.xs, self.order+1), axis=1)
         mAt   = self.mA.T
         mAt_A = mAt @ self.mA # gram matrix
         mI   = np.linalg.inv(mAt_A)
         self.diag = np.diag(mI)
 
+        # Print The Statistic Properties Header
         print(f'Using polyfit : {self.order_text}')
         print(f'Coefficients  : {self.coeff_text}: '
             + f'{self.mC}')
@@ -70,8 +71,6 @@ class PolynomialOrderAnalyzer:
         print(f"SE(β)   : [" + " ".join(SE_formatted) + "]")
         print(f"t_value : [" + " ".join(t_v_formatted) + "]")
         print(f"p_value : [" + " ".join(p_v_formatted) + "]")
-
-        print()
 
 class CurveFitting:
     def __init__(self, xs, ys : List[int]) -> None:
@@ -154,12 +153,13 @@ class CurveFitting:
     def process(self) -> None:
         # Print Statistical Properties
         self.print_props_general()
-
+        
         for order in [1, 2, 3]:
             case = PolynomialOrderAnalyzer(self.xs, self.ys, order)
             case.calc_props_matrix()
             case.calc_props_mse()
             case.calc_props_t_p_value()
+            print()
 
         self.calc_plot_all()
         self.draw_plot()
