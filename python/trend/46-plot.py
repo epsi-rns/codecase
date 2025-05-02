@@ -107,7 +107,8 @@ class CurveFitting:
         SST = self.y_sq_deviation
         SSR = np.sum((self.ys - yp) ** 2)
         R_squared = 1 - (SSR / SST)
-        MSE = SSR / (len(self.xs) - 3)  # deg=2 → 3 params (a, b, c)
+        # degree = 2 → 3 params (a, b, c)
+        MSE = SSR / (len(self.xs) - 3)
 
         # Format equation and stats
         eqn = f"$y = {mC[0]:.2f} + {mC[1]:.2f}x + {mC[2]:.2f}x^2$"
